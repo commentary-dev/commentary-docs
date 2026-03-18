@@ -2,9 +2,9 @@
 
 Commentary keeps public reading easy and moves authentication to the point where you actually need write access.
 
-## Default Path: `Log in`
+## Default Path: `Sign in`
 
-Use `Log in` when you want the normal GitHub sign-in flow.
+Use `Sign in` when you want the normal GitHub sign-in flow.
 
 This is the default path for:
 
@@ -13,9 +13,11 @@ This is the default path for:
 - private repository access
 - pull request review submission
 
-## Fallback Path: `Use PAT`
+## Fallback Path: Personal Access Token
 
-If OAuth is unavailable in your environment, use the advanced `Use PAT` path.
+If OAuth is unavailable in your environment, use the personal access token option in the advanced section of the sign-in dialog.
+
+If you need to create a token first, follow [Generate a GitHub PAT](./generate-a-github-pat.md).
 
 This is the right option when:
 
@@ -33,7 +35,7 @@ This is the right option when:
 ### Private pull requests or repositories
 
 - require GitHub access first
-- may look like "not found" until you sign in with access to that repo
+- may look like "not found" until you sign in with access to that repository
 
 ## Rate Limits And Permissions
 
@@ -45,4 +47,5 @@ If your token is accepted but repository access still fails, the issue is usuall
 
 - Start anonymously for public reading.
 - Sign in only when you want to comment or open private content.
-- Use `Use PAT` only when the default GitHub login path is not an option.
+- Use the personal access token option only when the default GitHub sign-in path is not an option.
+- If you need a token, create a fine-grained PAT and keep it scoped to the repositories you actually need.

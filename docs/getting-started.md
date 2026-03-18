@@ -8,7 +8,7 @@ Use Commentary when you want to review Markdown as a readable document instead o
 2. Paste a public GitHub pull request URL.
 3. Click `Open review`.
 4. Read the document in `Preview` and `Latest` first.
-5. If you want to add a comment or reply, click `Log in`.
+5. If you want to add a comment or reply, click `Sign in`.
 
 ## What Happens Before You Sign In
 

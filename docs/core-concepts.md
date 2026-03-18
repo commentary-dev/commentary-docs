@@ -32,13 +32,24 @@ Most people should stay in `Preview` unless they need exact source lines or form
 
 Start with `Latest` for reading. Switch to `Diff` when you need to inspect what changed.
 
+## File Navigator Dots
+
+In the file navigator, Commentary uses dots to convey file state at a glance.
+
+- The left dot shows the file state.
+- Green means the file was added.
+- Blue means the file was modified, changed, copied, or is part of a branch review.
+- Red means the file was removed.
+- Purple means the file was renamed.
+- A small yellow dot on the right means the file has unresolved comments.
+
 ## Threads and Anchors
 
-Commentary comments on document blocks, not just raw diff lines. In practice that means:
+Commentary comments on document blocks, not just raw diff lines. In practice, that means:
 
-- comments feel closer to Word or Google Docs than code review
-- the UI can keep the rendered document as the default surface
-- threads stay tied to the document structure, not only to one diff hunk
+- Comments feel closer to Word or Google Docs than code review.
+- The UI can keep the rendered document as the default surface.
+- Threads stay tied to the document structure, not only to one diff hunk.
 
 ## GitHub Sync vs Commentary-Only Threads
 

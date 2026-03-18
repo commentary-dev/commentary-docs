@@ -11,6 +11,7 @@ These docs are written for customers using [commentary.dev](https://commentary.d
 - Reviewing a pull request: [Review pull requests](./docs/review-pull-requests.md)
 - Reviewing docs before a PR exists: [Review repository branches](./docs/review-repository-branches.md)
 - Connecting GitHub: [Access and authentication](./docs/access-and-authentication.md)
+- Creating a token for the PAT fallback: [Generate a GitHub PAT](./docs/generate-a-github-pat.md)
 - Want a guided sandbox: [Demo walkthrough](./docs/demo-walkthrough.md)
 - Hit a rough edge: [Troubleshooting and FAQ](./docs/troubleshooting-and-faq.md)
 
@@ -19,7 +20,7 @@ These docs are written for customers using [commentary.dev](https://commentary.d
 1. Open the homepage at [/](https://commentary.dev/).
 2. Paste a public GitHub pull request URL and click `Open review`.
 3. Read the document in `Preview` mode.
-4. When you want to comment or reply, click `Log in` and continue with GitHub or use `Use PAT` from the advanced path.
+4. When you want to comment or reply, click `Sign in` and continue with GitHub, or use the personal access token option from the advanced path.
 
 If you want to explore Commentary without bringing your own repository first, open [/demo](https://commentary.dev/demo).
 
@@ -42,4 +43,4 @@ If you want to review Markdown directly from a branch before a PR exists, open [
 
 ## In This Repo
 
-This repository is also the public branch-review example for Commentary's direct document review flow. The root `README.md` is the landing page for `/docs`, and the rest of the guides live in `docs/` with relative Markdown links between them.
+This repository is also the public branch review example for Commentary's direct document review flow. The root `README.md` is the landing page for `/docs`, and the rest of the guides live in `docs/` with relative Markdown links between them.

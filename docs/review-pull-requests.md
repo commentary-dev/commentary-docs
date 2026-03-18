@@ -16,6 +16,9 @@ Public PRs open without login. Private PRs require GitHub access.
 ## Work In The Reading Shell
 
 - Use the file navigator to move between changed Markdown files.
+- In the navigator, the left colored dot shows the file status.
+- Green means added, blue means modified or changed, red means removed, and purple means renamed.
+- A small yellow dot on the right means the file has unresolved comments.
 - Stay in `Preview` for normal reading.
 - Switch to `Raw` if you need source-level context.
 - Use `Latest` first, then `Diff` when you need to inspect the change.
@@ -28,10 +31,10 @@ To add a thread or reply, sign in first.
 
 Once authenticated, you can:
 
-- add a new thread from the rendered document
-- reply in the thread rail
-- resolve or reopen threads
-- keep draft threads pending until review submission
+- Add a new thread from the rendered document.
+- Reply in the thread rail.
+- Resolve or reopen threads.
+- Keep draft threads pending until review submission.
 
 ## Submit The Review
 

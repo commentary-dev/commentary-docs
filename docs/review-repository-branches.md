@@ -25,6 +25,8 @@ You can also open a repository tree URL directly if you already know the branch.
 ## File And Branch Navigation
 
 - The file navigator lists Markdown files from the selected branch.
+- In branch review, the left blue dot in the navigator marks a document from the selected branch.
+- A small yellow dot on the right means the file has unresolved comments.
 - If the repository exposes multiple branches in the review shell, you can switch branches there.
 - Commentary opens one Markdown file at a time and keeps the document as the primary surface.
 
@@ -42,4 +44,4 @@ Branch review is not a lightweight PR review. It is its own mode:
 - no provider-backed review event
 - Commentary-only comment persistence
 
-That makes it a better fit for document collaboration outside a code-review moment.
+That makes it a better fit for document collaboration outside a code review moment.

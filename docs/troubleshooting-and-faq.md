@@ -16,7 +16,7 @@ Use a full GitHub repository URL in the form:
 
 You can also use a GitHub tree URL when you already know the branch.
 
-### A private repo or PR looks missing
+### A private repository or PR looks missing
 
 Sign in first. Private GitHub content cannot load anonymously.
 
@@ -46,10 +46,10 @@ Start in `Latest` for reading. Use `Diff` when you need to inspect the actual ch
 
 Yes. Use `Open docs` from the homepage.
 
-### Do branch-review comments sync to GitHub?
+### Do branch review comments sync to GitHub?
 
-No. Branch-review comments stay in Commentary.
+No. Branch review comments stay in Commentary.
 
-### Does Commentary work for public repos without login?
+### Does Commentary work for public repositories without login?
 
-Yes for read-only review. Writing actions still require authentication.
+Yes, for read-only review. Writing actions still require authentication.
