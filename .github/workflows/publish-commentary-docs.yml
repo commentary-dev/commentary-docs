@@ -1,0 +1,31 @@
+name: Publish Commentary Docs
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish docs snapshot to Commentary
+        if: ${{ vars.COMMENTARY_PUBLISH_URL != '' && secrets.COMMENTARY_PUBLISH_TOKEN != '' }}
+        env:
+          COMMENTARY_PUBLISH_URL: ${{ vars.COMMENTARY_PUBLISH_URL }}
+          COMMENTARY_PUBLISH_TOKEN: ${{ secrets.COMMENTARY_PUBLISH_TOKEN }}
+          COMMENTARY_SOURCE_GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --show-error --silent \
+            --request POST \
+            --header "Authorization: Bearer ${COMMENTARY_PUBLISH_TOKEN}" \
+            --header "X-GitHub-Token: ${COMMENTARY_SOURCE_GITHUB_TOKEN}" \
+            --header "Content-Type: application/json" \
+            --data '{"kind":"document_site","owner":"commentary-dev","repo":"commentary-docs","branchRef":"main","entryFilePath":"README.md"}' \
+            "${COMMENTARY_PUBLISH_URL}"
