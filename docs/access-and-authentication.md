@@ -1,51 +1,53 @@
 # Access And Authentication
 
-Commentary keeps public reading easy and moves authentication to the point where you actually need write access.
+Commentary keeps public reading easy and asks for authentication when a workflow needs provider access or write permission.
 
-## Default Path: `Sign in`
+![Sign-in provider dialog](./assets/auth-provider-dialog.png)
 
-Use `Sign in` when you want the normal GitHub sign-in flow.
+## Provider Sign-In
 
-This is the default path for:
+Use the normal sign-in paths first:
 
-- commenting
-- replying
-- private repository access
-- pull request review submission
+- `Continue with GitHub` for GitHub App access, workspace discovery, private repositories, comments, and PR review submission.
+- `Continue with Azure DevOps` for Microsoft Entra access to Azure DevOps organizations, projects, repositories, and pull requests.
 
-## Fallback Path: Personal Access Token
+## Account And Installation Recovery
 
-If OAuth is unavailable in your environment, use the personal access token option in the advanced section of the sign-in dialog.
+GitHub workspace discovery depends on GitHub App installation scope. If Commentary cannot access a repository, the recovery surface may offer:
 
-If you need to create a token first, follow [Generate a GitHub PAT](./generate-a-github-pat.md).
+- install Commentary for the repository
+- switch account
+- add another GitHub account
+- use a PAT fallback
 
-This is the right option when:
+Azure DevOps recovery depends on the active Microsoft account, granted scopes, organization access, and optional review-decision consent.
 
-- repository policy blocks OAuth app approval
-- you need explicit token-based access
+## PAT Fallbacks
+
+Use a personal access token only when the normal provider sign-in path is unavailable or blocked by organization policy.
+
+PAT is useful when:
+
+- OAuth or app installation is blocked
+- you need explicit token-scoped access
 - you are working in a locked-down environment
+
+For GitHub token setup, see [Generate a GitHub PAT](./generate-a-github-pat.md). For Azure DevOps, use the Azure DevOps PAT option in the sign-in dialog and keep the token scoped to the repositories you need.
 
 ## Public vs Private Access
 
-### Public pull requests
+### Public GitHub pull requests
 
-- open without login
+- can open without login
 - stay read-only until you authenticate
+- may show a rate-limit message if anonymous GitHub API access is exhausted
 
-### Private pull requests or repositories
+### Private repositories and workspaces
 
-- require GitHub access first
-- may look like "not found" until you sign in with access to that repository
+- require provider access
+- may look unavailable until you sign in with an account that can reach the repository
+- may require GitHub App installation or Azure DevOps organization permission
 
-## Rate Limits And Permissions
+## API And MCP Access
 
-Anonymous GitHub access can hit rate limits, especially on direct repository review. When that happens, Commentary shows a direct user-facing message instead of a generic failure.
-
-If your token is accepted but repository access still fails, the issue is usually permissions rather than Commentary itself.
-
-## Practical Recommendation
-
-- Start anonymously for public reading.
-- Sign in only when you want to comment or open private content.
-- Use the personal access token option only when the default GitHub sign-in path is not an option.
-- If you need a token, create a fine-grained PAT and keep it scoped to the repositories you actually need.
+API tokens, OAuth grants, device authorization, and MCP access require an authenticated Commentary session. See [API and MCP](./api-and-mcp.md).

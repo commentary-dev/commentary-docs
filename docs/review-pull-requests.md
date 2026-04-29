@@ -1,55 +1,56 @@
 # Review Pull Requests
 
-Commentary's default flow starts with a GitHub pull request.
+Commentary's default workflow starts with a pull request URL.
 
-![PR review in Preview mode](./assets/pr-review-workspace.png)
+![GitHub PR review workspace](./assets/github-pr-review-workspace.png)
 
 ## Open A Review
 
-1. Copy a GitHub PR URL.
+1. Copy a GitHub or Azure DevOps pull request URL.
 2. Open [/](https://commentary.dev/).
 3. Paste the URL.
 4. Click `Open review`.
 
-Public PRs open without login. Private PRs require GitHub access.
+Public GitHub PRs can open read-only without login. Private PRs and Azure DevOps routes require provider access.
 
-## Work In The Reading Shell
+## Work In The Review Shell
 
-- Use the file navigator to move between changed Markdown files.
-- In the navigator, the left colored dot shows the file status.
-- Green means added, blue means modified or changed, red means removed, and purple means renamed.
-- A small yellow dot on the right means the file has unresolved comments.
+- Use the file navigator to move between Markdown files.
+- Use folder view when a PR changes several docs across directories.
 - Stay in `Preview` for normal reading.
-- Switch to `Raw` if you need source-level context.
-- Use `Latest` first, then `Diff` when you need to inspect the change.
+- Switch to `Raw` for Markdown source context.
+- Start with `Latest`, then use `Diff` when you need the change.
+- Use the change-set menu to review all changes or one commit.
+- Use `Comments` to show or hide the thread rail.
 
-Single-file Markdown PRs keep the experience tighter by hiding the navigator until you need it. Multi-file reviews expose the navigator from the start.
+Single-file Markdown PRs keep the shell tighter. Multi-file PRs show the file navigator.
 
 ## Comment And Reply
 
-To add a thread or reply, sign in first.
+Sign in before adding or replying to comments.
 
 Once authenticated, you can:
 
-- Add a new thread from the rendered document.
-- Reply in the thread rail.
-- Resolve or reopen threads.
-- Keep draft threads pending until review submission.
+- add a new thread from a rendered block
+- select text and create a focused thread
+- reply in the thread rail
+- resolve or reopen threads
+- keep pending PR threads staged until review submission
 
 ## Submit The Review
 
-On PR routes, Commentary keeps draft review state locally until you click `Submit review`.
+On PR routes, Commentary stages pending review work locally until you click `Submit review`.
 
-Use `Submit review` when you are ready to send the review event back to GitHub. This is the handoff point between Commentary's document-first workflow and GitHub's provider workflow.
+![Submit review dialog](./assets/submit-review-dialog.png)
+
+The submit dialog shows how many pending threads will sync before the provider review event is sent. Choose `Comment`, `Approve`, or `Request changes`, optionally add an overall summary, then submit.
 
 ## Use `Diff` Intentionally
 
-`Diff` is useful when you need to answer one of these questions:
+`Diff` is useful when you need to answer:
 
-- What changed in this paragraph or section?
-- Did this file change in the selected commit?
-- Do I need to inspect the raw Markdown instead of the rendered view?
+- What changed in this paragraph, table row, or section?
+- Did this file change in a selected commit?
+- Is the rendered change clearer than the raw Markdown?
 
-For everything else, `Preview` plus `Latest` is the fastest reading mode.
-
-![PR review in Diff mode](./assets/review-diff-mode.png)
+For normal reading, `Preview` plus `Latest` is usually faster.

@@ -1,59 +1,55 @@
 # Core Concepts
 
-Commentary is easiest to use when you think about it as a document-review layer on top of GitHub.
+Commentary is a document-review layer on top of Git providers. GitHub is the default provider, and Azure DevOps is also supported.
 
-## Pull Request Review vs Branch Review
+## Pull Request Review vs Document Review
 
 ### Pull request review
 
-- Opens a GitHub PR in Commentary.
+- Opens a provider PR in Commentary.
 - Supports `Submit review`.
-- Pending Commentary threads sync to GitHub when you submit the review.
-- Best when the document change is already in a pull request.
+- Staged Commentary threads can sync to the provider review when you submit.
+- Best when the document change is already in a PR.
 
-### Branch review
+### Document review
 
-- Opens Markdown directly from a repository branch.
+- Opens Markdown directly from a repository branch, folder, or file.
 - Uses the same reading shell and comment rail.
 - Comments stay app-native in Commentary.
-- Best when you want feedback before a PR exists.
+- Best for docs, specs, and ADRs before a PR exists.
 
 ## `Preview` vs `Raw`
 
 - `Preview` renders the Markdown as a document.
-- `Raw` shows the underlying Markdown text.
+- `Raw` shows the underlying Markdown source with line context.
 
-Most people should stay in `Preview` unless they need exact source lines or formatting details.
+Stay in `Preview` for normal review. Use `Raw` when exact Markdown source matters.
 
 ## `Latest` vs `Diff`
 
-- `Latest` shows the current version of the selected document.
-- `Diff` shows the rendered or raw change compared with the base or selected commit.
+- `Latest` shows the current selected file.
+- `Diff` shows what changed against the base or selected change set.
+- PR and document routes can expose all-change and commit-specific change sets.
 
-Start with `Latest` for reading. Switch to `Diff` when you need to inspect what changed.
+![Review mode toolbar](./assets/review-mode-toolbar.png)
 
-## File Navigator Dots
+## Files, Branches, And Change Sets
 
-In the file navigator, Commentary uses dots to convey file state at a glance.
+The file navigator shows changed or available Markdown files. Review routes may also expose:
 
-- The left dot shows the file state.
-- Green means the file was added.
-- Blue means the file was modified, changed, copied, or is part of a branch review.
-- Red means the file was removed.
-- Purple means the file was renamed.
-- A small yellow dot on the right means the file has unresolved comments.
+- file search
+- flat and folder views
+- file status indicators
+- branch selector on direct document review
+- change-set selector on PR and document diff routes
+- disabled rows when a commit does not include a selected Markdown file
 
-## Threads and Anchors
+## Threads And Anchors
 
-Commentary comments on document blocks, not just raw diff lines. In practice, that means:
+Commentary comments on semantic Markdown blocks, not only raw diff lines. That means comments can attach to headings, paragraphs, tables, front matter rows, and other rendered blocks.
 
-- Comments feel closer to Word or Google Docs than code review.
-- The UI can keep the rendered document as the default surface.
-- Threads stay tied to the document structure, not only to one diff hunk.
+## Provider Sync vs Commentary-Only Threads
 
-## GitHub Sync vs Commentary-Only Threads
-
-- PR review threads can sync back to GitHub when you use `Submit review`.
-- Branch review threads stay in Commentary only.
-
-That split is intentional. A branch review is for repository documents outside the PR flow.
+- PR review can submit pending Commentary threads back to the provider.
+- Direct document review keeps comments in Commentary.
+- Azure DevOps and GitHub use provider-aware labels and links, but the review model stays document-first.

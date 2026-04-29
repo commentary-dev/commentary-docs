@@ -4,29 +4,32 @@ The fastest way to understand Commentary is to open the built-in demo at [/demo]
 
 ## What The Demo Shows
 
-- A realistic multi-file Markdown review
-- The document-first review shell
-- Rendered `Preview` mode as the default surface
-- Thread and file navigation without needing your own repository first
+- a realistic Markdown PR review
+- the document-first review shell
+- rendered `Preview` mode as the default surface
+- `Latest` and `Diff` review modes
+- file navigation and thread rail behavior
+- sign-in prompts before write actions
 
 ## How To Explore It
 
 1. Open [/demo](https://commentary.dev/demo).
 2. Read the first file in `Preview` and `Latest`.
 3. Switch files in the navigator.
-4. Try `Diff` to see how Commentary presents the change.
-5. If you want to comment, sign in as yourself first.
+4. Try `Diff` and the change-set menu.
+5. Open the comments rail.
+6. Sign in if you want to try authenticated comment or submit-review behavior.
 
 ## What The Demo Is Good For
 
-- Validating the reading experience before onboarding a team
-- Showing product or engineering stakeholders what Commentary does
-- Learning the shell before opening your own PR or branch review
+- validating the reading experience before onboarding a team
+- showing stakeholders what document-first review means
+- learning the review shell before opening your own repository
 
 ## What The Demo Is Not
 
-- It is not your repository
-- It is not a private review space
-- It is not the branch review flow
+- it is not your repository
+- it is not a private review space
+- it is not the same as direct document review
 
-For direct repository docs, go back to the homepage and use `Open docs` instead.
+For repository docs outside a PR, paste a branch, folder, file, or repository URL from the homepage.

@@ -1,8 +1,8 @@
 # Commentary Docs
 
-Commentary helps teams review Markdown like a document instead of a diff. It opens GitHub pull requests and repository branches in a reading-first workspace, keeps rendered Markdown at the center, and lets reviewers comment on paragraphs instead of raw line numbers.
+Commentary helps teams review Markdown like a document instead of a diff. It opens GitHub and Azure DevOps pull requests, branches, files, folders, and repositories in a reading-first workspace, keeps rendered Markdown at the center, and lets reviewers comment on paragraphs and semantic blocks instead of raw line numbers.
 
-These docs are written for customers using [commentary.dev](https://commentary.dev). They focus on the product as it works today: public PR review, authenticated commenting, GitHub OAuth with a PAT fallback, and direct branch review outside a pull request.
+These docs are written for people using [commentary.dev](https://commentary.dev). They cover public read-only review, authenticated commenting, GitHub App access, Azure DevOps access, personal access token fallbacks, the workspace, API access, and MCP.
 
 ## Start Here
 
@@ -10,36 +10,37 @@ These docs are written for customers using [commentary.dev](https://commentary.d
 - Need the product model first: [Core concepts](./docs/core-concepts.md)
 - Reviewing a pull request: [Review pull requests](./docs/review-pull-requests.md)
 - Reviewing docs before a PR exists: [Review repository branches](./docs/review-repository-branches.md)
-- Connecting GitHub: [Access and authentication](./docs/access-and-authentication.md)
-- Creating a token for the PAT fallback: [Generate a GitHub PAT](./docs/generate-a-github-pat.md)
-- Want a guided sandbox: [Demo walkthrough](./docs/demo-walkthrough.md)
+- Managing repository queues: [Workspace](./docs/workspace.md)
+- Using Azure DevOps: [Azure DevOps](./docs/azure-devops.md)
+- Understanding review modes: [Review modes](./docs/review-modes.md)
+- Markdown behavior: [Markdown rendering](./docs/markdown-rendering.md)
+- Connecting accounts: [Access and authentication](./docs/access-and-authentication.md)
+- Using API or MCP clients: [API and MCP](./docs/api-and-mcp.md)
+- Creating a GitHub fallback token: [Generate a GitHub PAT](./docs/generate-a-github-pat.md)
+- Trying the sandbox: [Demo walkthrough](./docs/demo-walkthrough.md)
 - Hit a rough edge: [Troubleshooting and FAQ](./docs/troubleshooting-and-faq.md)
 
 ## Fast Paths
 
-1. Open the homepage at [/](https://commentary.dev/).
-2. Paste a public GitHub pull request URL and click `Open review`.
-3. Read the document in `Preview` mode.
-4. When you want to comment or reply, click `Sign in` and continue with GitHub, or use the personal access token option from the advanced path.
+1. Open [/](https://commentary.dev/).
+2. Paste a GitHub or Azure DevOps PR, branch, repository, file, or folder URL.
+3. Click `Open review`.
+4. Read in `Preview` and `Latest`.
+5. Sign in when you want to comment, reply, refresh private content, or submit a review.
 
-If you want to explore Commentary without bringing your own repository first, open [/demo](https://commentary.dev/demo).
+![Homepage review intake](./docs/assets/homepage-intake.png)
 
-If you want to review Markdown directly from a branch before a PR exists, open [/](https://commentary.dev/), expand the repository path, and click `Open docs`.
-
-## What Commentary Is Best At
-
-- Product specs, launch plans, ADRs, and long-form Markdown docs
-- Readable review for people who do not want to work in raw diffs all day
-- Mixed review flows where some comments need to sync back to GitHub and some stay native to Commentary
-- Early feedback on repository docs before a pull request exists
+For a guided sample, open [/demo](https://commentary.dev/demo). For cross-repository work, sign in and open [/workspace](https://commentary.dev/workspace).
 
 ## Current Product Shape
 
-- Public PRs open without login for read-only review.
-- Commenting and replies require GitHub authentication.
-- Pull request review supports `Preview` and `Raw`, plus `Latest` and `Diff`.
-- Branch review uses the same shell, but comments stay app-native and there is no `Submit review` step.
-- OAuth is the default sign-in path. `Use PAT` is available as the fallback path.
+- Public GitHub PRs open without login for read-only review.
+- Commenting, replies, review submission, private content, workspaces, API tokens, and MCP access require authentication.
+- GitHub App is the default GitHub connection for workspace discovery and private access. GitHub PAT remains the advanced fallback.
+- Azure DevOps supports Microsoft Entra sign-in and PAT fallback.
+- Pull request review supports `Preview`, `Raw`, `Latest`, `Diff`, all-change and commit-specific change sets, comments, refresh, and review submission.
+- Direct document review supports branches, folders, files, branch selectors, commit-specific diff context, and Commentary-only comments.
+- The public API and MCP endpoint let approved clients read anchors and comments, create comments, reply, and update thread status.
 
 ## In This Repo
 

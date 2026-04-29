@@ -2,27 +2,21 @@
 
 ## Troubleshooting
 
-### "Enter a valid GitHub pull request URL"
+### Commentary says the URL is invalid
 
-Use a full GitHub PR URL in the form:
+Paste a full GitHub or Azure DevOps PR, repository, branch, file, or folder URL. GitHub PR URLs look like:
 
 `https://github.com/{owner}/{repo}/pull/{number}`
 
-### "Enter a valid GitHub repository URL"
-
-Use a full GitHub repository URL in the form:
-
-`https://github.com/{owner}/{repo}`
-
-You can also use a GitHub tree URL when you already know the branch.
+GitHub repository document URLs can be repository roots, `/tree/...`, or `/blob/...` Markdown URLs.
 
 ### A private repository or PR looks missing
 
-Sign in first. Private GitHub content cannot load anonymously.
+Sign in with an account that can access the repository. For GitHub, also confirm the GitHub App is installed for that repository or use a PAT fallback.
 
 ### I can read a public review but cannot comment
 
-That is expected. Public reading works without login, but commenting and replies require authentication.
+That is expected. Public reading works without login, but comments, replies, status changes, refreshes that require private access, and review submission require authentication.
 
 ### Direct repository review says GitHub is rate-limiting the request
 
@@ -30,7 +24,15 @@ Anonymous GitHub API limits are lower than authenticated ones. Sign in and try a
 
 ### I expected `Submit review`, but it is not there
 
-`Submit review` only exists on pull request routes. Branch review is app-native and does not submit a GitHub review event.
+`Submit review` only exists on pull request routes. Direct document review is app-native and does not create a provider review event.
+
+### My Azure DevOps workspace is empty
+
+Confirm you are signed in with the Microsoft account that can access the organization. The access page shows connected organizations, projects, repositories, pull requests, and granted scopes.
+
+### My API or MCP request is rejected
+
+Check that the bearer token is active, not expired, and includes the required scope. Repository-scoped and review-scoped tokens cannot operate outside their target.
 
 ## FAQ
 
@@ -44,12 +46,12 @@ Start in `Latest` for reading. Use `Diff` when you need to inspect the actual ch
 
 ### Can I review a repository branch before a PR exists?
 
-Yes. Use `Open docs` from the homepage.
+Yes. Paste a repository, branch, file, or folder URL from the homepage.
 
-### Do branch review comments sync to GitHub?
+### Do document review comments sync to GitHub or Azure DevOps?
 
-No. Branch review comments stay in Commentary.
+No. Direct document review comments stay in Commentary.
 
 ### Does Commentary work for public repositories without login?
 
-Yes, for read-only review. Writing actions still require authentication.
+Yes, for public GitHub read-only review when GitHub's anonymous API limit allows it. Writing actions still require authentication.

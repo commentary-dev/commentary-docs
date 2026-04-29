@@ -1,37 +1,44 @@
 # Getting Started
 
-Use Commentary when you want to review Markdown as a readable document instead of parsing GitHub diff lines.
+Use Commentary when you want to review Markdown as a readable document instead of parsing changed lines.
 
 ## Fastest First Run
 
 1. Open [/](https://commentary.dev/).
-2. Paste a public GitHub pull request URL.
+2. Paste a GitHub or Azure DevOps URL.
 3. Click `Open review`.
-4. Read the document in `Preview` and `Latest` first.
-5. If you want to add a comment or reply, click `Sign in`.
+4. Start in `Preview` and `Latest`.
+5. Sign in only when you need to comment, reply, refresh private content, or submit a review.
 
-## What Happens Before You Sign In
+Commentary accepts pull request, repository, branch, file, and folder URLs. It resolves the URL to the matching review surface.
 
-- Public pull requests load in read-only mode.
-- You can switch files, change between `Preview` and `Raw`, and move between `Latest` and `Diff`.
-- Commentary keeps the rendered document front and center, so you can read the change like a spec instead of like code.
+![Homepage review intake](./assets/homepage-intake.png)
 
-## When You Need GitHub Access
+## What Works Before You Sign In
 
-You need GitHub access when you want to:
+- Public GitHub pull requests can open read-only.
+- You can read rendered Markdown, inspect raw Markdown, and move through files when the public data is available.
+- Commentary keeps the document centered so prose reads like a spec, ADR, README, or rollout plan.
+
+## When You Need An Account
+
+Sign in when you want to:
 
 - add a new thread
-- reply to an existing thread
-- review private repositories
-- use `Submit review` on a pull request
+- reply to a thread
+- resolve or reopen a thread
+- submit a pull request review
+- open private repositories
+- use the GitHub or Azure DevOps workspace
+- create API tokens or connect an MCP client
 
-OAuth is the default path. If your environment does not allow OAuth, use the advanced `Use PAT` flow described in [Access and authentication](./access-and-authentication.md).
+GitHub App is the default GitHub path. Azure DevOps uses Microsoft Entra by default. PAT options remain available for restricted environments.
+
+![Sign-in provider dialog](./assets/auth-provider-dialog.png)
 
 ## Two Good Ways To Explore
 
 - Want a safe sandbox: open [/demo](https://commentary.dev/demo) and follow [Demo walkthrough](./demo-walkthrough.md).
-- Want to review docs before a PR exists: use the homepage repository path and click `Open docs`, then read [Review repository branches](./review-repository-branches.md).
+- Want to review docs before a PR exists: paste a repository, branch, file, or folder URL and read [Review repository branches](./review-repository-branches.md).
 
-![Homepage PR intake and repository docs entry](./assets/homepage-pr-intake.png)
-
-The homepage keeps the main PR intake dominant and nests direct repository review under the secondary `Open docs` path.
+For team queue work, open the [Workspace](./workspace.md) after signing in.
