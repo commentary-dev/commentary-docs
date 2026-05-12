@@ -1,0 +1,26 @@
+site_name: Commentary Docs
+docs_dir: "."
+nav:
+  - Home: README.md
+  - Start:
+      - Getting started: docs/getting-started.md
+      - Core concepts: docs/core-concepts.md
+      - Demo walkthrough: docs/demo-walkthrough.md
+  - Review workflows:
+      - Review pull requests: docs/review-pull-requests.md
+      - Review repository branches: docs/review-repository-branches.md
+      - Review modes: docs/review-modes.md
+      - Workspace: docs/workspace.md
+  - Content types:
+      - Markdown rendering: docs/markdown-rendering.md
+      - Markdown extensions: docs/markdown-extensions.md
+      - Static HTML review: docs/static-html-review.md
+      - Knowledge Brain: docs/knowledge-brain.md
+  - Providers and access:
+      - Access and authentication: docs/access-and-authentication.md
+      - Generate a GitHub PAT: docs/generate-a-github-pat.md
+      - Azure DevOps: docs/azure-devops.md
+  - Integrations:
+      - API and MCP: docs/api-and-mcp.md
+  - Help:
+      - Troubleshooting and FAQ: docs/troubleshooting-and-faq.md
