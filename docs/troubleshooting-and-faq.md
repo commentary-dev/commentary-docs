@@ -10,6 +10,8 @@ Paste a full GitHub or Azure DevOps PR, repository, branch, file, or folder URL.
 
 GitHub repository document URLs can be repository roots, `/tree/...`, or `/blob/...` Markdown URLs.
 
+Static HTML URLs are supported for `.html` and `.htm` files. Other file types stay outside the document review surface.
+
 ### A private repository or PR looks missing
 
 Sign in with an account that can access the repository. For GitHub, also confirm the GitHub App is installed for that repository or use a PAT fallback.
@@ -26,6 +28,18 @@ Anonymous GitHub API limits are lower than authenticated ones. Sign in and try a
 
 `Submit review` only exists on pull request routes. Direct document review is app-native and does not create a provider review event.
 
+### A static HTML preview looks different from the live page
+
+Static HTML preview is sandboxed. Scripts do not run, event handlers are removed, dangerous URLs are stripped, and active embeds are blocked. Use `Raw` when you need to inspect exact source.
+
+### A docs preview button is missing
+
+Docs preview appears only when Commentary detects a supported docs-framework structure for the selected file. Switch back to `Preview` for ordinary Markdown files or files outside the detected docs navigation.
+
+### Knowledge Brain mode is not active
+
+Use the `Knowledge Brain` control when it appears in the review status area, or add `brain=1` to a GitHub review URL for a Brain-shaped fixture or branch. Repositories without reviewable Brain-style files open as normal Markdown or HTML reviews.
+
 ### My Azure DevOps workspace is empty
 
 Confirm you are signed in with the Microsoft account that can access the organization. The access page shows connected organizations, projects, repositories, pull requests, and granted scopes.
@@ -33,6 +47,8 @@ Confirm you are signed in with the Microsoft account that can access the organiz
 ### My API or MCP request is rejected
 
 Check that the bearer token is active, not expired, and includes the required scope. Repository-scoped and review-scoped tokens cannot operate outside their target.
+
+Knowledge Brain evaluation writes also require `commentary.brain.evals.write`; read-only Brain review tools still need a target that covers the repository, branch, or PR.
 
 ## FAQ
 

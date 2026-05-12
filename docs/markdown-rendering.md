@@ -11,12 +11,17 @@ Commentary supports common Markdown review content, including:
 - front matter rendered as reviewable metadata rows
 - GitHub callouts
 - Mermaid diagrams, with fallback for invalid diagrams
-- unresolved wikilinks shown as readable text
+- wikilinks, backlinks, and unresolved wikilinks shown as readable text
+- Markdown embeds and safe MDX placeholders
 - repository-relative links and images rewritten for the current review context
+
+See [Markdown extensions](./markdown-extensions.md) for docs-framework compatibility, slide rendering, docs preview, and Pro preview behavior.
 
 ## Links And Images
 
 Relative links inside rendered Markdown stay inside the current review when they point to another repository Markdown file. Relative images resolve against the provider file source. External links open separately.
+
+Repository-aware links can also route across docs preview pages, embedded Markdown sources, and Knowledge Brain pages when enough repository context is available.
 
 ## Diff Readability
 

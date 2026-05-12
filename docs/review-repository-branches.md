@@ -1,16 +1,16 @@
 # Review Repository Branches
 
-Use document review when Markdown is in a repository but not necessarily in a pull request.
+Use document review when Markdown or static HTML is in a repository but not necessarily in a pull request.
 
 ![Azure DevOps document branch review](./assets/ado-document-branch-review.png)
 
 ## Open A Document Review
 
 1. Open [/](https://commentary.dev/).
-2. Paste a repository, branch, folder, or Markdown file URL.
+2. Paste a repository, branch, folder, Markdown file, MDX file, or static HTML file URL.
 3. Click `Open review`.
 
-For GitHub, Commentary accepts repository roots, `/tree/...` URLs, and `/blob/...` Markdown URLs. For Azure DevOps, use a project-scoped repository, PR, branch, folder, or file URL when possible.
+For GitHub, Commentary accepts repository roots, `/tree/...` URLs, and `/blob/...` Markdown or HTML URLs. For Azure DevOps, use a project-scoped repository, PR, branch, folder, or file URL when possible.
 
 ## What Changes In Document Review
 
@@ -22,7 +22,7 @@ For GitHub, Commentary accepts repository roots, `/tree/...` URLs, and `/blob/..
 
 ## Branch, Folder, And File Navigation
 
-- The file navigator lists Markdown files from the selected branch or folder.
+- The file navigator lists reviewable Markdown, MDX, and static HTML files from the selected branch or folder.
 - Use the branch selector to switch branch context when available.
 - Use folder view for docs-heavy repositories.
 - Use `Latest` for reading and `Diff` for branch-backed change inspection.
@@ -34,7 +34,9 @@ For GitHub, Commentary accepts repository roots, `/tree/...` URLs, and `/blob/..
 - ADRs and product docs living on a shared branch
 - README and docs maintenance outside a PR moment
 - AI-generated docs that should be reviewed before a merge request exists
+- generated static reports or static site pages that need document comments
+- Knowledge Brain branches where source notes, wiki pages, and outputs should be reviewed together
 
 ## Important Difference From PR Review
 
-Document review does not submit a provider review event. It is designed for app-native collaboration around repository Markdown.
+Document review does not submit a provider review event. It is designed for app-native collaboration around repository documents.

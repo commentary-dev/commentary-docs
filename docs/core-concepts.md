@@ -13,17 +13,17 @@ Commentary is a document-review layer on top of Git providers. GitHub is the def
 
 ### Document review
 
-- Opens Markdown directly from a repository branch, folder, or file.
+- Opens Markdown, MDX, or static HTML directly from a repository branch, folder, or file.
 - Uses the same reading shell and comment rail.
 - Comments stay app-native in Commentary.
 - Best for docs, specs, and ADRs before a PR exists.
 
 ## `Preview` vs `Raw`
 
-- `Preview` renders the Markdown as a document.
-- `Raw` shows the underlying Markdown source with line context.
+- `Preview` renders Markdown or static HTML as a document.
+- `Raw` shows the underlying Markdown or HTML source with line context.
 
-Stay in `Preview` for normal review. Use `Raw` when exact Markdown source matters.
+Stay in `Preview` for normal review. Use `Raw` when exact document source matters.
 
 ## `Latest` vs `Diff`
 
@@ -35,18 +35,22 @@ Stay in `Preview` for normal review. Use `Raw` when exact Markdown source matter
 
 ## Files, Branches, And Change Sets
 
-The file navigator shows changed or available Markdown files. Review routes may also expose:
+The file navigator shows changed or available reviewable documents. Review routes may also expose:
 
 - file search
 - flat and folder views
 - file status indicators
 - branch selector on direct document review
 - change-set selector on PR and document diff routes
-- disabled rows when a commit does not include a selected Markdown file
+- disabled rows when a commit does not include a selected reviewable file
 
 ## Threads And Anchors
 
-Commentary comments on semantic Markdown blocks, not only raw diff lines. That means comments can attach to headings, paragraphs, tables, front matter rows, and other rendered blocks.
+Commentary comments on semantic document blocks, not only raw diff lines. That means comments can attach to headings, paragraphs, tables, front matter rows, HTML sections, and other rendered blocks.
+
+## Knowledge Brain Mode
+
+Knowledge Brain mode is an optional review layer for AI-maintained knowledge-base branches. It keeps the same document review shell, but groups source, wiki, output, and control files and adds Brain-specific review context.
 
 ## Provider Sync vs Commentary-Only Threads
 

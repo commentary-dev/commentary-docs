@@ -11,6 +11,7 @@ The workspace is the signed-in view for finding review work across connected pro
 - resumes recent review sessions from this browser
 - shows provider access health
 - opens PR review and branch review without copying URLs
+- exposes Knowledge Brain-oriented review queues when available
 
 GitHub workspace uses GitHub App installation scope. Azure DevOps workspace uses Microsoft Entra or Azure DevOps PAT access.
 
@@ -27,6 +28,10 @@ Use `Pull requests` when you need a queue of active PRs. You can search by repos
 ### Repositories
 
 Use `Repositories` to open branch review directly or narrow the PR queue to one repository.
+
+### Agent review
+
+Use `Agent review` when it is available to scan likely agent-maintained Knowledge Brain pull requests, unresolved review notes, and requested-revision follow-up work.
 
 ### Access
 
@@ -45,3 +50,5 @@ Azure DevOps workspace follows the organization, project, repository, and pull r
 ## Opening A Review
 
 Use `Open review` in the workspace header to paste a URL without returning to the homepage. Repository rows also include shortcuts for branch review and PR queues.
+
+For Knowledge Brain work, open a Brain branch or PR in the review shell and use Brain mode to group source, wiki, output, and control files. See [Knowledge Brain](./knowledge-brain.md).

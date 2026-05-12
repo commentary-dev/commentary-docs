@@ -15,15 +15,23 @@ Public GitHub PRs can open read-only without login. Private PRs and Azure DevOps
 
 ## Work In The Review Shell
 
-- Use the file navigator to move between Markdown files.
+- Use the file navigator to move between Markdown, MDX, and static HTML files.
 - Use folder view when a PR changes several docs across directories.
 - Stay in `Preview` for normal reading.
-- Switch to `Raw` for Markdown source context.
+- Switch to `Raw` for Markdown or HTML source context.
 - Start with `Latest`, then use `Diff` when you need the change.
+- Use docs preview when a docs framework route is detected.
+- Use Present mode when a rendered document or slide deck needs a meeting-friendly view.
 - Use the change-set menu to review all changes or one commit.
 - Use `Comments` to show or hide the thread rail.
 
 Single-file Markdown PRs keep the shell tighter. Multi-file PRs show the file navigator.
+
+## Review Specialized Content
+
+- Markdown extension rendering covers MDX, Mermaid, wikilinks, embeds, docs frameworks, and slide decks. See [Markdown extensions](./markdown-extensions.md).
+- Static HTML review opens `.html` and `.htm` files with sandboxed previews and semantic anchors. See [Static HTML review](./static-html-review.md).
+- Knowledge Brain mode groups source, wiki, output, and control files for AI-maintained knowledge-base branches. See [Knowledge Brain](./knowledge-brain.md).
 
 ## Comment And Reply
 
