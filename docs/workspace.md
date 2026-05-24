@@ -1,6 +1,6 @@
 # Workspace
 
-The workspace is the signed-in view for finding review work across connected provider accounts.
+The workspace is the signed-in view for finding review work, creating drafts, and managing developer access across connected provider accounts.
 
 ![GitHub workspace overview](./assets/github-workspace-overview.png)
 
@@ -11,15 +11,17 @@ The workspace is the signed-in view for finding review work across connected pro
 - resumes recent review sessions from this browser
 - shows provider access health
 - opens PR review and branch review without copying URLs
+- creates and resumes draft reviews
+- manages API, OAuth, device-flow, and MCP grants
 - exposes Knowledge Brain-oriented review queues when available
 
-GitHub workspace uses GitHub App installation scope. Azure DevOps workspace uses Microsoft Entra or Azure DevOps PAT access.
+GitHub workspace uses GitHub App installation scope. Azure DevOps workspace uses Microsoft Entra or Azure DevOps PAT access. Draft reviews and developer credentials are tied to the signed-in Commentary account.
 
 ## Main Sections
 
 ### Overview
 
-Use `Overview` to scan recent PR work, continue recent reviews, and jump into repositories in scope.
+Use `Overview` to scan recent PR work, continue recent reviews, jump into repositories in scope, and resume draft reviews.
 
 ### Pull requests
 
@@ -29,6 +31,10 @@ Use `Pull requests` when you need a queue of active PRs. You can search by repos
 
 Use `Repositories` to open branch review directly or narrow the PR queue to one repository.
 
+### Draft reviews
+
+Use `New review` or the draft review list when you need document-style feedback before a branch or pull request exists. Draft reviews can be created from pasted Markdown, HTML, MDX, plain text, or one uploaded text file. See [Draft reviews](./draft-reviews.md).
+
 ### Agent review
 
 Use `Agent review` when it is available to scan likely agent-maintained Knowledge Brain pull requests, unresolved review notes, and requested-revision follow-up work.
@@ -36,6 +42,10 @@ Use `Agent review` when it is available to scan likely agent-maintained Knowledg
 ### Access
 
 Use `Access` to inspect connected installations, organizations, repository reachability, and provider permission state.
+
+### Developer access
+
+Use `Developer access` to create API tokens, inspect OAuth/device-flow grants, and revoke credentials used by API clients, MCP clients, CLIs, and agents. See [Developer access](./developer-access.md).
 
 ## GitHub Workspace
 
@@ -51,4 +61,4 @@ Azure DevOps workspace follows the organization, project, repository, and pull r
 
 Use `Open review` in the workspace header to paste a URL without returning to the homepage. Repository rows also include shortcuts for branch review and PR queues.
 
-For Knowledge Brain work, open a Brain branch or PR in the review shell and use Brain mode to group source, wiki, output, and control files. See [Knowledge Brain](./knowledge-brain.md).
+For draft work, create a [Draft review](./draft-reviews.md). For Knowledge Brain work, open a Brain branch or PR in the review shell and use Brain mode to group source, wiki, output, and control files. See [Knowledge Brain](./knowledge-brain.md).

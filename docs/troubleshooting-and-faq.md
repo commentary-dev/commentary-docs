@@ -10,7 +10,7 @@ Paste a full GitHub or Azure DevOps PR, repository, branch, file, or folder URL.
 
 GitHub repository document URLs can be repository roots, `/tree/...`, or `/blob/...` Markdown URLs.
 
-Static HTML URLs are supported for `.html` and `.htm` files. Other file types stay outside the document review surface.
+Static HTML URLs are supported for `.html` and `.htm` files. Other file types stay outside the document review surface. To review local content before it exists in Git, use [Draft reviews](./draft-reviews.md).
 
 ### A private repository or PR looks missing
 
@@ -26,7 +26,15 @@ Anonymous GitHub API limits are lower than authenticated ones. Sign in and try a
 
 ### I expected `Submit review`, but it is not there
 
-`Submit review` only exists on pull request routes. Direct document review is app-native and does not create a provider review event.
+`Submit review` only exists on pull request routes. Direct document review and draft review are app-native and do not create a provider review event.
+
+### A shared draft review link asks me to sign in
+
+That is expected. Draft review content is private. Shared links grant access only after the viewer signs in to Commentary.
+
+### A draft review cannot upload, rebase, delete, or reshare
+
+You may be viewing a shared draft. Shared viewers can review and comment, but owner-only actions stay hidden.
 
 ### A static HTML preview looks different from the live page
 
@@ -46,9 +54,13 @@ Confirm you are signed in with the Microsoft account that can access the organiz
 
 ### My API or MCP request is rejected
 
-Check that the bearer token is active, not expired, and includes the required scope. Repository-scoped and review-scoped tokens cannot operate outside their target.
+Check that the bearer token is active, not expired, and includes the required scope. Repository-scoped, review-scoped, and draft-scoped tokens cannot operate outside their target.
 
-Knowledge Brain evaluation writes also require `commentary.brain.evals.write`; read-only Brain review tools still need a target that covers the repository, branch, or PR.
+Knowledge Brain evaluation writes also require `commentary.brain.evals.write`; read-only Brain review tools still need a target that covers the repository, branch, or PR. Draft sharing and draft deletion require their explicit scopes.
+
+### I cannot change token scopes
+
+Scopes are immutable after token creation. Create a replacement token from [Developer access](./developer-access.md), update the client, then revoke the old grant.
 
 ## FAQ
 
@@ -64,9 +76,17 @@ Start in `Latest` for reading. Use `Diff` when you need to inspect the actual ch
 
 Yes. Paste a repository, branch, file, or folder URL from the homepage.
 
+### Can I review a local draft before it exists in Git?
+
+Yes. Sign in and create a [Draft review](./draft-reviews.md) from pasted content or one uploaded text file.
+
 ### Do document review comments sync to GitHub or Azure DevOps?
 
 No. Direct document review comments stay in Commentary.
+
+### Do draft review comments sync to GitHub or Azure DevOps?
+
+No. Draft review comments stay in Commentary. Draft reviews do not create commits, branches, pull requests, or provider review comments.
 
 ### Does Commentary work for public repositories without login?
 

@@ -1,0 +1,3398 @@
+openapi: 3.1.0
+info:
+  title: Commentary Public API
+  version: 0.1.0
+  summary: Authenticated API and MCP surfaces for Commentary review automation.
+  description: This contract documents the stable external API surface. Browser,
+    internal, webhook, and test routes are intentionally excluded.
+  x-commentary-feature-key: api.openapi_docs
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+servers:
+  - url: https://commentary.dev
+    description: Configured Commentary origin.
+  - url: http://localhost:3000
+    description: Local development.
+tags:
+  - name: Authentication
+  - name: Tokens
+  - name: Review comments
+  - name: Draft reviews
+  - name: Knowledge Brain
+  - name: MCP
+  - name: Health
+  - name: OpenAPI
+paths:
+  /.well-known/oauth-authorization-server:
+    get:
+      operationId: getOAuthAuthorizationServerMetadata
+      tags:
+        - Authentication
+      summary: Get OAuth authorization server metadata.
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  issuer:
+                    type: string
+                    format: uri
+                  authorization_endpoint:
+                    type: string
+                    format: uri
+                  token_endpoint:
+                    type: string
+                    format: uri
+                  registration_endpoint:
+                    type: string
+                    format: uri
+                  device_authorization_endpoint:
+                    type: string
+                    format: uri
+                  scopes_supported:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ExternalScope"
+                additionalProperties: true
+  /.well-known/oauth-protected-resource:
+    get:
+      operationId: getOAuthProtectedResourceMetadata
+      tags:
+        - Authentication
+      summary: Get OAuth protected resource metadata.
+      parameters:
+        - name: resource
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uri
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                    format: uri
+                  authorization_servers:
+                    type: array
+                    items:
+                      type: string
+                      format: uri
+                  resource_documentation:
+                    type: string
+                    format: uri
+                  scopes_supported:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ExternalScope"
+                  commentary_resources:
+                    type: array
+                    items:
+                      type: string
+                      format: uri
+                  commentary_openapi:
+                    type: string
+                    format: uri
+                additionalProperties: true
+  /oauth/register:
+    post:
+      operationId: registerOAuthClient
+      tags:
+        - Authentication
+      summary: Register a public OAuth client.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_name:
+                  type: string
+                redirect_uris:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                grant_types:
+                  type: array
+                  items:
+                    type: string
+                response_types:
+                  type: array
+                  items:
+                    type: string
+                scope:
+                  type: string
+                token_endpoint_auth_method:
+                  type: string
+                  enum:
+                    - none
+              additionalProperties: true
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  client_id:
+                    type: string
+                  client_name:
+                    type:
+                      - string
+                      - "null"
+                  redirect_uris:
+                    type: array
+                    items:
+                      type: string
+                  token_endpoint_auth_method:
+                    type: string
+                    enum:
+                      - none
+                additionalProperties: true
+        "400":
+          description: OAuth request error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+  /oauth/authorize:
+    get:
+      operationId: showOAuthAuthorizePage
+      tags:
+        - Authentication
+      summary: Show the OAuth authorization page.
+      parameters:
+        - name: client_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: redirect_uri
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uri
+        - name: response_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - code
+        - name: code_challenge
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: code_challenge_method
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - S256
+        - name: scope
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: resource
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: HTML authorization page.
+        "302":
+          description: Redirect to the client with an authorization error.
+    post:
+      operationId: approveOAuthAuthorizeRequest
+      tags:
+        - Authentication
+      summary: Approve an OAuth authorization request.
+      security: &a3
+        - commentarySession: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "302":
+          description: Redirect to the client with an authorization code or error.
+  /oauth/device/code:
+    post:
+      operationId: createOAuthDeviceCode
+      tags:
+        - Authentication
+      summary: Start OAuth device authorization.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: &a1
+              type: object
+              required:
+                - client_id
+              properties:
+                client_id:
+                  type: string
+                scope:
+                  type: string
+                target:
+                  $ref: "#/components/schemas/TokenTarget"
+                resource:
+                  type: string
+                client_name:
+                  type: string
+          application/x-www-form-urlencoded:
+            schema: *a1
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  device_code:
+                    type: string
+                  user_code:
+                    type: string
+                  verification_uri:
+                    type: string
+                    format: uri
+                  verification_uri_complete:
+                    type: string
+                    format: uri
+                  expires_in:
+                    type: integer
+                  interval:
+                    type: integer
+        "400":
+          description: OAuth request error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+  /oauth/token:
+    post:
+      operationId: exchangeOAuthToken
+      tags:
+        - Authentication
+      summary: Exchange OAuth authorization code, device code, or refresh token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: &a2
+              type: object
+              required:
+                - grant_type
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                    - authorization_code
+                    - refresh_token
+                    - urn:ietf:params:oauth:grant-type:device_code
+                code:
+                  type: string
+                redirect_uri:
+                  type: string
+                  format: uri
+                client_id:
+                  type: string
+                code_verifier:
+                  type: string
+                refresh_token:
+                  type: string
+                device_code:
+                  type: string
+                resource:
+                  type: string
+          application/x-www-form-urlencoded:
+            schema: *a2
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthToken"
+        "400":
+          description: OAuth request error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+        "401":
+          description: OAuth token exchange was rejected.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+  /api/health:
+    get:
+      operationId: getHealth
+      tags:
+        - Health
+      summary: Get shallow, deep, storage, or PostgreSQL health.
+      parameters:
+        - name: check
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - postgres
+              - storage
+              - deep
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "503":
+          description: Health check failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /api/v1/tokens:
+    get:
+      operationId: listApiTokens
+      tags:
+        - Tokens
+      summary: List API tokens for the signed-in provider connection.
+      security: *a3
+      x-commentary-feature-key: api.agent_access
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - ok
+                  - tokens
+                properties:
+                  ok:
+                    const: true
+                  tokens:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TokenSummary"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createApiToken
+      tags:
+        - Tokens
+      summary: Create an API token for scripts, MCP clients, or agents.
+      security: *a3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTokenRequest"
+      x-commentary-feature-key: api.agent_access
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - ok
+                  - id
+                  - grantId
+                  - token
+                  - tokenHint
+                properties:
+                  ok:
+                    const: true
+                  id:
+                    type: string
+                  grantId:
+                    type: string
+                  token:
+                    type: string
+                  tokenHint:
+                    type: string
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/tokens/{tokenId}:
+    delete:
+      operationId: revokeApiToken
+      tags:
+        - Tokens
+      summary: Revoke an API token.
+      security: *a3
+      parameters:
+        - name: tokenId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: API token id.
+      x-commentary-feature-key: api.agent_access
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - ok
+                  - id
+                properties:
+                  ok:
+                    const: true
+                  id:
+                    type: string
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/review/comments:
+    get:
+      operationId: listReviewComments
+      tags:
+        - Review comments
+      summary: List review comments for a PR or branch document file.
+      security:
+        - bearerAuth:
+            - commentary.comments.read
+      parameters:
+        - name: provider
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - github
+        - name: owner
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: repo
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: file
+          in: query
+          required: false
+          schema:
+            type: string
+          description: File path.
+        - name: pr
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: branch
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: api.review.read
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  threads:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReviewThread"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createReviewComment
+      tags:
+        - Review comments
+      summary: Create a review comment thread on a PR or branch document.
+      security:
+        - bearerAuth:
+            - commentary.comments.write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReviewCommentRequest"
+      x-commentary-feature-key: api.comments.write
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  thread:
+                    $ref: "#/components/schemas/ReviewThread"
+                  threadId:
+                    type: string
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/review/threads/{threadId}/comments:
+    post:
+      operationId: replyToReviewThread
+      tags:
+        - Review comments
+      summary: Reply to an existing review thread.
+      security:
+        - bearerAuth:
+            - commentary.comments.write
+      parameters:
+        - &a4
+          name: threadId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Review thread id.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ThreadReplyRequest"
+      x-commentary-feature-key: api.comments.write
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  thread:
+                    $ref: "#/components/schemas/ReviewThread"
+                  threadId:
+                    type: string
+                  commentId:
+                    type: string
+                  status:
+                    type: string
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/review/threads/{threadId}/status:
+    post:
+      operationId: updateReviewThreadStatus
+      tags:
+        - Review comments
+      summary: Resolve or reopen an existing review thread.
+      security:
+        - bearerAuth:
+            - commentary.comments.status
+      parameters:
+        - *a4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ThreadStatusRequest"
+      x-commentary-feature-key: api.comments.write
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  thread:
+                    $ref: "#/components/schemas/ReviewThread"
+                  threadId:
+                    type: string
+                  status:
+                    type: string
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews:
+    get:
+      operationId: listDraftReviews
+      tags:
+        - Draft reviews
+      summary: List draft reviews owned by the account-scoped token principal.
+      security:
+        - bearerAuth:
+            - commentary.review.read
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  draftReviews:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DraftReview"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createDraftReview
+      tags:
+        - Draft reviews
+      summary: Create a draft review session, optionally with initial file content.
+      security:
+        - bearerAuth:
+            - commentary.comments.write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDraftReviewRequest"
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  draftReview:
+                    $ref: "#/components/schemas/DraftReview"
+                  sessionId:
+                    type: string
+                  reviewUrl:
+                    type: string
+                    format: uri
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}:
+    get:
+      operationId: getDraftReview
+      tags:
+        - Draft reviews
+      summary: Get a draft review session.
+      security:
+        - bearerAuth:
+            - commentary.review.read
+      parameters:
+        - &a5
+          name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Draft review session id.
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  draftReview:
+                    $ref: "#/components/schemas/DraftReview"
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    patch:
+      operationId: updateDraftReview
+      tags:
+        - Draft reviews
+      summary: Update draft review metadata or Git base metadata.
+      security:
+        - bearerAuth:
+            - commentary.comments.write
+      parameters:
+        - *a5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchDraftReviewRequest"
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  draftReview:
+                    $ref: "#/components/schemas/DraftReview"
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    delete:
+      operationId: deleteDraftReview
+      tags:
+        - Draft reviews
+      summary: Permanently delete a draft review from active Commentary storage.
+      security:
+        - bearerAuth:
+            - commentary.draft_reviews.delete
+      parameters:
+        - *a5
+      x-commentary-feature-key: draft_reviews.delete
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  deleted:
+                    type: boolean
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/files:
+    get:
+      operationId: listDraftReviewFiles
+      tags:
+        - Draft reviews
+      summary: List draft review files.
+      security:
+        - bearerAuth:
+            - commentary.review.read
+      parameters:
+        - *a5
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  files:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DraftReviewFile"
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/files/{fileId}/content:
+    get:
+      operationId: getDraftReviewFileContent
+      tags:
+        - Draft reviews
+      summary: Download the latest content for a draft review file.
+      security:
+        - bearerAuth:
+            - commentary.review.read
+      parameters:
+        - *a5
+        - name: fileId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Draft review file id.
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Raw latest file content.
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/revisions:
+    get:
+      operationId: listDraftReviewRevisions
+      tags:
+        - Draft reviews
+      summary: List draft review revisions.
+      security:
+        - bearerAuth:
+            - commentary.review.read
+      parameters:
+        - *a5
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  revisions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DraftRevision"
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: uploadDraftReviewRevision
+      tags:
+        - Draft reviews
+      summary: Upload a new draft review revision.
+      security:
+        - bearerAuth:
+            - commentary.comments.write
+      parameters:
+        - *a5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DraftRevisionUploadRequest"
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  revision:
+                    $ref: "#/components/schemas/DraftRevision"
+                  noOp:
+                    type: boolean
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/comments:
+    get:
+      operationId: listDraftReviewComments
+      tags:
+        - Draft reviews
+      summary: List comments for a draft review.
+      security:
+        - bearerAuth:
+            - commentary.comments.read
+      parameters:
+        - *a5
+        - name: fileId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: filePath
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - open
+              - resolved
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  threads:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReviewThread"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createDraftReviewComment
+      tags:
+        - Draft reviews
+      summary: Create a comment thread on a draft review.
+      security:
+        - bearerAuth:
+            - commentary.comments.write
+      parameters:
+        - *a5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDraftCommentRequest"
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  thread:
+                    $ref: "#/components/schemas/ReviewThread"
+                  threadId:
+                    type: string
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/comments/{threadId}/replies:
+    post:
+      operationId: replyToDraftReviewComment
+      tags:
+        - Draft reviews
+      summary: Reply to a draft review comment.
+      security:
+        - bearerAuth:
+            - commentary.comments.write
+      parameters:
+        - *a5
+        - *a4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ThreadReplyRequest"
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  thread:
+                    $ref: "#/components/schemas/ReviewThread"
+                  threadId:
+                    type: string
+                  commentId:
+                    type: string
+                  status:
+                    type: string
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/comments/{threadId}/status:
+    post:
+      operationId: updateDraftReviewCommentStatus
+      tags:
+        - Draft reviews
+      summary: Resolve or reopen a draft review comment.
+      security:
+        - bearerAuth:
+            - commentary.comments.status
+      parameters:
+        - *a5
+        - *a4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ThreadStatusRequest"
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  thread:
+                    $ref: "#/components/schemas/ReviewThread"
+                  threadId:
+                    type: string
+                  commentId:
+                    type: string
+                  status:
+                    type: string
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/events:
+    get:
+      operationId: streamDraftReviewEvents
+      tags:
+        - Draft reviews
+      summary: Stream draft review live events using Server-Sent Events.
+      security:
+        - bearerAuth:
+            - commentary.comments.read
+      parameters:
+        - *a5
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Event cursor or latest.
+        - name: once
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - "1"
+          description: Return the current batch and close.
+      x-commentary-feature-key: draft_reviews.agent_api
+      responses:
+        "200":
+          description: Server-Sent Events stream.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/shares:
+    get:
+      operationId: listDraftReviewShares
+      tags:
+        - Draft reviews
+      summary: List share links and access grants for a draft review.
+      security:
+        - bearerAuth:
+            - commentary.draft_reviews.share
+      parameters:
+        - *a5
+      x-commentary-feature-key: draft_reviews.sharing
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  shares:
+                    type: object
+                    additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createDraftReviewShare
+      tags:
+        - Draft reviews
+      summary: Create a draft review share link.
+      security:
+        - bearerAuth:
+            - commentary.draft_reviews.share
+      parameters:
+        - *a5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDraftShareRequest"
+      x-commentary-feature-key: draft_reviews.sharing
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  shareUrl:
+                    type: string
+                    format: uri
+                  link:
+                    type: object
+                    additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/shares/{shareLinkId}:
+    delete:
+      operationId: revokeDraftReviewShare
+      tags:
+        - Draft reviews
+      summary: Revoke a draft review share link.
+      security:
+        - bearerAuth:
+            - commentary.draft_reviews.share
+      parameters:
+        - *a5
+        - name: shareLinkId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Draft review share link id.
+      x-commentary-feature-key: draft_reviews.sharing
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  revoked:
+                    type: boolean
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/draft-reviews/{sessionId}/access/{accessGrantId}:
+    delete:
+      operationId: removeDraftReviewAccess
+      tags:
+        - Draft reviews
+      summary: Remove a draft review access grant.
+      security:
+        - bearerAuth:
+            - commentary.draft_reviews.share
+      parameters:
+        - *a5
+        - name: accessGrantId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Draft review access grant id.
+      x-commentary-feature-key: draft_reviews.sharing
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  removed:
+                    type: boolean
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/brain/reviews:
+    get:
+      operationId: listBrainReviews
+      tags:
+        - Knowledge Brain
+      summary: List Knowledge Brain reviews available to the token.
+      security:
+        - bearerAuth:
+            - commentary.review.read
+      parameters:
+        - name: owner
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: repo
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: rootFolder
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: brainRootFolder
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: brain.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  reviews:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/BrainReview"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/brain/review/changed-files:
+    get:
+      operationId: listChangedBrainFiles
+      tags:
+        - Knowledge Brain
+      summary: List changed files for a Knowledge Brain review.
+      security:
+        - bearerAuth:
+            - commentary.review.read
+      parameters:
+        - &a6
+          name: provider
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - github
+        - &a7
+          name: owner
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Repository owner.
+        - &a8
+          name: repo
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Repository name.
+        - &a9
+          name: pr
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Pull request number.
+        - &a10
+          name: prNumber
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Pull request number alias used by Brain endpoints.
+        - &a11
+          name: branch
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Branch ref for branch document review.
+        - &a12
+          name: branchRef
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Branch ref alias used by Brain endpoints.
+        - &a13
+          name: rootFolder
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Knowledge Brain root folder.
+        - &a14
+          name: brainRootFolder
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Knowledge Brain root folder alias.
+        - name: file
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: filePath
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: brain.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  changedFiles:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/brain/review/comments:
+    get:
+      operationId: listBrainReviewComments
+      tags:
+        - Knowledge Brain
+      summary: List comments for a Knowledge Brain review.
+      security:
+        - bearerAuth:
+            - commentary.comments.read
+      parameters:
+        - *a6
+        - *a7
+        - *a8
+        - *a9
+        - *a10
+        - *a11
+        - *a12
+        - *a13
+        - *a14
+        - name: file
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: filePath
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: brain.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  threads:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/brain/review/health-findings:
+    get:
+      operationId: listBrainHealthFindings
+      tags:
+        - Knowledge Brain
+      summary: List health findings for a Knowledge Brain review.
+      security:
+        - bearerAuth:
+            - commentary.review.read
+      parameters:
+        - *a6
+        - *a7
+        - *a8
+        - *a9
+        - *a10
+        - *a11
+        - *a12
+        - *a13
+        - *a14
+        - name: file
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: filePath
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: brain.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  healthFindings:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/brain/review/requested-revisions:
+    get:
+      operationId: listBrainRequestedRevisions
+      tags:
+        - Knowledge Brain
+      summary: List requested revisions for a Knowledge Brain review.
+      security:
+        - bearerAuth:
+            - commentary.review.read
+      parameters:
+        - *a6
+        - *a7
+        - *a8
+        - *a9
+        - *a10
+        - *a11
+        - *a12
+        - *a13
+        - *a14
+        - name: file
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: filePath
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: brain.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  requestedRevisions:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/brain/review/ready:
+    post:
+      operationId: markBrainReviewReady
+      tags:
+        - Knowledge Brain
+      summary: Mark a Knowledge Brain requested revision ready for review.
+      security:
+        - bearerAuth:
+            - commentary.comments.write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrainReadyRequest"
+      x-commentary-feature-key: brain.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/brain/review/evaluations:
+    get:
+      operationId: listBrainEvaluations
+      tags:
+        - Knowledge Brain
+      summary: List Knowledge Brain evaluation ledger entries.
+      security:
+        - bearerAuth:
+            - commentary.brain.evals.read
+      parameters:
+        - *a6
+        - *a7
+        - *a8
+        - *a9
+        - *a10
+        - *a11
+        - *a12
+        - *a13
+        - *a14
+      x-commentary-feature-key: brain.evaluations
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  evaluations:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/BrainEvaluation"
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createBrainEvaluation
+      tags:
+        - Knowledge Brain
+      summary: Create a Knowledge Brain evaluation ledger entry.
+      security:
+        - bearerAuth:
+            - commentary.brain.evals.write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrainEvaluationRequest"
+      x-commentary-feature-key: brain.evaluations
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  evaluation:
+                    $ref: "#/components/schemas/BrainEvaluation"
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    patch:
+      operationId: updateBrainEvaluation
+      tags:
+        - Knowledge Brain
+      summary: Update a Knowledge Brain evaluation ledger entry.
+      security:
+        - bearerAuth:
+            - commentary.brain.evals.write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrainEvaluationRequest"
+      x-commentary-feature-key: brain.evaluations
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  evaluation:
+                    $ref: "#/components/schemas/BrainEvaluation"
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /mcp:
+    get:
+      operationId: getMcpEndpoint
+      tags:
+        - MCP
+      summary: Probe MCP endpoint authentication and protocol support.
+      security:
+        - bearerAuth: []
+      x-commentary-feature-key: mcp.review
+      responses:
+        "200":
+          description: Authenticated GET is accepted.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          description: Bearer authentication challenge with protected resource metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: postMcpJsonRpc
+      tags:
+        - MCP
+      summary: Call Commentary MCP over Streamable HTTP JSON-RPC.
+      description: "Authenticated tools/list advertises: draft_review,
+        review_comments, review_document, brain_review."
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/McpJsonRpcRequest"
+      x-commentary-feature-key: mcp.review
+      responses:
+        "200":
+          description: JSON-RPC response.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "202":
+          description: Accepted JSON-RPC notification.
+        "400":
+          description: Invalid JSON-RPC request.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          description: Bearer authentication challenge.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /openapi.json:
+    get:
+      operationId: getOpenApiJson
+      tags:
+        - OpenAPI
+      summary: Get the Commentary OpenAPI contract as JSON.
+      x-commentary-feature-key: api.openapi_docs
+      responses:
+        "200":
+          description: OpenAPI JSON document.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /openapi.yaml:
+    get:
+      operationId: getOpenApiYaml
+      tags:
+        - OpenAPI
+      summary: Get the Commentary OpenAPI contract as YAML.
+      x-commentary-feature-key: api.openapi_docs
+      responses:
+        "200":
+          description: OpenAPI YAML document.
+          content:
+            application/yaml:
+              schema:
+                type: string
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Commentary external access token
+      description: Bearer token from an API token, OAuth authorization code flow,
+        OAuth refresh token flow, or OAuth device flow.
+    commentarySession:
+      type: apiKey
+      in: cookie
+      name: commentary_session
+      description: Signed-in Commentary browser session. Used for API token management
+        routes.
+  schemas:
+    ExternalError:
+      type: object
+      required:
+        - ok
+        - error
+      properties:
+        ok:
+          const: false
+        error:
+          type: string
+      additionalProperties: true
+    OAuthError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+        error_description:
+          type: string
+      additionalProperties: true
+    OAuthToken:
+      type: object
+      required:
+        - access_token
+        - refresh_token
+        - token_type
+        - expires_in
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        token_type:
+          type: string
+          enum:
+            - Bearer
+        expires_in:
+          type: integer
+    ExternalScope:
+      type: string
+      enum:
+        - commentary.review.read
+        - commentary.comments.read
+        - commentary.comments.write
+        - commentary.comments.status
+        - commentary.draft_reviews.delete
+        - commentary.draft_reviews.share
+        - commentary.review.submit
+        - commentary.brain.evals.read
+        - commentary.brain.evals.write
+    TokenTarget:
+      type: string
+      description: Target string such as account, github:owner/repo,
+        github:owner/repo:pull:123, github:owner/repo:branch:main, or
+        draft:sessionId.
+    CreateTokenRequest:
+      type: object
+      properties:
+        label:
+          type: string
+        scopes:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                $ref: "#/components/schemas/ExternalScope"
+        target:
+          $ref: "#/components/schemas/TokenTarget"
+        expiresAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+      additionalProperties: false
+    TokenSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        grantId:
+          type: string
+        tokenType:
+          type: string
+        tokenHint:
+          type: string
+        scopes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExternalScope"
+        resourceScope:
+          type: string
+          enum:
+            - review
+            - repo
+            - account
+        owner:
+          type:
+            - string
+            - "null"
+        repo:
+          type:
+            - string
+            - "null"
+        prNumber:
+          type:
+            - integer
+            - "null"
+        branchRef:
+          type:
+            - string
+            - "null"
+        draftReviewSessionId:
+          type:
+            - string
+            - "null"
+        clientName:
+          type:
+            - string
+            - "null"
+        expiresAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        revokedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        lastUsedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    ReviewThread:
+      type: object
+      properties:
+        id:
+          type: string
+        filePath:
+          type: string
+        status:
+          type: string
+          enum:
+            - open
+            - resolved
+        anchorStatus:
+          type: string
+        blockId:
+          type: string
+        nodeType:
+          type: string
+        sourceLineStart:
+          type: integer
+        sourceLineEnd:
+          type: integer
+        selectedText:
+          type:
+            - string
+            - "null"
+        prefixText:
+          type:
+            - string
+            - "null"
+        suffixText:
+          type:
+            - string
+            - "null"
+        comments:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    CreateReviewCommentRequest:
+      type: object
+      required:
+        - owner
+        - repo
+        - filePath
+        - blockId
+        - nodeType
+        - sourceLineStart
+        - sourceLineEnd
+        - bodyMarkdown
+      properties:
+        provider:
+          type: string
+          enum:
+            - github
+          default: github
+        owner:
+          type: string
+        repo:
+          type: string
+        prNumber:
+          type: integer
+        branchRef:
+          type: string
+        filePath:
+          type: string
+        blockId:
+          type: string
+        nodeType:
+          type: string
+        sourceLineStart:
+          type: integer
+        sourceLineEnd:
+          type: integer
+        selectedText:
+          type:
+            - string
+            - "null"
+        prefixText:
+          type:
+            - string
+            - "null"
+        suffixText:
+          type:
+            - string
+            - "null"
+        bodyMarkdown:
+          type: string
+        agentAlias:
+          type:
+            - string
+            - "null"
+    ThreadReplyRequest:
+      type: object
+      required:
+        - bodyMarkdown
+      properties:
+        bodyMarkdown:
+          type: string
+        agentAlias:
+          type:
+            - string
+            - "null"
+      additionalProperties: false
+    ThreadStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - open
+            - resolved
+        bodyMarkdown:
+          type: string
+          description: Optional closing or reopening reply. Requires comment write scope
+            when present.
+        agentAlias:
+          type:
+            - string
+            - "null"
+      additionalProperties: false
+    DraftGitBase:
+      type:
+        - object
+        - "null"
+      properties:
+        provider:
+          type: string
+          enum:
+            - github
+        owner:
+          type: string
+        repo:
+          type: string
+        ref:
+          type:
+            - string
+            - "null"
+        sha:
+          type:
+            - string
+            - "null"
+        path:
+          type:
+            - string
+            - "null"
+        metadata:
+          type:
+            - object
+            - "null"
+          additionalProperties: true
+      additionalProperties: true
+    DraftReviewFileInput:
+      type: object
+      properties:
+        path:
+          type: string
+        fileId:
+          type: string
+        content:
+          type: string
+        contentType:
+          type: string
+          enum:
+            - markdown
+            - html
+            - plain_text
+            - auto
+      additionalProperties: false
+    CreateDraftReviewRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        sourceType:
+          type: string
+          enum:
+            - api
+            - mcp
+            - cli
+            - agent_api
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/DraftReviewFileInput"
+        gitBase:
+          $ref: "#/components/schemas/DraftGitBase"
+        base:
+          $ref: "#/components/schemas/DraftGitBase"
+      additionalProperties: false
+    PatchDraftReviewRequest:
+      type: object
+      properties:
+        title:
+          type:
+            - string
+            - "null"
+        description:
+          type:
+            - string
+            - "null"
+        status:
+          type:
+            - string
+            - "null"
+          enum:
+            - active
+            - archived
+            - null
+        gitBase:
+          $ref: "#/components/schemas/DraftGitBase"
+        base:
+          $ref: "#/components/schemas/DraftGitBase"
+      additionalProperties: false
+    DraftReview:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type:
+            - string
+            - "null"
+        sourceType:
+          type: string
+        status:
+          type: string
+          enum:
+            - active
+            - archived
+        visibility:
+          type: string
+        gitBase:
+          $ref: "#/components/schemas/DraftGitBase"
+        reviewUrl:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/DraftReviewFile"
+        latestRevision:
+          oneOf:
+            - $ref: "#/components/schemas/DraftRevision"
+            - type: "null"
+      additionalProperties: true
+    DraftReviewFile:
+      type: object
+      properties:
+        id:
+          type: string
+        path:
+          type: string
+        displayName:
+          type: string
+        contentType:
+          type: string
+          enum:
+            - markdown
+            - html
+            - plain_text
+        currentRevisionId:
+          type:
+            - string
+            - "null"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    DraftRevision:
+      type: object
+      properties:
+        id:
+          type: string
+        revisionNumber:
+          type: integer
+        label:
+          type: string
+        origin:
+          type: string
+        summary:
+          type:
+            - string
+            - "null"
+        createdAt:
+          type: string
+          format: date-time
+        files:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    DraftRevisionUploadRequest:
+      type: object
+      required:
+        - files
+      properties:
+        summary:
+          type: string
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/DraftReviewFileInput"
+      additionalProperties: false
+    CreateDraftCommentRequest:
+      type: object
+      required:
+        - blockId
+        - nodeType
+        - sourceLineStart
+        - sourceLineEnd
+        - bodyMarkdown
+      properties:
+        fileId:
+          type:
+            - string
+            - "null"
+        filePath:
+          type:
+            - string
+            - "null"
+        blockId:
+          type: string
+        nodeType:
+          type: string
+        sourceLineStart:
+          type: integer
+        sourceLineEnd:
+          type: integer
+        selectedText:
+          type:
+            - string
+            - "null"
+        prefixText:
+          type:
+            - string
+            - "null"
+        suffixText:
+          type:
+            - string
+            - "null"
+        bodyMarkdown:
+          type: string
+        agentAlias:
+          type:
+            - string
+            - "null"
+      additionalProperties: false
+    CreateDraftShareRequest:
+      type: object
+      properties:
+        audience:
+          type: string
+          enum:
+            - anyone
+            - user
+          default: anyone
+        recipient:
+          type: string
+      additionalProperties: false
+    BrainReview:
+      type: object
+      additionalProperties: true
+    BrainEvaluation:
+      type: object
+      additionalProperties: true
+    BrainEvaluationRequest:
+      type: object
+      properties:
+        provider:
+          type: string
+          enum:
+            - github
+        owner:
+          type: string
+        repo:
+          type: string
+        prNumber:
+          type:
+            - integer
+            - "null"
+        branchRef:
+          type:
+            - string
+            - "null"
+        rootFolder:
+          type:
+            - string
+            - "null"
+        id:
+          type:
+            - string
+            - "null"
+        question:
+          type:
+            - string
+            - "null"
+        expectedAnswer:
+          type:
+            - string
+            - "null"
+        expectedSourcePages: {}
+        actualAnswer:
+          type:
+            - string
+            - "null"
+        retrievedPages: {}
+        grade: {}
+        reviewerNotes:
+          type:
+            - string
+            - "null"
+      additionalProperties: false
+    BrainReadyRequest:
+      type: object
+      properties:
+        threadId:
+          type: string
+        bodyMarkdown:
+          type:
+            - string
+            - "null"
+      additionalProperties: false
+    McpJsonRpcRequest:
+      type: object
+      required:
+        - jsonrpc
+        - method
+      properties:
+        jsonrpc:
+          type: string
+          enum:
+            - "2.0"
+        id:
+          type:
+            - string
+            - number
+            - "null"
+        method:
+          type: string
+          enum:
+            - initialize
+            - notifications/initialized
+            - tools/list
+            - tools/call
+        params:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    McpToolsList:
+      type: object
+      required:
+        - tools
+      properties:
+        tools:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - description
+              - inputSchema
+            properties:
+              name:
+                type: string
+                enum:
+                  - draft_review
+                  - review_comments
+                  - review_document
+                  - brain_review
+              description:
+                type: string
+              inputSchema:
+                type: object
+                additionalProperties: true

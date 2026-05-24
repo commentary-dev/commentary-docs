@@ -1,6 +1,6 @@
 # API And MCP
 
-Commentary exposes authenticated API and MCP access for tools that need to read document anchors, inspect comments, or create review feedback.
+Commentary exposes authenticated API and MCP access for tools that need to read document anchors, inspect comments, create review feedback, manage draft reviews, or inspect Knowledge Brain review state.
 
 ## Authentication Options
 
@@ -14,6 +14,17 @@ The authorization metadata is available from:
 
 - `/.well-known/oauth-authorization-server`
 - `/.well-known/oauth-protected-resource`
+
+Manage human-created tokens and active grants from [Developer access](./developer-access.md).
+
+## OpenAPI Contract
+
+The public HTTP contract is available at:
+
+- `/openapi.json`
+- `/openapi.yaml`
+
+The generated reference committed with these docs is [API reference](./api/reference.md). Browser, internal, webhook, and test routes are intentionally outside the public contract.
 
 ## API Tokens
 
@@ -30,11 +41,12 @@ Token creation accepts:
 - `target`
 - `expiresAt`
 
-Targets can be account-wide, repository-scoped, or review-scoped. GitHub targets use:
+Targets can be account-wide, repository-scoped, review-scoped, or draft-scoped. Common target formats are:
 
 - `github:owner/repo`
 - `github:owner/repo:pull:123`
 - `github:owner/repo:branch:main`
+- `draft:{sessionId}`
 
 ## Scopes
 
@@ -44,6 +56,8 @@ Supported external scopes are:
 - `commentary.comments.read`
 - `commentary.comments.write`
 - `commentary.comments.status`
+- `commentary.draft_reviews.delete`
+- `commentary.draft_reviews.share`
 - `commentary.review.submit`
 - `commentary.brain.evals.read`
 - `commentary.brain.evals.write`
@@ -61,6 +75,31 @@ Use bearer tokens with these endpoints:
 
 The comment creation endpoint requires provider, owner, repository, file path, block anchor details, and comment body. A request must target a repository or review covered by the token.
 
+## Draft Review API
+
+Draft review endpoints support agent and CLI workflows before a file is in Git:
+
+- `GET /api/v1/draft-reviews`
+- `POST /api/v1/draft-reviews`
+- `GET /api/v1/draft-reviews/{sessionId}`
+- `PATCH /api/v1/draft-reviews/{sessionId}`
+- `DELETE /api/v1/draft-reviews/{sessionId}`
+- `GET /api/v1/draft-reviews/{sessionId}/files`
+- `GET /api/v1/draft-reviews/{sessionId}/files/{fileId}/content`
+- `GET /api/v1/draft-reviews/{sessionId}/revisions`
+- `POST /api/v1/draft-reviews/{sessionId}/revisions`
+- `GET /api/v1/draft-reviews/{sessionId}/comments`
+- `POST /api/v1/draft-reviews/{sessionId}/comments`
+- `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/replies`
+- `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/status`
+- `GET /api/v1/draft-reviews/{sessionId}/events`
+- `GET /api/v1/draft-reviews/{sessionId}/shares`
+- `POST /api/v1/draft-reviews/{sessionId}/shares`
+- `DELETE /api/v1/draft-reviews/{sessionId}/shares/{shareLinkId}`
+- `DELETE /api/v1/draft-reviews/{sessionId}/access/{accessGrantId}`
+
+Create and revision payloads contain literal UTF-8 content. Commentary does not read local paths or fetch arbitrary URLs on a client's behalf.
+
 ## Knowledge Brain API
 
 Knowledge Brain agent workflows use bearer tokens with repository or review targets. Available endpoints include:
@@ -74,7 +113,6 @@ Knowledge Brain agent workflows use bearer tokens with repository or review targ
 - `GET /api/v1/brain/review/evaluations`
 - `POST /api/v1/brain/review/evaluations`
 - `PATCH /api/v1/brain/review/evaluations`
-- `DELETE /api/v1/brain/review/evaluations`
 
 Read operations require review read scope and a token target that covers the repository, branch, or PR. Evaluation writes require `commentary.brain.evals.write`. Ready-for-review replies require comment write scope.
 
@@ -82,21 +120,14 @@ Read operations require review read scope and a token target that covers the rep
 
 The MCP endpoint is `/mcp`. It supports JSON-RPC initialization without auth, but tool listing and tool calls require bearer auth.
 
-Available tools:
+Current consolidated tools are:
 
-- `list_review_comments`
-- `get_document_blocks`
-- `create_comment`
-- `reply_to_comment`
-- `update_thread_status`
-- `list_brain_reviews`
-- `list_brain_review_comments`
-- `list_brain_health_findings`
-- `list_changed_brain_files`
-- `list_requested_revisions`
-- `mark_brain_fix_ready_for_review`
+- `draft_review`
+- `review_comments`
+- `review_document`
+- `brain_review`
 
-The Brain tools expose the same scoped review state as the Brain API: reviews, changed files, comments, health findings, requested revisions, and ready markers.
+See [MCP tools](./api/mcp-tools.md) for generated input schemas. Older one-off draft or comment tools are replaced by these consolidated tools.
 
 ## Device Authorization
 

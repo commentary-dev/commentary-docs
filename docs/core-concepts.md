@@ -1,8 +1,8 @@
 # Core Concepts
 
-Commentary is a document-review layer on top of Git providers. GitHub is the default provider, and Azure DevOps is also supported.
+Commentary is a document-review layer on top of Git providers and private draft review sessions. GitHub is the default provider, and Azure DevOps is also supported.
 
-## Pull Request Review vs Document Review
+## Pull Request Review vs Document Review vs Draft Review
 
 ### Pull request review
 
@@ -18,6 +18,13 @@ Commentary is a document-review layer on top of Git providers. GitHub is the def
 - Comments stay app-native in Commentary.
 - Best for docs, specs, and ADRs before a PR exists.
 
+### Draft review
+
+- Opens pasted or uploaded Markdown, MDX, HTML, or plain text before it exists in Git.
+- Supports revisions, live updates, sharing, export, and agent instructions.
+- Comments stay app-native in Commentary.
+- Best for local edits, generated drafts, and agent workflows before a branch or PR is ready.
+
 ## `Preview` vs `Raw`
 
 - `Preview` renders Markdown or static HTML as a document.
@@ -30,10 +37,11 @@ Stay in `Preview` for normal review. Use `Raw` when exact document source matter
 - `Latest` shows the current selected file.
 - `Diff` shows what changed against the base or selected change set.
 - PR and document routes can expose all-change and commit-specific change sets.
+- Draft review latest mode follows the newest revision; previous revisions are readable history.
 
 ![Review mode toolbar](./assets/review-mode-toolbar.png)
 
-## Files, Branches, And Change Sets
+## Files, Branches, Revisions, And Change Sets
 
 The file navigator shows changed or available reviewable documents. Review routes may also expose:
 
@@ -42,6 +50,7 @@ The file navigator shows changed or available reviewable documents. Review route
 - file status indicators
 - branch selector on direct document review
 - change-set selector on PR and document diff routes
+- revision controls on draft reviews
 - disabled rows when a commit does not include a selected reviewable file
 
 ## Threads And Anchors
@@ -56,4 +65,5 @@ Knowledge Brain mode is an optional review layer for AI-maintained knowledge-bas
 
 - PR review can submit pending Commentary threads back to the provider.
 - Direct document review keeps comments in Commentary.
+- Draft review keeps comments in Commentary.
 - Azure DevOps and GitHub use provider-aware labels and links, but the review model stays document-first.

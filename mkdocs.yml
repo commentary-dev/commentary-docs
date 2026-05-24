@@ -9,6 +9,7 @@ nav:
   - Review workflows:
       - Review pull requests: docs/review-pull-requests.md
       - Review repository branches: docs/review-repository-branches.md
+      - Draft reviews: docs/draft-reviews.md
       - Review modes: docs/review-modes.md
       - Workspace: docs/workspace.md
   - Content types:
@@ -18,9 +19,13 @@ nav:
       - Knowledge Brain: docs/knowledge-brain.md
   - Providers and access:
       - Access and authentication: docs/access-and-authentication.md
+      - Developer access: docs/developer-access.md
       - Generate a GitHub PAT: docs/generate-a-github-pat.md
       - Azure DevOps: docs/azure-devops.md
   - Integrations:
       - API and MCP: docs/api-and-mcp.md
+      - API reference: docs/api/reference.md
+      - MCP tools: docs/api/mcp-tools.md
   - Help:
+      - Blog: docs/blog.md
       - Troubleshooting and FAQ: docs/troubleshooting-and-faq.md

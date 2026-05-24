@@ -1,8 +1,8 @@
 # Commentary Docs
 
-Commentary helps teams review Markdown and static HTML like documents instead of diffs. It opens GitHub and Azure DevOps pull requests, branches, files, folders, and repositories in a reading-first workspace, keeps rendered documents at the center, and lets reviewers comment on paragraphs and semantic blocks instead of raw line numbers.
+Commentary helps teams review Markdown, MDX, static HTML, and private local drafts like documents instead of diffs. It opens GitHub and Azure DevOps pull requests, branches, files, folders, repositories, and draft review sessions in a reading-first workspace, keeps rendered documents at the center, and lets reviewers comment on paragraphs and semantic blocks instead of raw line numbers.
 
-These docs are written for people using [commentary.dev](https://commentary.dev). They cover public read-only review, authenticated commenting, GitHub App access, Azure DevOps access, personal access token fallbacks, Markdown extensions, static HTML review, Knowledge Brain review, the workspace, API access, and MCP.
+These docs are written for people using [commentary.dev](https://commentary.dev). They cover public read-only review, authenticated commenting, GitHub App access, Azure DevOps access, personal access token fallbacks, draft reviews, Markdown extensions, static HTML review, Knowledge Brain review, workspace queues, developer access, API access, and MCP.
 
 ## Start Here
 
@@ -10,6 +10,7 @@ These docs are written for people using [commentary.dev](https://commentary.dev)
 - Need the product model first: [Core concepts](./docs/core-concepts.md)
 - Reviewing a pull request: [Review pull requests](./docs/review-pull-requests.md)
 - Reviewing docs before a PR exists: [Review repository branches](./docs/review-repository-branches.md)
+- Reviewing a local or agent-generated draft: [Draft reviews](./docs/draft-reviews.md)
 - Managing repository queues: [Workspace](./docs/workspace.md)
 - Using Azure DevOps: [Azure DevOps](./docs/azure-devops.md)
 - Understanding review modes: [Review modes](./docs/review-modes.md)
@@ -18,9 +19,13 @@ These docs are written for people using [commentary.dev](https://commentary.dev)
 - Reviewing static HTML: [Static HTML review](./docs/static-html-review.md)
 - Reviewing Knowledge Brain branches: [Knowledge Brain](./docs/knowledge-brain.md)
 - Connecting accounts: [Access and authentication](./docs/access-and-authentication.md)
+- Creating API tokens and grants: [Developer access](./docs/developer-access.md)
 - Using API or MCP clients: [API and MCP](./docs/api-and-mcp.md)
+- API endpoint reference: [API reference](./docs/api/reference.md)
+- MCP tool reference: [MCP tools](./docs/api/mcp-tools.md)
 - Creating a GitHub fallback token: [Generate a GitHub PAT](./docs/generate-a-github-pat.md)
 - Trying the sandbox: [Demo walkthrough](./docs/demo-walkthrough.md)
+- Reading field notes: [Blog](./docs/blog.md)
 - Hit a rough edge: [Troubleshooting and FAQ](./docs/troubleshooting-and-faq.md)
 
 ## Fast Paths
@@ -29,23 +34,24 @@ These docs are written for people using [commentary.dev](https://commentary.dev)
 2. Paste a GitHub or Azure DevOps PR, branch, repository, file, or folder URL.
 3. Click `Open review`.
 4. Read in `Preview` and `Latest`.
-5. Sign in when you want to comment, reply, refresh private content, or submit a review.
+5. Sign in when you want to comment, reply, refresh private content, submit a review, create a draft review, or use API/MCP access.
 
 ![Homepage review intake](./docs/assets/homepage-intake.png)
 
-For a guided sample, open [/demo](https://commentary.dev/demo). For cross-repository work, sign in and open [/workspace](https://commentary.dev/workspace).
+For a guided sample, open [/demo](https://commentary.dev/demo). For cross-repository work, sign in and open [/workspace](https://commentary.dev/workspace). For draft review before content exists in Git, open [/workspace/drafts/new](https://commentary.dev/workspace/drafts/new).
 
 ## Current Product Shape
 
 - Public GitHub PRs open without login for read-only review.
-- Commenting, replies, review submission, private content, workspaces, API tokens, and MCP access require authentication.
+- Commenting, replies, review submission, private content, workspaces, draft reviews, API tokens, and MCP access require authentication.
 - GitHub App is the default GitHub connection for workspace discovery and private access. GitHub PAT remains the advanced fallback.
 - Azure DevOps supports Microsoft Entra sign-in and PAT fallback.
 - Pull request review supports `Preview`, `Raw`, `Latest`, `Diff`, docs preview, Present mode, all-change and commit-specific change sets, comments, refresh, and review submission.
-- Direct document review supports branches, folders, Markdown and static HTML files, branch selectors, commit-specific diff context, and Commentary-only comments.
-- Markdown rendering supports common docs-framework syntax, MDX safety fallbacks, wikilinks, embeds, Mermaid, slides, docs previews, and repository-aware links.
+- Direct document review supports branches, folders, Markdown, MDX, static HTML files, branch selectors, commit-specific diff context, and Commentary-only comments.
+- Draft reviews support pasted or uploaded Markdown, MDX, HTML, and plain text before a file exists in Git, with revisions, live updates, sharing, export, agent instructions, API access, and MCP access.
+- Markdown rendering supports common docs-framework syntax, MDX safety fallbacks, wikilinks, embeds, Mermaid, slides, safe raw HTML, docs previews, and repository-aware links.
 - Knowledge Brain mode groups source, wiki, output, and control files, adds health and review context, and supports public reader pages for published public brains.
-- The public API and MCP endpoint let approved clients read anchors and comments, create comments, reply, update thread status, and inspect Knowledge Brain review state.
+- The public API, OpenAPI contract, and MCP endpoint let approved clients read anchors and comments, create comments, manage draft reviews, reply, update thread status, and inspect Knowledge Brain review state.
 
 ## In This Repo
 

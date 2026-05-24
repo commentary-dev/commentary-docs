@@ -1,6 +1,6 @@
 # Getting Started
 
-Use Commentary when you want to review Markdown or static HTML as a readable document instead of parsing changed lines.
+Use Commentary when you want to review Markdown, MDX, static HTML, or draft text as a readable document instead of parsing changed lines.
 
 ## Fastest First Run
 
@@ -8,7 +8,7 @@ Use Commentary when you want to review Markdown or static HTML as a readable doc
 2. Paste a GitHub or Azure DevOps URL.
 3. Click `Open review`.
 4. Start in `Preview` and `Latest`.
-5. Sign in only when you need to comment, reply, refresh private content, or submit a review.
+5. Sign in only when you need to comment, reply, refresh private content, submit a review, create a draft review, or use developer access.
 
 Commentary accepts pull request, repository, branch, file, and folder URLs. It resolves the URL to the matching review surface for Markdown, MDX, and static `.html` or `.htm` documents.
 
@@ -17,7 +17,7 @@ Commentary accepts pull request, repository, branch, file, and folder URLs. It r
 ## What Works Before You Sign In
 
 - Public GitHub pull requests can open read-only.
-- You can read rendered Markdown, inspect raw Markdown, and move through files when the public data is available.
+- You can read rendered Markdown, inspect raw Markdown, and move through files when public data is available.
 - You can review static HTML previews when public HTML files are available.
 - Commentary keeps the document centered so prose reads like a spec, ADR, README, or rollout plan.
 
@@ -30,6 +30,7 @@ Sign in when you want to:
 - resolve or reopen a thread
 - submit a pull request review
 - open private repositories
+- create or share draft reviews
 - use the GitHub or Azure DevOps workspace
 - create API tokens or connect an MCP client
 
@@ -41,6 +42,7 @@ GitHub App is the default GitHub path. Azure DevOps uses Microsoft Entra by defa
 
 - Want a safe sandbox: open [/demo](https://commentary.dev/demo) and follow [Demo walkthrough](./demo-walkthrough.md).
 - Want to review docs before a PR exists: paste a repository, branch, file, or folder URL and read [Review repository branches](./review-repository-branches.md).
+- Want to review a local or agent-generated draft before it is in Git: open [Draft reviews](./draft-reviews.md).
 - Want to review generated docs or site content: read [Markdown extensions](./markdown-extensions.md) and [Static HTML review](./static-html-review.md).
 - Want to review AI-maintained knowledge bases: read [Knowledge Brain](./knowledge-brain.md).
 

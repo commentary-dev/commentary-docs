@@ -1,6 +1,6 @@
 # Access And Authentication
 
-Commentary keeps public reading easy and asks for authentication when a workflow needs provider access or write permission.
+Commentary keeps public reading easy and asks for authentication when a workflow needs provider access, write permission, private draft access, or developer credentials.
 
 ![Sign-in provider dialog](./assets/auth-provider-dialog.png)
 
@@ -8,7 +8,7 @@ Commentary keeps public reading easy and asks for authentication when a workflow
 
 Use the normal sign-in paths first:
 
-- `Continue with GitHub` for GitHub App access, workspace discovery, private repositories, comments, and PR review submission.
+- `Continue with GitHub` for GitHub App access, workspace discovery, private repositories, comments, PR review submission, draft reviews, and API/MCP credentials.
 - `Continue with Azure DevOps` for Microsoft Entra access to Azure DevOps organizations, projects, repositories, and pull requests.
 
 ## Account And Installation Recovery
@@ -48,6 +48,13 @@ For GitHub token setup, see [Generate a GitHub PAT](./generate-a-github-pat.md).
 - may look unavailable until you sign in with an account that can reach the repository
 - may require GitHub App installation or Azure DevOps organization permission
 
+### Draft reviews
+
+- require sign-in to create
+- are private to Commentary unless shared by the owner
+- require sign-in to claim or open a shared link
+- do not grant provider repository write access
+
 ## API And MCP Access
 
-API tokens, OAuth grants, device authorization, and MCP access require an authenticated Commentary session. See [API and MCP](./api-and-mcp.md).
+API tokens, OAuth grants, device authorization, and MCP access require an authenticated Commentary session. Manage credentials in [Developer access](./developer-access.md), then use the endpoints and tools documented in [API and MCP](./api-and-mcp.md).
