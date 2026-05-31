@@ -5,7 +5,8 @@ The `/mcp` endpoint advertises these tools through authenticated `tools/list`. T
 
 ## `draft_review`
 
-Manage Draft Review Sessions with action=create, get, list, update_metadata, upload_revision, rebase, delete, list_revisions, get_revision, get_content, list_shares, share, revoke_share, or remove_access.
+Manage Draft Review Sessions with action=create, get, list, convert_to_brainstorming, update_metadata, upload_revision, rebase, delete, list_revisions, get_revision, get_content, get_consensus_rule, update_consensus_rule, get_consensus_state, list_events, list_shares, share, revoke_share, or remove_access.
+Brainstorming Reviews use the same sessionId/fileId/revision APIs and require the brainstorming_reviews.agent_api feature for remote agent operations.
 content is the full literal UTF-8 file content. There is no path resolution, URL fetching, or server-side file loading; the client must read files and inline their contents.
 Create with literal content: {"action":"create","title":"Spec","files":[{"path":"docs/spec.md","content":"# Spec\n","contentType":"markdown"}]}
 Create empty draft: {"action":"create","title":"Spec"}
@@ -23,6 +24,7 @@ Input schema:
         "create",
         "get",
         "list",
+        "convert_to_brainstorming",
         "update_metadata",
         "upload_revision",
         "rebase",
@@ -30,6 +32,10 @@ Input schema:
         "list_revisions",
         "get_revision",
         "get_content",
+        "get_consensus_rule",
+        "update_consensus_rule",
+        "get_consensus_state",
+        "list_events",
         "list_shares",
         "share",
         "revoke_share",
@@ -50,6 +56,22 @@ Input schema:
       "enum": [
         "active",
         "archived"
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "brainstorming"
+      ]
+    },
+    "consensusMode": {
+      "type": "string",
+      "enum": [
+        "owner_decides",
+        "no_open_blockers",
+        "n_of_m",
+        "required_reviewers"
       ]
     },
     "sourceType": {
@@ -105,6 +127,69 @@ Input schema:
     "revisionNumber": {
       "type": "number"
     },
+    "addressedThreadIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "agreementThreshold": {
+      "type": "number"
+    },
+    "minResponseCount": {
+      "type": "number"
+    },
+    "requiredReviewerIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requiredReviewerCondition": {
+      "type": "string",
+      "enum": [
+        "all_required_agree",
+        "no_required_objects",
+        "owner_plus_one_required_agrees",
+        "threshold_no_blockers"
+      ]
+    },
+    "objectionPolicy": {
+      "type": "string",
+      "enum": [
+        "block",
+        "owner_decision",
+        "ignore"
+      ]
+    },
+    "blockersBlock": {
+      "type": "boolean"
+    },
+    "ownerOverrideAllowed": {
+      "type": "boolean"
+    },
+    "countOwnerAgreement": {
+      "type": "boolean"
+    },
+    "countAgentSignals": {
+      "type": "boolean"
+    },
+    "decisionPollCompletion": {
+      "type": "string",
+      "enum": [
+        "closed",
+        "threshold"
+      ]
+    },
+    "cursor": {
+      "type": "string"
+    },
+    "limit": {
+      "type": "number"
+    },
     "audience": {
       "type": "string",
       "enum": [
@@ -130,8 +215,8 @@ Input schema:
 
 ## `review_comments`
 
-List, create, reply, edit where supported, resolve, or reopen Commentary comments for PR, branch, and Draft Review work.
-Use action=list, create, reply, edit, resolve, or reopen.
+List, create, reply, edit where supported, resolve, reopen, signal, or summarize Commentary comments for PR, branch, and Draft Review work.
+Use action=list, create, reply, edit, resolve, reopen, signal, consensus_decision, or summary. For Brainstorming Reviews, signal=agree/object/blocker/needs_clarification sets one exclusive reviewer stance per actor and thread; signal=addressed is post-update application metadata, while consensus_decision stores owner accept/reject/out-of-scope overrides.
 Create comment with agentAlias: {"action":"create","sessionId":"dr_123","fileId":"file_1","blockId":"paragraph-2","nodeType":"paragraph","sourceLineStart":3,"sourceLineEnd":3,"bodyMarkdown":"Please revise this.","agentAlias":"local-agent"}
 Reply with agentAlias: {"action":"reply","sessionId":"dr_123","threadId":"thread_1","bodyMarkdown":"Fixed in the latest revision.","agentAlias":"local-agent"}
 Resolve with a closing aliased reply: {"action":"resolve","sessionId":"dr_123","threadId":"thread_1","bodyMarkdown":"Verified.","agentAlias":"local-agent"}
@@ -150,7 +235,10 @@ Input schema:
         "reply",
         "edit",
         "resolve",
-        "reopen"
+        "reopen",
+        "signal",
+        "summary",
+        "consensus_decision"
       ]
     },
     "provider": {
@@ -187,6 +275,19 @@ Input schema:
         "resolved"
       ]
     },
+    "consensusState": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted_for_change",
+        "blocked",
+        "needs_owner_decision",
+        "rejected",
+        "out_of_scope",
+        "applied",
+        "resolved"
+      ]
+    },
     "threadId": {
       "type": "string"
     },
@@ -219,6 +320,80 @@ Input schema:
     },
     "agentAlias": {
       "type": "string"
+    },
+    "clientName": {
+      "type": "string"
+    },
+    "signal": {
+      "type": "string",
+      "enum": [
+        "agree",
+        "object",
+        "blocker",
+        "needs_clarification",
+        "addressed"
+      ]
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "accepted_for_change",
+        "rejected",
+        "out_of_scope",
+        "clear"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "action"
+  ]
+}
+```
+
+## `review_polls`
+
+List, inspect, and summarize Commentary poll comments for reviews and Brainstorming Reviews.
+Use action=list, get, list_actionable, list_blocked, list_needing_owner_decision, list_stale, or markdown.
+For Draft and Brainstorming Reviews, pass sessionId plus optional fileId, filePath, or threadId.
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "list",
+        "get",
+        "list_actionable",
+        "list_blocked",
+        "list_needing_owner_decision",
+        "list_stale",
+        "markdown"
+      ]
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "fileId": {
+      "type": "string"
+    },
+    "filePath": {
+      "type": "string"
+    },
+    "threadId": {
+      "type": "string"
+    },
+    "pollId": {
+      "type": "string"
     }
   },
   "required": [
@@ -229,7 +404,7 @@ Input schema:
 
 ## `review_document`
 
-Inspect review document structure with action=list_blocks for PR/branch rendered Markdown anchors or Draft Review latest-revision blocks, or action=list_files for Draft Review file metadata. Draft list_blocks accepts sessionId plus optional fileId or filePath.
+Inspect review document structure with action=list_blocks for PR/branch rendered Markdown anchors or Draft/Brainstorming Review latest-revision blocks, action=list_files for Draft/Brainstorming Review file metadata, or action=get_progress/get_file_progress/get_changed_since_reviewed/get_unreviewed_files for read-only review progress.
 
 Input schema:
 
@@ -241,7 +416,11 @@ Input schema:
       "type": "string",
       "enum": [
         "list_blocks",
-        "list_files"
+        "list_files",
+        "get_progress",
+        "get_file_progress",
+        "get_changed_since_reviewed",
+        "get_unreviewed_files"
       ]
     },
     "provider": {
@@ -263,6 +442,9 @@ Input schema:
       "type": "string"
     },
     "filePath": {
+      "type": "string"
+    },
+    "fileId": {
       "type": "string"
     },
     "sessionId": {

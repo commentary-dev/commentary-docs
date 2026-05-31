@@ -12,7 +12,9 @@ The workspace is the signed-in view for finding review work, creating drafts, an
 - shows provider access health
 - opens PR review and branch review without copying URLs
 - creates and resumes draft reviews
+- creates and resumes Brainstorming Reviews
 - manages API, OAuth, device-flow, and MCP grants
+- supports CLI and agent workflows through developer access
 - exposes Knowledge Brain-oriented review queues when available
 
 GitHub workspace uses GitHub App installation scope. Azure DevOps workspace uses Microsoft Entra or Azure DevOps PAT access. Draft reviews and developer credentials are tied to the signed-in Commentary account.
@@ -33,7 +35,9 @@ Use `Repositories` to open branch review directly or narrow the PR queue to one 
 
 ### Draft reviews
 
-Use `New review` or the draft review list when you need document-style feedback before a branch or pull request exists. Draft reviews can be created from pasted Markdown, HTML, MDX, plain text, or one uploaded text file. See [Draft reviews](./draft-reviews.md).
+Use `New review` or the draft review list when you need document-style feedback before a branch or pull request exists. Draft reviews can be created from pasted Markdown, HTML, MDX, plain text, or uploaded text files. See [Draft reviews](./draft-reviews.md).
+
+Use Brainstorming Reviews when collaborators need to discuss options, signal agreement or blockers, and let agents apply accepted changes. See [Brainstorming Reviews](./brainstorming-reviews.md).
 
 ### Agent review
 
@@ -45,7 +49,7 @@ Use `Access` to inspect connected installations, organizations, repository reach
 
 ### Developer access
 
-Use `Developer access` to create API tokens, inspect OAuth/device-flow grants, and revoke credentials used by API clients, MCP clients, CLIs, and agents. See [Developer access](./developer-access.md).
+Use `Developer access` to create API tokens, inspect OAuth/device-flow grants, and revoke credentials used by API clients, MCP clients, the [Commentary CLI](./commentary-cli.md), and agents. See [Developer access](./developer-access.md).
 
 ## GitHub Workspace
 

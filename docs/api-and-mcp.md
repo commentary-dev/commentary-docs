@@ -1,6 +1,6 @@
 # API And MCP
 
-Commentary exposes authenticated API and MCP access for tools that need to read document anchors, inspect comments, create review feedback, manage draft reviews, or inspect Knowledge Brain review state.
+Commentary exposes authenticated API and MCP access for tools that need to read document anchors, inspect comments, create review feedback, manage draft and Brainstorming Reviews, inspect review progress, read poll outcomes, or inspect Knowledge Brain review state.
 
 ## Authentication Options
 
@@ -77,7 +77,7 @@ The comment creation endpoint requires provider, owner, repository, file path, b
 
 ## Draft Review API
 
-Draft review endpoints support agent and CLI workflows before a file is in Git:
+Draft review endpoints support agent and CLI workflows before a file is in Git. The same session APIs also support Brainstorming Reviews:
 
 - `GET /api/v1/draft-reviews`
 - `POST /api/v1/draft-reviews`
@@ -92,6 +92,11 @@ Draft review endpoints support agent and CLI workflows before a file is in Git:
 - `POST /api/v1/draft-reviews/{sessionId}/comments`
 - `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/replies`
 - `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/status`
+- `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/feedback`
+- `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/consensus-decision`
+- `GET /api/v1/draft-reviews/{sessionId}/consensus-rule`
+- `PATCH /api/v1/draft-reviews/{sessionId}/consensus-rule`
+- `GET /api/v1/draft-reviews/{sessionId}/consensus-state`
 - `GET /api/v1/draft-reviews/{sessionId}/events`
 - `GET /api/v1/draft-reviews/{sessionId}/shares`
 - `POST /api/v1/draft-reviews/{sessionId}/shares`
@@ -99,6 +104,14 @@ Draft review endpoints support agent and CLI workflows before a file is in Git:
 - `DELETE /api/v1/draft-reviews/{sessionId}/access/{accessGrantId}`
 
 Create and revision payloads contain literal UTF-8 content. Commentary does not read local paths or fetch arbitrary URLs on a client's behalf.
+
+## Review Progress API
+
+Use `GET /api/v1/review/progress` to read per-reviewer progress for PR, branch document, and draft review surfaces. Progress reads require review read scope. API and MCP clients can inspect progress for reporting and context, but agents do not mutate human progress through this read path.
+
+## Poll And Brainstorming API
+
+Brainstorming Review automation can read comments by consensus state, set feedback signals, store owner consensus decisions, read or update consensus rules, and inspect consensus state. Poll comments are exposed through review poll routes and MCP so agents can read poll results and Markdown summaries without UI scraping.
 
 ## Knowledge Brain API
 
@@ -120,14 +133,23 @@ Read operations require review read scope and a token target that covers the rep
 
 The MCP endpoint is `/mcp`. It supports JSON-RPC initialization without auth, but tool listing and tool calls require bearer auth.
 
-Current consolidated tools are:
+Current tools are:
 
 - `draft_review`
 - `review_comments`
+- `review_polls`
 - `review_document`
 - `brain_review`
 
-See [MCP tools](./api/mcp-tools.md) for generated input schemas. Older one-off draft or comment tools are replaced by these consolidated tools.
+See [MCP tools](./api/mcp-tools.md) for generated input schemas. Older one-off draft or comment tools are replaced by consolidated tools.
+
+`draft_review` manages draft and Brainstorming Review sessions, revisions, sharing, live events, and consensus metadata. `review_comments` handles comments, replies, status, feedback signals, summaries, and owner decisions. `review_polls` reads poll comments and actionable poll outcomes. `review_document` reads anchors, files, and review progress.
+
+## CLI And Skills
+
+The [Commentary CLI](./commentary-cli.md) uses the public API for local file-backed draft and Brainstorming Review workflows.
+
+The [Agent skills](./agent-skills.md) repository documents how compatible agents should use the CLI or MCP safely.
 
 ## Device Authorization
 

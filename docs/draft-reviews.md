@@ -30,6 +30,7 @@ Draft review pages use the same document-first review shell as Git-backed review
 - `Preview` renders the document for reading.
 - `Raw` shows the source.
 - Comments attach to semantic blocks and selected text.
+- Comment bodies can render safe Markdown, including code snippets and structured lists.
 - Replies, resolve, reopen, and filters behave like ordinary review threads.
 - Previous revisions remain readable but are read-only for new comments.
 
@@ -54,8 +55,34 @@ Use `Draft actions` from the review toolbar to:
 - download the latest file
 - change the GitHub base
 - delete the draft review
+- convert the draft to a Brainstorming Review when the review should become a plan-of-record workflow
 
 Agent instructions are meant for coding agents or CLIs that are updating local files. Commentary expects the client to read local files and send literal content; it does not read local paths or fetch arbitrary URLs for the agent.
+
+## Commentary CLI
+
+Use the [Commentary CLI](./commentary-cli.md) when a local file or directory is the editing surface.
+
+Common commands:
+
+```bash
+commentary review ./docs/spec.md --title "Product spec"
+commentary sync --message "Address review comments"
+commentary comments --format markdown --open
+commentary next-comment --timeout 60s --json
+commentary share --anyone
+commentary restore <session-id>
+```
+
+The CLI writes local review metadata to `.commentary/session.json`, but it does not store auth tokens there.
+
+## Brainstorming Reviews
+
+Brainstorming Reviews use the same draft review routes and revision model, but add feedback signals, consensus rules, decision polls, and agent-ready accepted-change workflows.
+
+Create one from the draft review form by choosing `Brainstorming review`, or convert an existing draft from `Draft actions`.
+
+See [Brainstorming Reviews](./brainstorming-reviews.md).
 
 ## Sharing
 
@@ -75,6 +102,7 @@ Draft review automation is available through the public API and MCP:
 - HTTP endpoints under `/api/v1/draft-reviews`
 - the `draft_review`, `review_comments`, and `review_document` MCP tools
 - scoped API tokens from [Developer access](./developer-access.md)
+- CLI and agent workflows that send literal file content through the same API boundary
 
 See [API and MCP](./api-and-mcp.md), [API reference](./api/reference.md), and [MCP tools](./api/mcp-tools.md).
 

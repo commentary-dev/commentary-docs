@@ -12,10 +12,6 @@
     {
       "url": "https://commentary.dev",
       "description": "Configured Commentary origin."
-    },
-    {
-      "url": "http://localhost:3000",
-      "description": "Local development."
     }
   ],
   "tags": [
@@ -1234,6 +1230,159 @@
         }
       }
     },
+    "/api/v1/review/progress": {
+      "get": {
+        "operationId": "getReviewProgress",
+        "tags": [
+          "Review progress"
+        ],
+        "summary": "Read per-reviewer progress for a PR, branch document, or draft review.",
+        "description": "Agents can read progress but cannot mutate human review progress through the external API.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.review.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "github"
+              ]
+            }
+          },
+          {
+            "name": "owner",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "repo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftSessionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "file",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Repeat for one or more file paths."
+          },
+          {
+            "name": "pr",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "branch",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-commentary-feature-key": "api.review.read",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewProgressResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/review/threads/{threadId}/comments": {
       "post": {
         "operationId": "replyToReviewThread",
@@ -1473,12 +1622,27 @@
         "tags": [
           "Draft reviews"
         ],
-        "summary": "List draft reviews owned by the account-scoped token principal.",
+        "summary": "List draft or Brainstorming Reviews owned by the account-scoped token principal.",
+        "description": "Use mode=brainstorming to list Brainstorming Reviews available to the token. Brainstorming agent operations require the brainstorming_reviews.agent_api license feature.",
         "security": [
           {
             "bearerAuth": [
               "commentary.review.read"
             ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "brainstorming"
+              ]
+            }
           }
         ],
         "x-commentary-feature-key": "draft_reviews.agent_api",
@@ -1561,7 +1725,8 @@
         "tags": [
           "Draft reviews"
         ],
-        "summary": "Create a draft review session, optionally with initial file content.",
+        "summary": "Create a draft or Brainstorming Review session, optionally with initial file content.",
+        "description": "File content fields are literal UTF-8 payloads. Commentary never treats submitted paths as local files to read.",
         "security": [
           {
             "bearerAuth": [
@@ -2268,7 +2433,7 @@
         "tags": [
           "Draft reviews"
         ],
-        "summary": "Upload a new draft review revision.",
+        "summary": "Upload a new draft or Brainstorming Review revision from literal file content.",
         "security": [
           {
             "bearerAuth": [
@@ -2312,7 +2477,348 @@
                     "revision": {
                       "$ref": "#/components/schemas/DraftRevision"
                     },
+                    "changedFiles": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "addressedThreadIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "source": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
                     "noOp": {
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/draft-reviews/{sessionId}/consensus-rule": {
+      "get": {
+        "operationId": "getDraftReviewConsensusRule",
+        "tags": [
+          "Draft reviews"
+        ],
+        "summary": "Get the configured Brainstorming Review consensus rule.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.review.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Draft review session id."
+          }
+        ],
+        "x-commentary-feature-key": "draft_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "consensusRule": {
+                      "$ref": "#/components/schemas/ConsensusRule"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateDraftReviewConsensusRule",
+        "tags": [
+          "Draft reviews"
+        ],
+        "summary": "Update the Brainstorming Review consensus rule. Owner access is required.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Draft review session id."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsensusRule"
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "draft_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "consensusRule": {
+                      "$ref": "#/components/schemas/ConsensusRule"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/draft-reviews/{sessionId}/consensus-state": {
+      "get": {
+        "operationId": "getDraftReviewConsensusState",
+        "tags": [
+          "Draft reviews"
+        ],
+        "summary": "Get Brainstorming Review consensus counts and file readiness.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Draft review session id."
+          }
+        ],
+        "x-commentary-feature-key": "draft_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "consensusRule": {
+                      "$ref": "#/components/schemas/ConsensusRule"
+                    },
+                    "counts": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "filesWithActionableThreads": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "filesWithBlockedThreads": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "agentReady": {
                       "type": "boolean"
                     }
                   },
@@ -2422,6 +2928,24 @@
               "type": "string",
               "enum": [
                 "open",
+                "resolved"
+              ]
+            }
+          },
+          {
+            "name": "consensusState",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "accepted_for_change",
+                "blocked",
+                "needs_owner_decision",
+                "rejected",
+                "out_of_scope",
+                "applied",
                 "resolved"
               ]
             }
@@ -2867,13 +3391,268 @@
         }
       }
     },
+    "/api/v1/draft-reviews/{sessionId}/comments/{threadId}/feedback": {
+      "post": {
+        "operationId": "updateDraftReviewCommentFeedback",
+        "tags": [
+          "Draft reviews"
+        ],
+        "summary": "Set or clear a Brainstorming Review feedback stance; owner addressed state clears unresolved feedback.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Draft review session id."
+          },
+          {
+            "name": "threadId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Review thread id."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ThreadFeedbackRequest"
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "draft_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "thread": {
+                      "$ref": "#/components/schemas/ReviewThread"
+                    },
+                    "threadId": {
+                      "type": "string"
+                    },
+                    "commentId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/draft-reviews/{sessionId}/comments/{threadId}/consensus-decision": {
+      "post": {
+        "operationId": "updateDraftReviewCommentConsensusDecision",
+        "tags": [
+          "Draft reviews"
+        ],
+        "summary": "Accept, reject, mark out of scope, or clear an owner consensus decision for a Brainstorming Review thread.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.status"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Draft review session id."
+          },
+          {
+            "name": "threadId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Review thread id."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsensusDecisionRequest"
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "draft_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "thread": {
+                      "$ref": "#/components/schemas/ReviewThread"
+                    },
+                    "threadId": {
+                      "type": "string"
+                    },
+                    "commentId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/draft-reviews/{sessionId}/events": {
       "get": {
         "operationId": "streamDraftReviewEvents",
         "tags": [
           "Draft reviews"
         ],
-        "summary": "Stream draft review live events using Server-Sent Events.",
+        "summary": "Stream draft or Brainstorming Review live events using Server-Sent Events.",
+        "description": "Events include comment.created, reply.created, comment.resolved, comment.reopened, feedback_signal.changed, feedback.marked_addressed, file.added, file.updated, file.archived, revision.created, draft.converted_to_brainstorming, brainstorming.metadata_changed, and brainstorming.status_changed.",
         "security": [
           {
             "bearerAuth": [
@@ -4831,7 +5610,7 @@
           "MCP"
         ],
         "summary": "Call Commentary MCP over Streamable HTTP JSON-RPC.",
-        "description": "Authenticated tools/list advertises: draft_review, review_comments, review_document, brain_review.",
+        "description": "Authenticated tools/list advertises: draft_review, review_comments, review_polls, review_document, brain_review.",
         "security": [
           {
             "bearerAuth": []
@@ -5199,6 +5978,27 @@
               "null"
             ]
           },
+          "feedbackSignals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "feedbackSummary": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
+          "consensus": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
           "comments": {
             "type": "array",
             "items": {
@@ -5216,6 +6016,153 @@
           }
         },
         "additionalProperties": true
+      },
+      "ReviewProgressFile": {
+        "type": "object",
+        "required": [
+          "filePath",
+          "status",
+          "changedSinceReviewed"
+        ],
+        "properties": {
+          "filePath": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "not_started",
+              "in_progress",
+              "reviewed",
+              "needs_re_review",
+              "skipped"
+            ]
+          },
+          "reviewedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "reviewedByViewerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reviewedByLogin": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "lastInteractedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "reviewedRevision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "currentRevision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "changedSinceReviewed": {
+            "type": "boolean"
+          },
+          "skippedReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "partial": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      },
+      "ReviewProgressSummary": {
+        "type": "object",
+        "properties": {
+          "totalFiles": {
+            "type": "integer"
+          },
+          "reviewedFiles": {
+            "type": "integer"
+          },
+          "inProgressFiles": {
+            "type": "integer"
+          },
+          "skippedFiles": {
+            "type": "integer"
+          },
+          "needsReReviewFiles": {
+            "type": "integer"
+          },
+          "notStartedFiles": {
+            "type": "integer"
+          },
+          "changedSinceReviewedFiles": {
+            "type": "integer"
+          },
+          "percentReviewed": {
+            "type": "integer"
+          },
+          "lastReviewedFilePath": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "lastReviewedSectionTitle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReviewProgressResponse": {
+        "type": "object",
+        "required": [
+          "ok",
+          "viewerScoped",
+          "summary",
+          "files"
+        ],
+        "properties": {
+          "ok": {
+            "const": true
+          },
+          "viewerScoped": {
+            "type": "boolean"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/ReviewProgressSummary"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewProgressFile"
+            }
+          }
+        },
+        "additionalProperties": false
       },
       "CreateReviewCommentRequest": {
         "type": "object",
@@ -5337,6 +6284,138 @@
         },
         "additionalProperties": false
       },
+      "ThreadFeedbackRequest": {
+        "type": "object",
+        "required": [
+          "signal"
+        ],
+        "properties": {
+          "signal": {
+            "type": "string",
+            "enum": [
+              "agree",
+              "object",
+              "blocker",
+              "needs_clarification",
+              "addressed"
+            ],
+            "description": "agree, object, blocker, and needs_clarification are exclusive reviewer stances per actor and thread. addressed is owner-only and clears unresolved feedback."
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          },
+          "agentAlias": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "clientName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConsensusRule": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "owner_decides",
+              "no_open_blockers",
+              "n_of_m",
+              "required_reviewers"
+            ]
+          },
+          "agreementThreshold": {
+            "type": "integer"
+          },
+          "minResponseCount": {
+            "type": "integer"
+          },
+          "requiredReviewerIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requiredReviewerCondition": {
+            "type": "string",
+            "enum": [
+              "all_required_agree",
+              "no_required_objects",
+              "owner_plus_one_required_agrees",
+              "threshold_no_blockers"
+            ]
+          },
+          "objectionPolicy": {
+            "type": "string",
+            "enum": [
+              "block",
+              "owner_decision",
+              "ignore"
+            ]
+          },
+          "blockersBlock": {
+            "type": "boolean"
+          },
+          "ownerOverrideAllowed": {
+            "type": "boolean"
+          },
+          "countOwnerAgreement": {
+            "type": "boolean"
+          },
+          "countAgentSignals": {
+            "type": "boolean"
+          },
+          "autoApplyAcceptedThreads": {
+            "type": "boolean"
+          },
+          "staleOnNewActivity": {
+            "type": "boolean"
+          },
+          "decisionPollCompletion": {
+            "type": "string",
+            "enum": [
+              "closed",
+              "threshold"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "ConsensusDecisionRequest": {
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "accepted_for_change",
+              "rejected",
+              "out_of_scope",
+              "clear"
+            ]
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
       "DraftGitBase": {
         "type": [
           "object",
@@ -5419,6 +6498,13 @@
           "description": {
             "type": "string"
           },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "brainstorming"
+            ]
+          },
           "sourceType": {
             "type": "string",
             "enum": [
@@ -5469,6 +6555,17 @@
               null
             ]
           },
+          "mode": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "draft",
+              "brainstorming",
+              null
+            ]
+          },
           "gitBase": {
             "$ref": "#/components/schemas/DraftGitBase"
           },
@@ -5486,6 +6583,13 @@
           },
           "title": {
             "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "brainstorming"
+            ]
           },
           "description": {
             "type": [
@@ -5520,6 +6624,35 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "planOfRecordRevision": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "revisionNumber": {
+                    "type": "number"
+                  },
+                  "summary": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "files": {
             "type": "array",
@@ -5621,11 +6754,27 @@
           "summary": {
             "type": "string"
           },
+          "sourceType": {
+            "type": "string",
+            "enum": [
+              "api",
+              "mcp",
+              "cli",
+              "agent_api"
+            ]
+          },
           "files": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DraftReviewFileInput"
             }
+          },
+          "addressedThreadIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Brainstorming Review thread ids to mark addressed after the literal-content revision is accepted. Requires commentary.comments.status."
           }
         },
         "additionalProperties": false
@@ -5860,6 +7009,7 @@
                   "enum": [
                     "draft_review",
                     "review_comments",
+                    "review_polls",
                     "review_document",
                     "brain_review"
                   ]

@@ -27,6 +27,8 @@ For GitHub, Commentary accepts repository roots, `/tree/...` URLs, and `/blob/..
 - Use folder view for docs-heavy repositories.
 - Use `Latest` for reading and `Diff` for branch-backed change inspection.
 - Use the commit selector when you need to inspect one document change set.
+- Switch files inside the shell without a full page reload when the next document projection is available or can be materialized.
+- Use personal [Review progress](./review-progress.md) to mark files or sections reviewed and revisit changed-since-reviewed content.
 
 ## Best Use Cases
 
@@ -36,6 +38,7 @@ For GitHub, Commentary accepts repository roots, `/tree/...` URLs, and `/blob/..
 - AI-generated docs that should be reviewed before a merge request exists
 - generated static reports or static site pages that need document comments
 - Knowledge Brain branches where source notes, wiki pages, and outputs should be reviewed together
+- merged PR follow-up when a GitHub PR has already landed and the review should continue against the target branch
 
 ## Important Difference From PR Review
 

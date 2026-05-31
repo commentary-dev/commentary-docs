@@ -17,6 +17,8 @@ Public GitHub PRs can open read-only without login. Private PRs and Azure DevOps
 
 - Use the file navigator to move between Markdown, MDX, and static HTML files.
 - Use folder view when a PR changes several docs across directories.
+- Switch files inside the review shell without losing the surrounding review context.
+- Use progress status to track which files or sections you have already reviewed.
 - Stay in `Preview` for normal reading.
 - Switch to `Raw` for Markdown or HTML source context.
 - Start with `Latest`, then use `Diff` when you need the change.
@@ -25,7 +27,9 @@ Public GitHub PRs can open read-only without login. Private PRs and Azure DevOps
 - Use the change-set menu to review all changes or one commit.
 - Use `Comments` to show or hide the thread rail.
 
-Single-file Markdown PRs keep the shell tighter. Multi-file PRs show the file navigator.
+Single-file Markdown PRs keep the shell tighter. Multi-file PRs show the file navigator with flat and folder views, filters, selected rows, and persisted navigator width.
+
+Merged GitHub PR links can redirect to the target branch document review after a short countdown. The branch view is filtered to the PR's reviewable files, while historical PR comments remain available on the PR review link.
 
 ## Review Specialized Content
 
@@ -41,8 +45,10 @@ Once authenticated, you can:
 
 - add a new thread from a rendered block
 - select text and create a focused thread
-- reply in the thread rail
+- reply in the thread rail with safe rendered Markdown
+- open long or wide comments in a focused reading view
 - resolve or reopen threads
+- use poll comments when a thread needs structured choices
 - keep pending PR threads staged until review submission
 
 ## Submit The Review

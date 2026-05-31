@@ -39,6 +39,8 @@ Developer access offers common presets:
 - `Review and submit` for trusted tools that can submit provider review decisions.
 - `Brain evaluations` for agents that submit or read Knowledge Brain evaluations.
 
+Brainstorming Review automation uses the same review and comment scopes as draft-review automation, plus Brainstorming feature access when the operation reads or updates consensus state.
+
 The generated token stores the concrete scope names, such as `commentary.review.read`, `commentary.comments.write`, or `commentary.draft_reviews.share`.
 
 ## Targets
@@ -53,13 +55,17 @@ Common target formats are:
 - branch: `github:owner/repo:branch:main`
 - draft review: `draft:{sessionId}`
 
-Use account-wide targets for owned draft-review automation. Use draft targets when an agent should only access one draft review. Use GitHub targets when a token should stay limited to one repository, branch, or pull request.
+Use account-wide targets for owned draft-review automation. Use draft targets when an agent should only access one draft or Brainstorming Review. Use GitHub targets when a token should stay limited to one repository, branch, or pull request.
 
 ## MCP And Device Flow
 
 MCP clients can use the `/mcp` endpoint with bearer authentication. Device-flow clients start at `/oauth/device/code`, show the user code, ask the reviewer to open `/device`, and exchange the approved device code at `/oauth/token`.
 
 The developer access page lists device-flow and OAuth grants so they can be revoked from the same place as API tokens.
+
+The [Commentary CLI](./commentary-cli.md) can authenticate through device flow with `commentary login` or through an API token with `commentary login --token <token>`.
+
+See [Agent skills](./agent-skills.md) for agent workflows that use the CLI or MCP.
 
 ## Revoking Access
 

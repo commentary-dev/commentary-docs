@@ -10,6 +10,8 @@ nav:
       - Review pull requests: docs/review-pull-requests.md
       - Review repository branches: docs/review-repository-branches.md
       - Draft reviews: docs/draft-reviews.md
+      - Brainstorming Reviews: docs/brainstorming-reviews.md
+      - Review progress: docs/review-progress.md
       - Review modes: docs/review-modes.md
       - Workspace: docs/workspace.md
   - Content types:
@@ -23,6 +25,8 @@ nav:
       - Generate a GitHub PAT: docs/generate-a-github-pat.md
       - Azure DevOps: docs/azure-devops.md
   - Integrations:
+      - Commentary CLI: docs/commentary-cli.md
+      - Agent skills: docs/agent-skills.md
       - API and MCP: docs/api-and-mcp.md
       - API reference: docs/api/reference.md
       - MCP tools: docs/api/mcp-tools.md

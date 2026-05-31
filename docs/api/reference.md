@@ -21,26 +21,32 @@ OpenAPI version: `3.1.0`
 | `POST` | `/api/v1/brain/review/ready` | Mark a Knowledge Brain requested revision ready for review. | commentary.comments.write |
 | `GET` | `/api/v1/brain/review/requested-revisions` | List requested revisions for a Knowledge Brain review. | commentary.review.read |
 | `GET` | `/api/v1/brain/reviews` | List Knowledge Brain reviews available to the token. | commentary.review.read |
-| `GET` | `/api/v1/draft-reviews` | List draft reviews owned by the account-scoped token principal. | commentary.review.read |
-| `POST` | `/api/v1/draft-reviews` | Create a draft review session, optionally with initial file content. | commentary.comments.write |
+| `GET` | `/api/v1/draft-reviews` | List draft or Brainstorming Reviews owned by the account-scoped token principal. | commentary.review.read |
+| `POST` | `/api/v1/draft-reviews` | Create a draft or Brainstorming Review session, optionally with initial file content. | commentary.comments.write |
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}` | Permanently delete a draft review from active Commentary storage. | commentary.draft_reviews.delete |
 | `GET` | `/api/v1/draft-reviews/{sessionId}` | Get a draft review session. | commentary.review.read |
 | `PATCH` | `/api/v1/draft-reviews/{sessionId}` | Update draft review metadata or Git base metadata. | commentary.comments.write |
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}/access/{accessGrantId}` | Remove a draft review access grant. | commentary.draft_reviews.share |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/comments` | List comments for a draft review. | commentary.comments.read |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/comments` | Create a comment thread on a draft review. | commentary.comments.write |
+| `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/consensus-decision` | Accept, reject, mark out of scope, or clear an owner consensus decision for a Brainstorming Review thread. | commentary.comments.status |
+| `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/feedback` | Set or clear a Brainstorming Review feedback stance; owner addressed state clears unresolved feedback. | commentary.comments.write |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/replies` | Reply to a draft review comment. | commentary.comments.write |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/status` | Resolve or reopen a draft review comment. | commentary.comments.status |
-| `GET` | `/api/v1/draft-reviews/{sessionId}/events` | Stream draft review live events using Server-Sent Events. | commentary.comments.read |
+| `GET` | `/api/v1/draft-reviews/{sessionId}/consensus-rule` | Get the configured Brainstorming Review consensus rule. | commentary.review.read |
+| `PATCH` | `/api/v1/draft-reviews/{sessionId}/consensus-rule` | Update the Brainstorming Review consensus rule. Owner access is required. | commentary.comments.write |
+| `GET` | `/api/v1/draft-reviews/{sessionId}/consensus-state` | Get Brainstorming Review consensus counts and file readiness. | commentary.comments.read |
+| `GET` | `/api/v1/draft-reviews/{sessionId}/events` | Stream draft or Brainstorming Review live events using Server-Sent Events. | commentary.comments.read |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/files` | List draft review files. | commentary.review.read |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/files/{fileId}/content` | Download the latest content for a draft review file. | commentary.review.read |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/revisions` | List draft review revisions. | commentary.review.read |
-| `POST` | `/api/v1/draft-reviews/{sessionId}/revisions` | Upload a new draft review revision. | commentary.comments.write |
+| `POST` | `/api/v1/draft-reviews/{sessionId}/revisions` | Upload a new draft or Brainstorming Review revision from literal file content. | commentary.comments.write |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/shares` | List share links and access grants for a draft review. | commentary.draft_reviews.share |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/shares` | Create a draft review share link. | commentary.draft_reviews.share |
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}/shares/{shareLinkId}` | Revoke a draft review share link. | commentary.draft_reviews.share |
 | `GET` | `/api/v1/review/comments` | List review comments for a PR or branch document file. | commentary.comments.read |
 | `POST` | `/api/v1/review/comments` | Create a review comment thread on a PR or branch document. | commentary.comments.write |
+| `GET` | `/api/v1/review/progress` | Read per-reviewer progress for a PR, branch document, or draft review. | commentary.review.read |
 | `POST` | `/api/v1/review/threads/{threadId}/comments` | Reply to an existing review thread. | commentary.comments.write |
 | `POST` | `/api/v1/review/threads/{threadId}/status` | Resolve or reopen an existing review thread. | commentary.comments.status |
 | `GET` | `/api/v1/tokens` | List API tokens for the signed-in provider connection. | session/public |
