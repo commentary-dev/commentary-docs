@@ -11,6 +11,7 @@ nav:
       - Review repository branches: docs/review-repository-branches.md
       - Draft reviews: docs/draft-reviews.md
       - Brainstorming Reviews: docs/brainstorming-reviews.md
+      - Live Preview Reviews: docs/web-app-reviews.md
       - Review progress: docs/review-progress.md
       - Review modes: docs/review-modes.md
       - Workspace: docs/workspace.md

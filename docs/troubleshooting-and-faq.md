@@ -91,3 +91,17 @@ No. Draft review comments stay in Commentary. Draft reviews do not create commit
 ### Does Commentary work for public repositories without login?
 
 Yes, for public GitHub read-only review when GitHub's anonymous API limit allows it. Writing actions still require authentication.
+
+## Live Preview Reviews
+
+### Why does my preview show SDK not detected?
+
+The reviewed app must load the Commentary Review SDK in the preview page. Add `@commentary-dev/review-sdk` or the CDN script only in review or preview builds, then reload the review.
+
+### Why is my preview blocked in the frame?
+
+The preview host controls whether Commentary can embed it. Configure a narrow `frame-ancestors https://commentary.dev` policy for review environments instead of trying to proxy or bypass the host policy.
+
+### Can other reviewers open my localhost review?
+
+Only if they run the same app locally. Localhost previews load from each reviewer's browser; Commentary cloud services do not fetch your machine.

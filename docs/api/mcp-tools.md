@@ -133,6 +133,9 @@ Input schema:
         "type": "string"
       }
     },
+    "agentAlias": {
+      "type": "string"
+    },
     "enabled": {
       "type": "boolean"
     },
@@ -147,6 +150,9 @@ Input schema:
       "items": {
         "type": "string"
       }
+    },
+    "delegatedOwnerAgentParticipantId": {
+      "type": "string"
     },
     "requiredReviewerCondition": {
       "type": "string",
@@ -216,7 +222,7 @@ Input schema:
 ## `review_comments`
 
 List, create, reply, edit where supported, resolve, reopen, signal, or summarize Commentary comments for PR, branch, and Draft Review work.
-Use action=list, create, reply, edit, resolve, reopen, signal, consensus_decision, or summary. For Brainstorming Reviews, signal=agree/object/blocker/needs_clarification sets one exclusive reviewer stance per actor and thread; signal=addressed is post-update application metadata, while consensus_decision stores owner accept/reject/out-of-scope overrides.
+Use action=list, create, reply, edit, resolve, reopen, signal, consensus_decision, or summary. For Brainstorming Reviews, signal=agree/object/blocker/needs_clarification sets one exclusive reviewer stance per actor and thread; when countAgentSignals is enabled, agentAlias must be a registered agent participant to create an independent agent stance. signal=addressed is post-update application metadata, while consensus_decision stores owner accept/reject/out-of-scope overrides. In multi-agent mode, aliased owner decisions require the configured delegatedOwnerAgentParticipantId.
 Create comment with agentAlias: {"action":"create","sessionId":"dr_123","fileId":"file_1","blockId":"paragraph-2","nodeType":"paragraph","sourceLineStart":3,"sourceLineEnd":3,"bodyMarkdown":"Please revise this.","agentAlias":"local-agent"}
 Reply with agentAlias: {"action":"reply","sessionId":"dr_123","threadId":"thread_1","bodyMarkdown":"Fixed in the latest revision.","agentAlias":"local-agent"}
 Resolve with a closing aliased reply: {"action":"resolve","sessionId":"dr_123","threadId":"thread_1","bodyMarkdown":"Verified.","agentAlias":"local-agent"}
@@ -348,6 +354,202 @@ Input schema:
     },
     "active": {
       "type": "boolean"
+    }
+  },
+  "required": [
+    "action"
+  ]
+}
+```
+
+## `web_app_review`
+
+Manage Web App Reviews for agent handoff with action=list, get, create, update_metadata, list_comments, get_agent_context, create_comment, resolve, or reopen.
+Web App Review tools require account-scoped tokens and the web_app_reviews.agent_api feature. Agent context marks comment bodies and reviewed app content as untrusted user/application content.
+Create comment with selected element context: {"action":"create_comment","reviewId":"rev_123","bodyMarkdown":"Make this CTA clearer.","route":"/settings","url":"http://localhost:5173/settings","origin":"http://localhost:5173","selector":"[data-commentary-id='save']","fallbackSelector":"main button:nth-of-type(1)","tagName":"button","viewport":{"width":1440,"height":900},"boundingRect":{"x":812,"y":644,"width":132,"height":40}}
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "list",
+        "get",
+        "create",
+        "update_metadata",
+        "list_comments",
+        "get_agent_context",
+        "create_comment",
+        "resolve",
+        "reopen"
+      ]
+    },
+    "reviewId": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "sourceType": {
+      "type": "string",
+      "enum": [
+        "deployed_url",
+        "localhost"
+      ]
+    },
+    "previewUrl": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ]
+    },
+    "repo": {
+      "type": "object"
+    },
+    "externalMetadata": {
+      "type": "object"
+    },
+    "includeResolved": {
+      "type": "boolean"
+    },
+    "includeArchived": {
+      "type": "boolean"
+    },
+    "threadId": {
+      "type": "string"
+    },
+    "reviewSessionId": {
+      "type": "string"
+    },
+    "bodyMarkdown": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "route": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "origin": {
+      "type": "string"
+    },
+    "selector": {
+      "type": "string"
+    },
+    "fallbackSelector": {
+      "type": "string"
+    },
+    "tagName": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "accessibleName": {
+      "type": "string"
+    },
+    "textSnippet": {
+      "type": "string"
+    },
+    "boundingRect": {
+      "type": "object"
+    },
+    "viewport": {
+      "type": "object"
+    },
+    "component": {
+      "type": "object"
+    },
+    "commitSha": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action"
+  ]
+}
+```
+
+## `review_participants`
+
+List review participants, add taggable users, add an agent alias for the current user, and manage mention notifications.
+Use action=list, add_user, add_agent, list_notifications, or mark_notification_read.
+Provider-backed add_user is taggable metadata only. Draft Review add_user creates a user share link as well.
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "list",
+        "add_user",
+        "add_agent",
+        "list_notifications",
+        "mark_notification_read"
+      ]
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "github"
+      ]
+    },
+    "owner": {
+      "type": "string"
+    },
+    "repo": {
+      "type": "string"
+    },
+    "prNumber": {
+      "type": "number"
+    },
+    "branchRef": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "providerLogin": {
+      "type": "string"
+    },
+    "providerUserId": {
+      "type": "string"
+    },
+    "userId": {
+      "type": "string"
+    },
+    "agentAlias": {
+      "type": "string"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "mentionHandle": {
+      "type": "string"
+    },
+    "recipient": {
+      "type": "string"
+    },
+    "unreadOnly": {
+      "type": "boolean"
+    },
+    "notificationId": {
+      "type": "string"
     }
   },
   "required": [

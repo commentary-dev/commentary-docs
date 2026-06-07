@@ -38,6 +38,7 @@ Developer access offers common presets:
 - `Draft review deletion` for trusted cleanup tools.
 - `Review and submit` for trusted tools that can submit provider review decisions.
 - `Brain evaluations` for agents that submit or read Knowledge Brain evaluations.
+- `Web App Review automation` for account-scoped agents that read selected-element feedback and create or update Live Preview Reviews.
 
 Brainstorming Review automation uses the same review and comment scopes as draft-review automation, plus Brainstorming feature access when the operation reads or updates consensus state.
 
@@ -55,7 +56,7 @@ Common target formats are:
 - branch: `github:owner/repo:branch:main`
 - draft review: `draft:{sessionId}`
 
-Use account-wide targets for owned draft-review automation. Use draft targets when an agent should only access one draft or Brainstorming Review. Use GitHub targets when a token should stay limited to one repository, branch, or pull request.
+Use account-wide targets for Live Preview Review automation and owned draft-review automation. Use draft targets when an agent should only access one draft or Brainstorming Review. Use GitHub targets when a token should stay limited to one repository, branch, or pull request.
 
 ## MCP And Device Flow
 

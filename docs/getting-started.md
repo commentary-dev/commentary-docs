@@ -1,6 +1,6 @@
 # Getting Started
 
-Use Commentary when you want to review Markdown, MDX, static HTML, or draft text as a readable document instead of parsing changed lines.
+Use Commentary when you want to review Markdown, MDX, static HTML, draft text, or a running app preview as readable review context instead of parsing changed lines.
 
 ## Fastest First Run
 
@@ -32,6 +32,7 @@ Sign in when you want to:
 - open private repositories
 - create or share draft reviews
 - create or share Brainstorming Reviews
+- create Live Preview Reviews for deployed or localhost preview apps
 - use the GitHub or Azure DevOps workspace
 - create API tokens, use the Commentary CLI, connect an MCP client, or authorize an agent
 
@@ -45,6 +46,7 @@ GitHub App is the default GitHub path. Azure DevOps uses Microsoft Entra by defa
 - Want to review docs before a PR exists: paste a repository, branch, file, or folder URL and read [Review repository branches](./review-repository-branches.md).
 - Want to review a local or agent-generated draft before it is in Git: open [Draft reviews](./draft-reviews.md).
 - Want a group to converge on a plan before implementation: read [Brainstorming Reviews](./brainstorming-reviews.md).
+- Want to review a running UI preview: read [Live Preview Reviews](./web-app-reviews.md).
 - Want to create or sync draft reviews from a terminal: read [Commentary CLI](./commentary-cli.md).
 - Want an agent to participate in the review loop: read [Agent skills](./agent-skills.md).
 - Want to track what you have already reviewed: read [Review progress](./review-progress.md).

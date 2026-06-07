@@ -12,6 +12,10 @@
     {
       "url": "https://commentary.dev",
       "description": "Configured Commentary origin."
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development."
     }
   ],
   "tags": [
@@ -26,6 +30,9 @@
     },
     {
       "name": "Draft reviews"
+    },
+    {
+      "name": "Web App reviews"
     },
     {
       "name": "Knowledge Brain"
@@ -1173,6 +1180,450 @@
                     }
                   },
                   "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/review/participants": {
+      "get": {
+        "operationId": "listReviewParticipants",
+        "tags": [
+          "Review participants"
+        ],
+        "summary": "List users and agents taggable in a review.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "github"
+              ]
+            }
+          },
+          {
+            "name": "owner",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "repo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftSessionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pr",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "branch",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-commentary-feature-key": "review.mentions",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "participants": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ReviewParticipant"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "addReviewParticipant",
+        "tags": [
+          "Review participants"
+        ],
+        "summary": "Add a taggable user or register an agent alias for the current user.",
+        "description": "Provider-backed users are taggable metadata only. Draft Review user additions create a user share link.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.write"
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddReviewParticipantRequest"
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "review.mentions",
+        "responses": {
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "participant": {
+                      "$ref": "#/components/schemas/ReviewParticipant"
+                    },
+                    "participants": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ReviewParticipant"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/review/mention-notifications": {
+      "get": {
+        "operationId": "listMentionNotifications",
+        "tags": [
+          "Review participants"
+        ],
+        "summary": "List mention notifications for the current token principal.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "unread",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ]
+            }
+          }
+        ],
+        "x-commentary-feature-key": "review.mentions",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "notifications": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ReviewMentionNotification"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/review/mention-notifications/{notificationId}/read": {
+      "post": {
+        "operationId": "markMentionNotificationRead",
+        "tags": [
+          "Review participants"
+        ],
+        "summary": "Mark a mention notification read for the current token principal.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "notificationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Mention notification id."
+          }
+        ],
+        "x-commentary-feature-key": "review.mentions",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
                 }
               }
             }
@@ -2659,7 +3110,7 @@
         "tags": [
           "Draft reviews"
         ],
-        "summary": "Update the Brainstorming Review consensus rule. Owner access is required.",
+        "summary": "Update the Brainstorming Review consensus rule, including countAgentSignals and delegatedOwnerAgentParticipantId. Owner access is required.",
         "security": [
           {
             "bearerAuth": [
@@ -3397,7 +3848,7 @@
         "tags": [
           "Draft reviews"
         ],
-        "summary": "Set or clear a Brainstorming Review feedback stance; owner addressed state clears unresolved feedback.",
+        "summary": "Set or clear a Brainstorming Review feedback stance. When countAgentSignals is enabled, registered agent aliases can provide independent signals.",
         "security": [
           {
             "bearerAuth": [
@@ -3524,7 +3975,7 @@
         "tags": [
           "Draft reviews"
         ],
-        "summary": "Accept, reject, mark out of scope, or clear an owner consensus decision for a Brainstorming Review thread.",
+        "summary": "Accept, reject, mark out of scope, or clear an owner consensus decision for a Brainstorming Review thread. In multi-agent mode, aliased owner decisions require the delegated owner agent.",
         "security": [
           {
             "bearerAuth": [
@@ -4124,6 +4575,844 @@
                       "type": "boolean"
                     }
                   }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/web-app-reviews": {
+      "get": {
+        "operationId": "listWebAppReviews",
+        "tags": [
+          "Web App reviews"
+        ],
+        "summary": "List Web App Reviews owned by the account-scoped token principal.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.review.read"
+            ]
+          }
+        ],
+        "x-commentary-feature-key": "web_app_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "webAppReviews": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WebAppReview"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createWebAppReview",
+        "tags": [
+          "Web App reviews"
+        ],
+        "summary": "Create a Web App Review for a deployed or localhost preview URL.",
+        "description": "The preview app must be customer-controlled, frameable by Commentary, and instrumented with the Web App Review SDK.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.write"
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebAppReviewRequest"
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "web_app_reviews.agent_api",
+        "responses": {
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "webAppReview": {
+                      "$ref": "#/components/schemas/WebAppReview"
+                    },
+                    "reviewId": {
+                      "type": "string"
+                    },
+                    "reviewUrl": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/web-app-reviews/{reviewId}": {
+      "get": {
+        "operationId": "getWebAppReview",
+        "tags": [
+          "Web App reviews"
+        ],
+        "summary": "Get Web App Review metadata.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.review.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Web App Review id."
+          }
+        ],
+        "x-commentary-feature-key": "web_app_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "webAppReview": {
+                      "$ref": "#/components/schemas/WebAppReview"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateWebAppReview",
+        "tags": [
+          "Web App reviews"
+        ],
+        "summary": "Update Web App Review metadata.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Web App Review id."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchWebAppReviewRequest"
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "web_app_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "webAppReview": {
+                      "$ref": "#/components/schemas/WebAppReview"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/web-app-reviews/{reviewId}/comments": {
+      "get": {
+        "operationId": "listWebAppReviewComments",
+        "tags": [
+          "Web App reviews"
+        ],
+        "summary": "List selected-element comments for a Web App Review.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Web App Review id."
+          }
+        ],
+        "x-commentary-feature-key": "web_app_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "comments": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WebAppReviewComment"
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createWebAppReviewComment",
+        "tags": [
+          "Web App reviews"
+        ],
+        "summary": "Create a selected-element comment for a Web App Review.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Web App Review id."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebAppReviewCommentRequest"
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "web_app_reviews.agent_api",
+        "responses": {
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "comment": {
+                      "$ref": "#/components/schemas/WebAppReviewComment"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/web-app-reviews/{reviewId}/comments/{threadId}/status": {
+      "post": {
+        "operationId": "updateWebAppReviewCommentStatus",
+        "tags": [
+          "Web App reviews"
+        ],
+        "summary": "Resolve or reopen a Web App Review comment thread.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.comments.status"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Web App Review id."
+          },
+          {
+            "name": "threadId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Review thread id."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ThreadStatusRequest"
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "web_app_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "const": true
+                    },
+                    "comment": {
+                      "$ref": "#/components/schemas/WebAppReviewComment"
+                    },
+                    "comments": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WebAppReviewComment"
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/web-app-reviews/{reviewId}/agent-context": {
+      "get": {
+        "operationId": "getWebAppReviewAgentContext",
+        "tags": [
+          "Web App reviews"
+        ],
+        "summary": "Get Web App Review comments as actionable, untrusted agent editing tasks.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.review.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Web App Review id."
+          },
+          {
+            "name": "includeResolved",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "includeArchived",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "x-commentary-feature-key": "web_app_reviews.agent_api",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebAppReviewAgentContext"
                 }
               }
             }
@@ -5610,7 +6899,7 @@
           "MCP"
         ],
         "summary": "Call Commentary MCP over Streamable HTTP JSON-RPC.",
-        "description": "Authenticated tools/list advertises: draft_review, review_comments, review_polls, review_document, brain_review.",
+        "description": "Authenticated tools/list advertises: draft_review, review_comments, web_app_review, review_participants, review_polls, review_document, brain_review.",
         "security": [
           {
             "bearerAuth": []
@@ -6017,6 +7306,146 @@
         },
         "additionalProperties": true
       },
+      "ReviewParticipant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "user",
+              "agent"
+            ]
+          },
+          "providerLogin": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "providerUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "viewerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "agentAlias": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "mentionHandle": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "taggable": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      },
+      "AddReviewParticipantRequest": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "github"
+            ],
+            "default": "github"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "prNumber": {
+            "type": "integer"
+          },
+          "branchRef": {
+            "type": "string"
+          },
+          "draftSessionId": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "user",
+              "agent"
+            ]
+          },
+          "providerLogin": {
+            "type": "string"
+          },
+          "providerUserId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "agentAlias": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "mentionHandle": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReviewMentionNotification": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "contextKey": {
+            "type": "string"
+          },
+          "threadId": {
+            "type": "string"
+          },
+          "commentId": {
+            "type": "string"
+          },
+          "mentionHandle": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "readAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": true
+      },
       "ReviewProgressFile": {
         "type": "object",
         "required": [
@@ -6347,6 +7776,12 @@
               "type": "string"
             }
           },
+          "delegatedOwnerAgentParticipantId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "requiredReviewerCondition": {
             "type": "string",
             "enum": [
@@ -6408,6 +7843,12 @@
             ]
           },
           "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "agentAlias": {
             "type": [
               "string",
               "null"
@@ -6860,6 +8301,377 @@
         },
         "additionalProperties": false
       },
+      "WebAppReviewRepo": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "owner": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branch": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "commitSha": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deploymentId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "buildId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "WebAppReview": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": [
+              "deployed_url",
+              "localhost"
+            ]
+          },
+          "previewUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "previewOrigin": {
+            "type": "string"
+          },
+          "repo": {
+            "$ref": "#/components/schemas/WebAppReviewRepo"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "archived"
+            ]
+          },
+          "reviewUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": true
+      },
+      "CreateWebAppReviewRequest": {
+        "type": "object",
+        "required": [
+          "title",
+          "sourceType",
+          "previewUrl"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": [
+              "deployed_url",
+              "localhost"
+            ]
+          },
+          "previewUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "repo": {
+            "$ref": "#/components/schemas/WebAppReviewRepo"
+          },
+          "externalMetadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PatchWebAppReviewRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "active",
+              "archived",
+              null
+            ]
+          },
+          "repo": {
+            "$ref": "#/components/schemas/WebAppReviewRepo"
+          },
+          "externalMetadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WebAppElementContextInput": {
+        "type": "object",
+        "required": [
+          "route",
+          "url",
+          "origin",
+          "selector",
+          "fallbackSelector",
+          "tagName",
+          "boundingRect",
+          "viewport"
+        ],
+        "properties": {
+          "route": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "selector": {
+            "type": "string"
+          },
+          "fallbackSelector": {
+            "type": "string"
+          },
+          "tagName": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "accessibleName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "textSnippet": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "boundingRect": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "viewport": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "component": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
+          "commitSha": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateWebAppReviewCommentRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebAppElementContextInput"
+          },
+          {
+            "type": "object",
+            "required": [
+              "bodyMarkdown"
+            ],
+            "properties": {
+              "bodyMarkdown": {
+                "type": "string"
+              },
+              "reviewSessionId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "WebAppReviewComment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "threadId": {
+            "type": "string"
+          },
+          "reviewId": {
+            "type": "string"
+          },
+          "bodyMarkdown": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "resolved"
+            ]
+          },
+          "route": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "selector": {
+            "type": "string"
+          },
+          "fallbackSelector": {
+            "type": "string"
+          },
+          "element": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "boundingRect": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "viewport": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "component": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
+          "commitSha": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "author": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": true
+      },
+      "WebAppReviewAgentContext": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "const": true
+          },
+          "review": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "web_app_review_comment"
+                },
+                "security": {
+                  "type": "object",
+                  "properties": {
+                    "untrusted": {
+                      "const": true
+                    },
+                    "warning": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "untrusted",
+                    "warning"
+                  ]
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      },
       "BrainReview": {
         "type": "object",
         "additionalProperties": true
@@ -7009,6 +8821,8 @@
                   "enum": [
                     "draft_review",
                     "review_comments",
+                    "web_app_review",
+                    "review_participants",
                     "review_polls",
                     "review_document",
                     "brain_review"

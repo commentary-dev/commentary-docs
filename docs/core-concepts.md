@@ -2,7 +2,7 @@
 
 Commentary is a document-review layer on top of Git providers and private draft review sessions. GitHub is the default provider, and Azure DevOps is also supported.
 
-## Pull Request Review vs Document Review vs Draft Review vs Brainstorming Review
+## Pull Request Review vs Document Review vs Draft Review vs Brainstorming Review vs Live Preview Review
 
 ### Pull request review
 
@@ -31,6 +31,13 @@ Commentary is a document-review layer on top of Git providers and private draft 
 - Supports feedback signals, consensus rules, decision polls, and accepted-change states for agents.
 - Uses the same `/review/draft/{sessionId}` review links, comments, revisions, sharing, API, MCP, and CLI foundation.
 - Best when a group needs to discuss options before an agent or author applies accepted changes.
+
+### Live Preview Review
+
+- Opens a customer-owned deployed or localhost preview app in Commentary.
+- Requires the preview app to opt in with the Commentary Review SDK.
+- Stores selected-element comments with route, selector, viewport, and optional source metadata.
+- Best for reviewing interactive UI changes before or during implementation handoff.
 
 ## `Preview` vs `Raw`
 

@@ -29,12 +29,12 @@ OpenAPI version: `3.1.0`
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}/access/{accessGrantId}` | Remove a draft review access grant. | commentary.draft_reviews.share |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/comments` | List comments for a draft review. | commentary.comments.read |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/comments` | Create a comment thread on a draft review. | commentary.comments.write |
-| `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/consensus-decision` | Accept, reject, mark out of scope, or clear an owner consensus decision for a Brainstorming Review thread. | commentary.comments.status |
-| `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/feedback` | Set or clear a Brainstorming Review feedback stance; owner addressed state clears unresolved feedback. | commentary.comments.write |
+| `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/consensus-decision` | Accept, reject, mark out of scope, or clear an owner consensus decision for a Brainstorming Review thread. In multi-agent mode, aliased owner decisions require the delegated owner agent. | commentary.comments.status |
+| `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/feedback` | Set or clear a Brainstorming Review feedback stance. When countAgentSignals is enabled, registered agent aliases can provide independent signals. | commentary.comments.write |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/replies` | Reply to a draft review comment. | commentary.comments.write |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/status` | Resolve or reopen a draft review comment. | commentary.comments.status |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/consensus-rule` | Get the configured Brainstorming Review consensus rule. | commentary.review.read |
-| `PATCH` | `/api/v1/draft-reviews/{sessionId}/consensus-rule` | Update the Brainstorming Review consensus rule. Owner access is required. | commentary.comments.write |
+| `PATCH` | `/api/v1/draft-reviews/{sessionId}/consensus-rule` | Update the Brainstorming Review consensus rule, including countAgentSignals and delegatedOwnerAgentParticipantId. Owner access is required. | commentary.comments.write |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/consensus-state` | Get Brainstorming Review consensus counts and file readiness. | commentary.comments.read |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/events` | Stream draft or Brainstorming Review live events using Server-Sent Events. | commentary.comments.read |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/files` | List draft review files. | commentary.review.read |
@@ -46,12 +46,24 @@ OpenAPI version: `3.1.0`
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}/shares/{shareLinkId}` | Revoke a draft review share link. | commentary.draft_reviews.share |
 | `GET` | `/api/v1/review/comments` | List review comments for a PR or branch document file. | commentary.comments.read |
 | `POST` | `/api/v1/review/comments` | Create a review comment thread on a PR or branch document. | commentary.comments.write |
+| `GET` | `/api/v1/review/mention-notifications` | List mention notifications for the current token principal. | commentary.comments.read |
+| `POST` | `/api/v1/review/mention-notifications/{notificationId}/read` | Mark a mention notification read for the current token principal. | commentary.comments.write |
+| `GET` | `/api/v1/review/participants` | List users and agents taggable in a review. | commentary.comments.read |
+| `POST` | `/api/v1/review/participants` | Add a taggable user or register an agent alias for the current user. | commentary.comments.write |
 | `GET` | `/api/v1/review/progress` | Read per-reviewer progress for a PR, branch document, or draft review. | commentary.review.read |
 | `POST` | `/api/v1/review/threads/{threadId}/comments` | Reply to an existing review thread. | commentary.comments.write |
 | `POST` | `/api/v1/review/threads/{threadId}/status` | Resolve or reopen an existing review thread. | commentary.comments.status |
 | `GET` | `/api/v1/tokens` | List API tokens for the signed-in provider connection. | session/public |
 | `POST` | `/api/v1/tokens` | Create an API token for scripts, MCP clients, or agents. | session/public |
 | `DELETE` | `/api/v1/tokens/{tokenId}` | Revoke an API token. | session/public |
+| `GET` | `/api/v1/web-app-reviews` | List Web App Reviews owned by the account-scoped token principal. | commentary.review.read |
+| `POST` | `/api/v1/web-app-reviews` | Create a Web App Review for a deployed or localhost preview URL. | commentary.comments.write |
+| `GET` | `/api/v1/web-app-reviews/{reviewId}` | Get Web App Review metadata. | commentary.review.read |
+| `PATCH` | `/api/v1/web-app-reviews/{reviewId}` | Update Web App Review metadata. | commentary.comments.write |
+| `GET` | `/api/v1/web-app-reviews/{reviewId}/agent-context` | Get Web App Review comments as actionable, untrusted agent editing tasks. | commentary.review.read |
+| `GET` | `/api/v1/web-app-reviews/{reviewId}/comments` | List selected-element comments for a Web App Review. | commentary.comments.read |
+| `POST` | `/api/v1/web-app-reviews/{reviewId}/comments` | Create a selected-element comment for a Web App Review. | commentary.comments.write |
+| `POST` | `/api/v1/web-app-reviews/{reviewId}/comments/{threadId}/status` | Resolve or reopen a Web App Review comment thread. | commentary.comments.status |
 | `GET` | `/mcp` | Probe MCP endpoint authentication and protocol support. | session/public |
 | `POST` | `/mcp` | Call Commentary MCP over Streamable HTTP JSON-RPC. | session/public |
 | `GET` | `/oauth/authorize` | Show the OAuth authorization page. | session/public |

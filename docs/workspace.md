@@ -39,6 +39,10 @@ Use `New review` or the draft review list when you need document-style feedback 
 
 Use Brainstorming Reviews when collaborators need to discuss options, signal agreement or blockers, and let agents apply accepted changes. See [Brainstorming Reviews](./brainstorming-reviews.md).
 
+### Live Preview Reviews
+
+Use `Live Preview Reviews` for customer-owned deployed or localhost app previews. The reviewed app loads in your browser, connects through the opt-in Review SDK, and lets reviewers leave comments on selected UI elements. See [Live Preview Reviews](./web-app-reviews.md).
+
 ### Agent review
 
 Use `Agent review` when it is available to scan likely agent-maintained Knowledge Brain pull requests, unresolved review notes, and requested-revision follow-up work.
