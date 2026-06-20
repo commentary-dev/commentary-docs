@@ -15,6 +15,7 @@ servers:
 tags:
   - name: Authentication
   - name: Tokens
+  - name: Forms
   - name: Review comments
   - name: Draft reviews
   - name: Web App reviews
@@ -582,6 +583,1579 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms:
+    get:
+      operationId: listForms
+      tags:
+        - Forms
+      summary: List owned forms and visible result collections for the account-scoped
+        token principal.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  forms:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  resultCollections:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createForm
+      tags:
+        - Forms
+      summary: Reject standalone Forms API creation.
+      description: Standalone Forms API creation has been removed. Agents should
+        create or update draft review files through draft-review APIs, or author
+        Git-backed form definitions in the reviewed source.
+      security:
+        - bearerAuth:
+            - commentary.forms.write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FormContractRequest"
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "410":
+          description: Standalone form creation has been removed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/validate:
+    post:
+      operationId: validateFormContract
+      tags:
+        - Forms
+      summary: Validate a literal Form Contract v1 payload without persisting it.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FormContractRequest"
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  valid:
+                    type: boolean
+                  contract:
+                    $ref: "#/components/schemas/FormContract"
+                  diagnostics:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/embedded-answers:
+    get:
+      operationId: listEmbeddedFormAnswers
+      tags:
+        - Forms
+      summary: List embedded review form answers for an authorized result context.
+      description: Requires explicit Forms read scope for raw submission values.
+        Review-scoped tokens must include repository owner/repo and prNumber or
+        branchRef, or draftReviewSessionId, in the query. Result-list access
+        still requires draft ownership or a trusted source write-permission
+        determination; callers cannot grant this by passing sourceContext
+        fields.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      parameters:
+        - name: formId
+          in: query
+          required: false
+          schema:
+            type: string
+        - &a5
+          name: provider
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - github
+        - &a6
+          name: owner
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Repository owner.
+        - &a7
+          name: repo
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Repository name.
+        - &a8
+          name: pr
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Pull request number.
+        - &a9
+          name: prNumber
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Pull request number alias used by Brain endpoints.
+        - &a10
+          name: branch
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Branch ref for branch document review.
+        - &a11
+          name: branchRef
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Branch ref alias used by Brain endpoints.
+        - &a12
+          name: rootFolder
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Knowledge Brain root folder.
+        - &a13
+          name: brainRootFolder
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Knowledge Brain root folder alias.
+        - name: draftReviewSessionId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: webAppReviewId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: filePath
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: documentVersionId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: formInstanceId
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  submissions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FormSubmission"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/fillout-links:
+    get:
+      operationId: listFormFilloutLinks
+      tags:
+        - Forms
+      summary: List response links owned by the account-scoped token principal.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  filloutLinks:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createFormFilloutLink
+      tags:
+        - Forms
+      summary: Create a response link from an accessible source-backed form.
+      description: The caller becomes the dedicated result-set owner. The source
+        review remains the edit location, and source review owners do not
+        automatically see response-link replies.
+      security:
+        - bearerAuth:
+            - commentary.forms.write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - formId
+              properties:
+                formId:
+                  type: string
+                sourceContext:
+                  type: object
+                  additionalProperties: true
+                sourceReviewHref:
+                  type: string
+                shareMode:
+                  type: string
+                  enum:
+                    - specific_user
+                    - authenticated
+                    - anonymous
+                replyMode:
+                  type: string
+                  enum:
+                    - identified
+                    - anonymous
+                repeatSubmissions:
+                  type: boolean
+                recipient:
+                  type: object
+                  additionalProperties: true
+              additionalProperties: true
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  filloutLink:
+                    type: object
+                    additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/fillout-links/submit:
+    post:
+      operationId: submitFormFilloutLink
+      tags:
+        - Forms
+      summary: Submit answers through a response link.
+      description: Identified links require an authenticated Forms submit token.
+        Anonymous reply mode intentionally omits submitter identity from stored
+        submission records.
+      security:
+        - bearerAuth:
+            - commentary.forms.submit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                shareToken:
+                  type: string
+                values:
+                  type: object
+                  additionalProperties: true
+                submissionOrigin:
+                  type: string
+                  enum:
+                    - api
+                    - mcp
+                    - cli
+                    - agent_api
+                agentAlias:
+                  type: string
+                clientName:
+                  type: string
+              additionalProperties: true
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  submission:
+                    $ref: "#/components/schemas/FormSubmission"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/fillout-links/{linkId}:
+    delete:
+      operationId: revokeFormFilloutLink
+      tags:
+        - Forms
+      summary: Revoke a response link owned by the account-scoped token principal.
+      security:
+        - bearerAuth:
+            - commentary.forms.write
+      parameters:
+        - &a4
+          name: linkId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Response link id.
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/fillout-links/{linkId}/results:
+    get:
+      operationId: listFormFilloutLinkResults
+      tags:
+        - Forms
+      summary: List result submissions owned by a response link.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      parameters:
+        - *a4
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  filloutLink:
+                    type: object
+                    additionalProperties: true
+                  submissions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FormSubmission"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/{formId}:
+    get:
+      operationId: getForm
+      tags:
+        - Forms
+      summary: Get a form contract and metadata.
+      description: Review-scoped tokens can read embedded forms only when query
+        parameters identify the covered review context.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      parameters:
+        - &a14
+          name: formId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Form id or reference id.
+        - *a5
+        - *a6
+        - *a7
+        - *a8
+        - *a9
+        - *a10
+        - *a11
+        - *a12
+        - *a13
+        - name: draftReviewSessionId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: filePath
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: documentVersionId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: formInstanceId
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  form:
+                    $ref: "#/components/schemas/FormRecord"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    patch:
+      operationId: updateForm
+      tags:
+        - Forms
+      summary: Reject standalone Forms API editing.
+      description: Standalone Forms API editing has been removed. Update the source
+        review artifact or draft review file instead.
+      security:
+        - bearerAuth:
+            - commentary.forms.write
+      parameters:
+        - *a14
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FormContractRequest"
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "410":
+          description: Standalone form editing has been removed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/{formId}/destinations:
+    get:
+      operationId: listFormDestinations
+      tags:
+        - Forms
+      summary: List form destinations and read-only write-back status.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      parameters:
+        - *a14
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  formId:
+                    type: string
+                  destinations:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  destinationConfig:
+                    type: object
+                    additionalProperties: true
+                  writebackStatus:
+                    type: object
+                    additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/{formId}/destinations/writeback:
+    get:
+      operationId: getFormWritebackStatus
+      tags:
+        - Forms
+      summary: Inspect optional GitHub writeback availability for a form target.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      parameters:
+        - *a14
+        - name: owner
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: repo
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: branch
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: path
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: baseBranch
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  formId:
+                    type: string
+                  writebackStatus:
+                    type: object
+                    additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: writeFormArtifactToGitHub
+      tags:
+        - Forms
+      summary: Explicitly write a form definition or final submission to GitHub
+        through the optional writeback app.
+      description: Requires commentary.forms.writeback, the forms.github_writeback
+        license feature, a configured optional GitHub writeback app, an
+        installed repository target, and a valid branch/path target. Commentary
+        storage remains available when writeback is unavailable.
+      security:
+        - bearerAuth:
+            - commentary.forms.writeback
+      parameters:
+        - *a14
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetType:
+                  type: string
+                  enum:
+                    - form_definition
+                    - submission
+                submissionId:
+                  type: string
+                target:
+                  type: object
+                  properties:
+                    owner:
+                      type: string
+                    repo:
+                      type: string
+                    branch:
+                      type: string
+                    path:
+                      type: string
+                    baseBranch:
+                      type: string
+                  additionalProperties: false
+                format:
+                  type: string
+                  enum:
+                    - json
+                    - yaml
+                commitMessage:
+                  type: string
+                openPullRequest:
+                  type: boolean
+                pullRequestTitle:
+                  type: string
+                pullRequestBody:
+                  type: string
+              additionalProperties: true
+      x-commentary-feature-key: forms.github_writeback
+      responses:
+        "202":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  formId:
+                    type: string
+                  submissionId:
+                    type: string
+                  writeback:
+                    type: object
+                    additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/{formId}/git-results:
+    get:
+      operationId: listFormGitResults
+      tags:
+        - Forms
+      summary: List canonical git-hosted result files for a source-backed form.
+      description: Discovers files in the canonical results directory near the form
+        source path. Use action=status for read-only sync status and canonical
+        location details.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      parameters:
+        - *a14
+        - name: action
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - list
+              - status
+        - name: owner
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: repo
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: ref
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: branch
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sourcePath
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  formId:
+                    type: string
+                  target:
+                    type: object
+                    additionalProperties: true
+                  files:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  diagnostics:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: syncFormGitResults
+      tags:
+        - Forms
+      summary: Preview result writeback or explicitly import canonical git-hosted
+        result files.
+      description: Import and preview actions require commentary.forms.writeback and
+        the forms.github_writeback license feature. Import validates canonical
+        JSON/YAML result files, deduplicates by external id, records audit
+        events, and stores imported submissions with git sync metadata.
+      security:
+        - bearerAuth:
+            - commentary.forms.writeback
+      parameters:
+        - *a14
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FormGitResultsRequest"
+      x-commentary-feature-key: forms.github_writeback
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "202":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/{formId}/submissions:
+    get:
+      operationId: listFormSubmissions
+      tags:
+        - Forms
+      summary: List submissions for a permitted result collection.
+      description: Result-list access is separate from form fill access. Draft results
+        default to the draft owner; PR and branch results require trusted
+        write-permission detection. When write permission cannot be determined,
+        list access is denied.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      parameters:
+        - *a14
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  submissions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FormSubmission"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: submitForm
+      tags:
+        - Forms
+      summary: Submit final form answers.
+      description: All writes validate server-side. Invalid answers are stored as
+        draft validation failures and return diagnostics without finalizing.
+      security:
+        - bearerAuth:
+            - commentary.forms.submit
+      parameters:
+        - *a14
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FormSubmissionRequest"
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  submission:
+                    $ref: "#/components/schemas/FormSubmission"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/{formId}/submissions/validate:
+    post:
+      operationId: validateFormAnswers
+      tags:
+        - Forms
+      summary: Validate form answers against the current form contract without storing
+        a submission.
+      security:
+        - bearerAuth:
+            - commentary.forms.submit
+      parameters:
+        - *a14
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FormSubmissionRequest"
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  valid:
+                    type: boolean
+                  diagnostics:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/forms/{formId}/submissions/{submissionId}:
+    get:
+      operationId: getFormSubmission
+      tags:
+        - Forms
+      summary: Read or export one form submission including raw values for an
+        authorized principal.
+      description: Pass format=json, yaml, or csv to download a bounded stable export
+        for one submission. CSV is available only when submitted field values
+        are tabular scalars or scalar arrays.
+      security:
+        - bearerAuth:
+            - commentary.forms.read
+      parameters:
+        - *a14
+        - name: submissionId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Form submission id.
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - json
+              - yaml
+              - csv
+          description: Optional export format. Omit for the normal JSON API envelope.
+        - name: kind
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Source context kind when exporting a review-scoped embedded answer.
+        - name: draftReviewSessionId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: webAppReviewId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: owner
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: repo
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: prNumber
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: branchRef
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: filePath
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: documentVersionId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: formInstanceId
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: forms.agent_api
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  submission:
+                    $ref: "#/components/schemas/FormSubmission"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "409":
+          description: CSV export is not available for this submission shape.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "413":
+          description: The export exceeded the size limit.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
   /api/v1/review/comments:
     get:
       operationId: listReviewComments
@@ -758,6 +2332,11 @@ paths:
           schema:
             type: string
         - name: draftSessionId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: webAppReviewId
           in: query
           required: false
           schema:
@@ -1105,7 +2684,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - &a4
+        - &a15
           name: threadId
           in: path
           required: true
@@ -1178,7 +2757,7 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
-        - *a4
+        - *a15
       requestBody:
         required: true
         content:
@@ -1375,7 +2954,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - &a5
+        - &a16
           name: sessionId
           in: path
           required: true
@@ -1435,7 +3014,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a5
+        - *a16
       requestBody:
         required: true
         content:
@@ -1495,7 +3074,7 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.delete
       parameters:
-        - *a5
+        - *a16
       x-commentary-feature-key: draft_reviews.delete
       responses:
         "200":
@@ -1549,7 +3128,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a5
+        - *a16
       x-commentary-feature-key: draft_reviews.agent_api
       responses:
         "200":
@@ -1606,7 +3185,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a5
+        - *a16
         - name: fileId
           in: path
           required: true
@@ -1661,7 +3240,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a5
+        - *a16
       x-commentary-feature-key: draft_reviews.agent_api
       responses:
         "200":
@@ -1718,7 +3297,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a5
+        - *a16
       requestBody:
         required: true
         content:
@@ -1793,7 +3372,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a5
+        - *a16
       x-commentary-feature-key: draft_reviews.agent_api
       responses:
         "200":
@@ -1849,7 +3428,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a5
+        - *a16
       requestBody:
         required: true
         content:
@@ -1910,7 +3489,7 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a5
+        - *a16
       x-commentary-feature-key: draft_reviews.agent_api
       responses:
         "200":
@@ -1978,7 +3557,7 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a5
+        - *a16
         - name: fileId
           in: query
           required: false
@@ -2065,7 +3644,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a5
+        - *a16
       requestBody:
         required: true
         content:
@@ -2128,8 +3707,8 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a5
-        - *a4
+        - *a16
+        - *a15
       requestBody:
         required: true
         content:
@@ -2196,8 +3775,8 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
-        - *a5
-        - *a4
+        - *a16
+        - *a15
       requestBody:
         required: true
         content:
@@ -2266,8 +3845,8 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a5
-        - *a4
+        - *a16
+        - *a15
       requestBody:
         required: true
         content:
@@ -2336,8 +3915,8 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
-        - *a5
-        - *a4
+        - *a16
+        - *a15
       requestBody:
         required: true
         content:
@@ -2410,7 +3989,7 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a5
+        - *a16
         - name: cursor
           in: query
           required: false
@@ -2473,7 +4052,7 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.share
       parameters:
-        - *a5
+        - *a16
       x-commentary-feature-key: draft_reviews.sharing
       responses:
         "200":
@@ -2527,7 +4106,7 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.share
       parameters:
-        - *a5
+        - *a16
       requestBody:
         required: true
         content:
@@ -2591,8 +4170,9 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.share
       parameters:
-        - *a5
-        - name: shareLinkId
+        - *a16
+        - &a18
+          name: shareLinkId
           in: path
           required: true
           schema:
@@ -2651,8 +4231,9 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.share
       parameters:
-        - *a5
-        - name: accessGrantId
+        - *a16
+        - &a19
+          name: accessGrantId
           in: path
           required: true
           schema:
@@ -2829,7 +4410,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - &a6
+        - &a17
           name: reviewId
           in: path
           required: true
@@ -2889,7 +4470,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a6
+        - *a17
       requestBody:
         required: true
         content:
@@ -2950,7 +4531,7 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a6
+        - *a17
       x-commentary-feature-key: web_app_reviews.agent_api
       responses:
         "200":
@@ -3006,7 +4587,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a6
+        - *a17
       requestBody:
         required: true
         content:
@@ -3067,8 +4648,8 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
-        - *a6
-        - *a4
+        - *a17
+        - *a15
       requestBody:
         required: true
         content:
@@ -3133,7 +4714,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a6
+        - *a17
         - name: includeResolved
           in: query
           required: false
@@ -3152,6 +4733,236 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WebAppReviewAgentContext"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/web-app-reviews/{reviewId}/shares:
+    get:
+      operationId: listWebAppReviewShares
+      tags:
+        - Web App reviews
+      summary: List share links and access grants for a deployed Web App Review.
+      security:
+        - bearerAuth:
+            - commentary.review.share
+      parameters:
+        - *a17
+      x-commentary-feature-key: web_app_reviews.sharing
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  shares:
+                    type: object
+                    additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createWebAppReviewShare
+      tags:
+        - Web App reviews
+      summary: Create a deployed Web App Review share link.
+      description: Localhost Web App Reviews cannot be shared through Commentary share
+        links.
+      security:
+        - bearerAuth:
+            - commentary.review.share
+      parameters:
+        - *a17
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDraftShareRequest"
+      x-commentary-feature-key: web_app_reviews.sharing
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  shareUrl:
+                    type: string
+                    format: uri
+                  link:
+                    type: object
+                    additionalProperties: true
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/web-app-reviews/{reviewId}/shares/{shareLinkId}:
+    delete:
+      operationId: revokeWebAppReviewShare
+      tags:
+        - Web App reviews
+      summary: Revoke a Web App Review share link.
+      security:
+        - bearerAuth:
+            - commentary.review.share
+      parameters:
+        - *a17
+        - *a18
+      x-commentary-feature-key: web_app_reviews.sharing
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  revoked:
+                    type: boolean
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/web-app-reviews/{reviewId}/access/{accessGrantId}:
+    delete:
+      operationId: removeWebAppReviewAccess
+      tags:
+        - Web App reviews
+      summary: Remove a Web App Review access grant.
+      security:
+        - bearerAuth:
+            - commentary.review.share
+      parameters:
+        - *a17
+        - *a19
+      x-commentary-feature-key: web_app_reviews.sharing
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    const: true
+                  removed:
+                    type: boolean
         "400":
           description: The request was invalid.
           content:
@@ -3267,70 +5078,15 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - &a7
-          name: provider
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - github
-        - &a8
-          name: owner
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Repository owner.
-        - &a9
-          name: repo
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Repository name.
-        - &a10
-          name: pr
-          in: query
-          required: false
-          schema:
-            type: integer
-          description: Pull request number.
-        - &a11
-          name: prNumber
-          in: query
-          required: false
-          schema:
-            type: integer
-          description: Pull request number alias used by Brain endpoints.
-        - &a12
-          name: branch
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Branch ref for branch document review.
-        - &a13
-          name: branchRef
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Branch ref alias used by Brain endpoints.
-        - &a14
-          name: rootFolder
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Knowledge Brain root folder.
-        - &a15
-          name: brainRootFolder
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Knowledge Brain root folder alias.
+        - *a5
+        - *a6
+        - *a7
+        - *a8
+        - *a9
+        - *a10
+        - *a11
+        - *a12
+        - *a13
         - name: file
           in: query
           required: false
@@ -3403,6 +5159,8 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
+        - *a5
+        - *a6
         - *a7
         - *a8
         - *a9
@@ -3410,8 +5168,6 @@ paths:
         - *a11
         - *a12
         - *a13
-        - *a14
-        - *a15
         - name: file
           in: query
           required: false
@@ -3484,6 +5240,8 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
+        - *a5
+        - *a6
         - *a7
         - *a8
         - *a9
@@ -3491,8 +5249,6 @@ paths:
         - *a11
         - *a12
         - *a13
-        - *a14
-        - *a15
         - name: file
           in: query
           required: false
@@ -3565,6 +5321,8 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
+        - *a5
+        - *a6
         - *a7
         - *a8
         - *a9
@@ -3572,8 +5330,6 @@ paths:
         - *a11
         - *a12
         - *a13
-        - *a14
-        - *a15
         - name: file
           in: query
           required: false
@@ -3700,6 +5456,8 @@ paths:
         - bearerAuth:
             - commentary.brain.evals.read
       parameters:
+        - *a5
+        - *a6
         - *a7
         - *a8
         - *a9
@@ -3707,8 +5465,6 @@ paths:
         - *a11
         - *a12
         - *a13
-        - *a14
-        - *a15
       x-commentary-feature-key: brain.evaluations
       responses:
         "200":
@@ -3899,9 +5655,9 @@ paths:
       tags:
         - MCP
       summary: Call Commentary MCP over Streamable HTTP JSON-RPC.
-      description: "Authenticated tools/list advertises: draft_review,
-        review_comments, web_app_review, review_participants, review_polls,
-        review_document, brain_review."
+      description: "Authenticated tools/list advertises: commentary_forms,
+        draft_review, review_comments, web_app_review, review_participants,
+        review_polls, review_document, brain_review."
       security:
         - bearerAuth: []
       requestBody:
@@ -4025,9 +5781,14 @@ components:
         - commentary.comments.read
         - commentary.comments.write
         - commentary.comments.status
+        - commentary.review.share
         - commentary.draft_reviews.delete
         - commentary.draft_reviews.share
         - commentary.review.submit
+        - commentary.forms.read
+        - commentary.forms.write
+        - commentary.forms.submit
+        - commentary.forms.writeback
         - commentary.brain.evals.read
         - commentary.brain.evals.write
     TokenTarget:
@@ -4117,6 +5878,243 @@ components:
         createdAt:
           type: string
           format: date-time
+      additionalProperties: true
+    FormContract:
+      type: object
+      description: Normalized Commentary Form Contract v1.
+      additionalProperties: true
+    FormSourceContext:
+      type: object
+      description: Embedded review context such as repository owner/repo plus prNumber
+        or branchRef, draftReviewSessionId, filePath, documentVersionId,
+        formInstanceId, and route.
+      additionalProperties: true
+    FormRecord:
+      type: object
+      properties:
+        id:
+          type: string
+        referenceId:
+          type: string
+        title:
+          type: string
+        description:
+          type:
+            - string
+            - "null"
+        status:
+          type: string
+          enum:
+            - active
+            - archived
+        visibility:
+          type: string
+          enum:
+            - private
+            - shared
+            - public_placeholder
+        sourceType:
+          type: string
+          enum:
+            - commentary
+            - github
+            - embedded
+            - custom
+        contractHash:
+          type: string
+        currentVersionId:
+          type:
+            - string
+            - "null"
+        sourceMetadata:
+          type: object
+          additionalProperties: true
+        destinationConfig:
+          type: object
+          additionalProperties: true
+        contract:
+          $ref: "#/components/schemas/FormContract"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    FormSubmission:
+      type: object
+      properties:
+        id:
+          type: string
+        formId:
+          type: string
+        formVersionId:
+          type: string
+        status:
+          type: string
+          enum:
+            - draft
+            - final
+            - replaced
+            - voided
+        validationResult:
+          type: object
+          additionalProperties: true
+        values:
+          type: object
+          description: Raw submitted values. Requires commentary.forms.read.
+          additionalProperties: true
+        sourceContext:
+          $ref: "#/components/schemas/FormSourceContext"
+        sourceContextSummary:
+          type: object
+          additionalProperties: true
+        submissionOrigin:
+          type: string
+          enum:
+            - web
+            - api
+            - mcp
+            - cli
+            - agent_api
+        submitterViewerId:
+          type:
+            - string
+            - "null"
+        submitterLogin:
+          type:
+            - string
+            - "null"
+        agentAlias:
+          type:
+            - string
+            - "null"
+        clientName:
+          type:
+            - string
+            - "null"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        submittedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+      additionalProperties: true
+    FormContractRequest:
+      type: object
+      properties:
+        contract:
+          $ref: "#/components/schemas/FormContract"
+        contractSource:
+          type: string
+          description: Literal JSON or YAML form contract source.
+        sourceFormat:
+          type: string
+          enum:
+            - json
+            - yaml
+            - auto
+        referenceId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        visibility:
+          type: string
+          enum:
+            - private
+            - shared
+            - public_placeholder
+        sourceType:
+          type: string
+          enum:
+            - commentary
+            - github
+            - embedded
+            - custom
+        sourceMetadata:
+          type: object
+          additionalProperties: true
+        destinationConfig:
+          type: object
+          additionalProperties: true
+        agentAlias:
+          type: string
+        clientName:
+          type: string
+      additionalProperties: false
+    FormSubmissionRequest:
+      type: object
+      properties:
+        values:
+          type: object
+          additionalProperties: true
+        sourceContext:
+          $ref: "#/components/schemas/FormSourceContext"
+        submissionId:
+          type: string
+        submissionOrigin:
+          type: string
+          enum:
+            - api
+            - mcp
+            - cli
+            - agent_api
+        agentAlias:
+          type: string
+        clientName:
+          type: string
+      additionalProperties: false
+    FormGitResultsRequest:
+      type: object
+      properties:
+        action:
+          type: string
+          enum:
+            - import
+            - preview_writeback
+        submissionId:
+          type: string
+        paths:
+          type: array
+          items:
+            type: string
+        target:
+          type: object
+          properties:
+            owner:
+              type: string
+            repo:
+              type: string
+            ref:
+              type: string
+            branch:
+              type: string
+            sourcePath:
+              type: string
+            baseBranch:
+              type: string
+          additionalProperties: true
+        summary:
+          type: string
+        commitMessage:
+          type: string
+        openPullRequest:
+          type: boolean
+        pullRequestTitle:
+          type: string
+        pullRequestBody:
+          type: string
+        agentAlias:
+          type: string
+        clientName:
+          type: string
       additionalProperties: true
     ReviewThread:
       type: object
@@ -4231,6 +6229,8 @@ components:
         branchRef:
           type: string
         draftSessionId:
+          type: string
+        webAppReviewId:
           type: string
         kind:
           type: string
@@ -4900,6 +6900,22 @@ components:
             - string
             - "null"
       additionalProperties: false
+    WebAppReviewPrincipalIdentity:
+      type: object
+      properties:
+        viewerId:
+          type:
+            - string
+            - "null"
+        providerAccountId:
+          type:
+            - string
+            - "null"
+        login:
+          type:
+            - string
+            - "null"
+      additionalProperties: false
     WebAppReview:
       type: object
       properties:
@@ -4907,6 +6923,10 @@ components:
           type: string
         title:
           type: string
+        owner:
+          $ref: "#/components/schemas/WebAppReviewPrincipalIdentity"
+        currentUser:
+          $ref: "#/components/schemas/WebAppReviewPrincipalIdentity"
         sourceType:
           type: string
           enum:
@@ -5104,6 +7124,15 @@ components:
           const: true
         review:
           type: object
+          properties:
+            id:
+              type: string
+            type:
+              const: web_app
+            owner:
+              $ref: "#/components/schemas/WebAppReviewPrincipalIdentity"
+            currentUser:
+              $ref: "#/components/schemas/WebAppReviewPrincipalIdentity"
           additionalProperties: true
         comments:
           type: array
@@ -5230,6 +7259,7 @@ components:
               name:
                 type: string
                 enum:
+                  - commentary_forms
                   - draft_review
                   - review_comments
                   - web_app_review

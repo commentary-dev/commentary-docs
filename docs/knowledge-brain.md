@@ -2,11 +2,13 @@
 
 Knowledge Brain mode is for reviewing AI-maintained knowledge bases before they are merged or published.
 
+![Knowledge Brain product page](./assets/knowledge-brain-product.png)
+
 ![Knowledge Brain review](./assets/knowledge-brain-review.png)
 
 ## When To Use It
 
-Use Knowledge Brain review when a branch updates source notes, generated wiki pages, project memory, research claims, LLM outputs, or other knowledge-base files. Commentary keeps the work in the normal rendered document review shell, but adds brain-aware navigation and review context.
+Use Knowledge Brain review when a branch updates source notes, generated wiki pages, project memory, research claims, LLM outputs, Open Knowledge Format bundles, or other knowledge-base files. Commentary keeps the work in the normal rendered document review shell, but adds brain-aware navigation and review context.
 
 Common patterns include:
 
@@ -14,22 +16,25 @@ Common patterns include:
 - research brains with papers, concepts, claims, citations, and evaluation ledgers
 - project brains with architecture notes, ADRs, incidents, and runbooks
 - agent-maintained support or product knowledge bases
+- OKF bundles with concepts, index files, logs, and bundle-root concept links
 
 ## Brain Workspace
 
 When Knowledge Brain mode is active, the file navigator groups files by role instead of showing only a flat Markdown list. Typical groups include sources, wiki pages, outputs, and other control or support files.
+
+Open Knowledge Format profiles add OKF-oriented concept, index, and log navigation groups, bundle-root absolute concept links, and OKF conformance health findings.
 
 Brain review can add:
 
 - review summaries for changed knowledge
 - wikilinks and backlinks between pages
 - source-to-wiki comparison context
-- health findings for broken links, missing source trails, duplicate entities, risky content, and schema issues
+- health findings for broken links, missing source trails, duplicate entities, risky content, OKF conformance, and schema issues
 - provenance views for claims and their source references
 - knowledge-diff and graph-review context for relationship changes
 - evaluations for manual golden-question checks
 
-Some advanced Brain surfaces are Pro preview features. They remain usable during the preview period and show the standard Pro notice when opened.
+Some advanced Brain surfaces are Pro preview features. They remain usable during the preview period and show the standard Pro notice when opened. The OKF review profile itself is a free feature.
 
 ## Public Readers
 
@@ -45,5 +50,4 @@ Private Brain publishing is a Pro preview feature and requires sign-in before pr
 
 API and MCP clients can inspect Knowledge Brain review state with scoped tokens. Supported workflows include listing Brain reviews, changed Brain files, review comments, health findings, requested revisions, ready-for-review replies, and evaluation ledgers.
 
-Use the public `commentary-dev` fixture repositories for demos and read-only validation. Mutating automation belongs only in the dedicated `commentary-test` fixture repositories.
-
+Use public `commentary-dev` fixture repositories for demos and read-only validation. Mutating automation belongs only in dedicated test fixture repositories.

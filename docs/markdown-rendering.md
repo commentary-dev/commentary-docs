@@ -14,6 +14,7 @@ Commentary supports common Markdown review content, including:
 - wikilinks, backlinks, and unresolved wikilinks shown as readable text
 - Markdown embeds and safe MDX placeholders
 - repository-relative links and images rewritten for the current review context
+- embedded Commentary Forms through native form blocks
 - GitHub-style safe raw HTML, including inline tags such as `<br>`, semantic tags such as `<details>`/`<summary>`, and sanitized links/images
 
 See [Markdown extensions](./markdown-extensions.md) for docs-framework compatibility, slide rendering, docs preview, and Pro preview behavior.
@@ -23,6 +24,20 @@ See [Markdown extensions](./markdown-extensions.md) for docs-framework compatibi
 Relative links inside rendered Markdown stay inside the current review when they point to another repository Markdown file. Relative images resolve against the provider file source. External links open separately. Safe raw HTML links and images use the same repository-aware rewriting when they point at files in the reviewed repository.
 
 Repository-aware links can also route across docs preview pages, embedded Markdown sources, and Knowledge Brain pages when enough repository context is available.
+
+## Heading Folding And Deep Links
+
+Latest rendered Markdown can collapse and expand H2-H6 sections from compact heading-row controls. H1 headings stay visible. The toolbar can collapse all sections, collapse-all state is reflected in the URL, and folded sections show comment counts when they contain comments.
+
+Heading rows also expose copyable deep links. Opening a hash link reveals only the folded ancestors needed for the target so the destination can be read without losing the rest of the folding state.
+
+Folding is for Latest rendered Markdown. Raw mode, static HTML preview, rendered Diff, and slide-deck Present mode keep their own behavior.
+
+## Forms In Markdown
+
+Markdown and MDX can embed Forms while preserving rendered review comments, polls, anchors, completion state, and agent-readable answers. The machine-readable Form Contract remains the source of truth, and the native renderer hydrates inside the review surface.
+
+See [Commentary Forms](./commentary-forms.md).
 
 ## Safe Raw HTML
 

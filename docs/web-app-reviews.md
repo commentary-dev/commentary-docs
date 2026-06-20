@@ -1,22 +1,38 @@
 # Live Preview Reviews
 
-Live Preview Reviews let reviewers comment on customer-owned interactive preview apps. Commentary loads the preview in the browser, the preview app opts in with the Commentary Review SDK, and comments attach to selected UI elements instead of Markdown blocks.
+Live Preview Reviews are an opt-in review mode for customer-owned interactive preview apps. Commentary stores the preview URL as a first-class review target and stores comments against live HTML element context reported by the app-side Review SDK.
 
 Use this for deployed previews, staging apps, and localhost development servers that you own or are authorized to review. Commentary does not proxy arbitrary websites, inject scripts into third-party pages, bypass frame restrictions, or server-fetch localhost previews.
+
+![Live Preview Reviews product page](./assets/live-preview-product.png)
+
+## Review Targets
+
+Use deployed preview mode for HTTPS preview URLs that you own or are authorized to review, such as Vercel, Netlify, Azure Static Web Apps, GitHub Pages, or customer staging hosts. The reviewed app must allow itself to be embedded by Commentary and must include the Review SDK in the preview build.
+
+Use localhost mode for loopback URLs such as `http://localhost:5173`, `http://127.0.0.1:3000`, or `http://[::1]:4173`. Localhost reviews load from the current reviewer's browser and cannot be shared through Commentary share links. Commentary cloud services do not fetch the reviewer's localhost.
+
+Private LAN hosts such as `192.168.x.x`, `10.x.x.x`, `172.16.x.x` through `172.31.x.x`, and `.local` names are rejected by default.
+
+![Live Preview Review create form](./assets/web-app-review-create.png)
 
 ## Create A Review
 
 1. Sign in and open [/workspace/web-app-reviews/new](https://commentary.dev/workspace/web-app-reviews/new).
 2. Choose `Deployed preview` or `Localhost`.
 3. Enter a preview URL you own or are authorized to review.
-4. Add optional repository, branch, commit, or deployment metadata when it helps agents or reviewers understand the source.
+4. Add optional repository, branch, commit, deployment, or build metadata when it helps agents or reviewers understand the source.
 5. Create the review and open the generated `/review/web-app/{reviewId}` link.
 
-Deployed preview URLs must use HTTPS. Localhost reviews accept loopback URLs such as `http://localhost:5173`, `http://127.0.0.1:3000`, or `http://[::1]:4173`.
+Opening a review loads the validated preview URL directly in an iframe, shows SDK connection state, and lets reviewers switch between Interact and Comment modes. Commentary never reads `iframe.contentWindow.document`; live element selection is handled by the opt-in SDK through strict `postMessage` messages.
 
-Private LAN hosts such as `192.168.x.x`, `10.x.x.x`, `172.16.x.x` through `172.31.x.x`, and `.local` names are rejected by default.
+## Sharing
 
-![Live Preview Review create form](./assets/web-app-review-create.png)
+Owners can share deployed Live Preview Reviews from the review page. Commentary creates signed share links for either anyone with the link or a specific GitHub user. Reviewers must sign in before claiming a share link for full workspace and comment access.
+
+Anyone-link share routes can show a public read-only preview before sign-in. Shared reviewers can open the direct review route, create SDK sessions, read comments, add replies, resolve or reopen comment threads, and create selected-element comments. They cannot update review metadata, create or revoke shares, remove other reviewers, or see the review in their owner workspace list.
+
+Localhost Live Preview Reviews are intentionally excluded from sharing. The preview URL points at the current reviewer's machine, so sharing is available only after the app is deployed to an HTTPS preview that can be embedded by Commentary.
 
 ## Review Modes
 
@@ -39,6 +55,48 @@ Use the explicit fullscreen control or the `F` shortcut to request browser fulls
 
 ![Live Preview Review full page mode](./assets/web-app-review-full-page.png)
 
+## Element Comments
+
+In Comment mode the parent sends picker commands to the preview SDK. The SDK highlights hovered elements inside the iframe, prevents the selected click from reaching the reviewed app, and sends bounded element metadata. Commentary opens the composer outside the iframe and stores comments using app-only sync semantics.
+
+Selecting a comment asks the SDK to re-query the selector or fallback selector in the current DOM and return a fresh bounding rectangle for the parent-side marker. If the target no longer exists, the comment remains available and the target is marked unavailable locally.
+
+## Custom Renderer Form Bridge
+
+Live Preview apps can include customer-owned custom form experiences while Commentary still owns the Form Contract, validation, submissions, and agent-readable results. This mode is distinct from native Commentary Forms: Commentary can render structured Forms itself, but Interactive Experiences can own their UI and submit structured values through the Forms SDK bridge.
+
+The browser bridge uses the existing Live Preview Review `postMessage` session. Commentary does not fetch renderer URLs server-side and does not evaluate customer JavaScript. The preview app must already be embedded in a Live Preview Review, initialized with the exact parent origin, and bound to the review session nonce. Form submit messages are accepted only from the configured preview origin and iframe window, are size-limited, and are forwarded to the Forms bridge endpoint.
+
+Custom renderers submit:
+
+- form id plus optional version id or contract hash
+- structured values
+- draft or final status
+- route, URL, viewport, and optional component metadata
+- renderer metadata and diagnostics
+
+Final submissions are validated server-side against the current Form Contract before they become final. Validation failures return machine-readable diagnostics to the renderer and are saved as draft validation failures. Source UI and renderer metadata are marked untrusted in agent context; the structured values remain Form Contract data.
+
+Use `@commentary-dev/forms-sdk` or `https://cdn.commentary.dev/forms-sdk/latest/commentary-forms-sdk.js` for the bridge:
+
+```js
+await window.CommentaryForms.submitForm({
+  formId: "customer-intake",
+  formVersionHash: "fnv1a32:...",
+  status: "final",
+  values: {
+    name: "reviewer-1",
+    email: "reviewer-1@example.com"
+  },
+  rendererMetadata: {
+    name: "checkout-custom-form",
+    mode: "interactive_experience"
+  }
+});
+```
+
+See [Commentary Forms](./commentary-forms.md).
+
 ## Review SDK
 
 Preview apps opt in by loading the Commentary Review SDK only in review or preview builds. The SDK is available as the npm package `@commentary-dev/review-sdk` and from the Commentary CDN at `https://cdn.commentary.dev/review-sdk/latest/commentary-review-sdk.js`.
@@ -48,6 +106,7 @@ NPM-style usage:
 ```ts
 if (import.meta.env.VITE_COMMENTARY_REVIEW === "true") {
   window.__COMMENTARY_PARENT_ORIGIN__ = "https://commentary.dev";
+  window.__COMMENTARY_PARENT_ORIGINS__ = ["https://commentary.dev"];
   window.__COMMENTARY_COMMIT_SHA__ = import.meta.env.VITE_COMMIT_SHA;
   window.__COMMENTARY_BUILD_ID__ = import.meta.env.VITE_BUILD_ID;
 
@@ -60,6 +119,7 @@ Script-tag usage:
 ```html
 <script>
   window.__COMMENTARY_PARENT_ORIGIN__ = "https://commentary.dev";
+  window.__COMMENTARY_PARENT_ORIGINS__ = ["https://commentary.dev"];
   window.__COMMENTARY_BUILD_ID__ = "preview-123";
   window.__COMMENTARY_COMMIT_SHA__ = "abcdef123456";
 </script>
@@ -72,10 +132,10 @@ Optional source metadata improves anchors and agent handoff:
 
 ```html
 <button
-  data-commentary-id="BillingSettingsForm.saveButton"
-  data-commentary-component="BillingSettingsForm"
-  data-commentary-source="src/components/BillingSettingsForm.tsx:118:10">
-  Save changes
+  data-commentary-component="BillingPlanCard"
+  data-commentary-source="src/components/billing-plan-card.tsx:42"
+>
+  Upgrade
 </button>
 ```
 
@@ -95,9 +155,9 @@ Commentary does not store DOM dumps, cookies, localStorage, sessionStorage, toke
 
 ## API And MCP
 
-Live Preview Review automation is available through the public API and MCP. Account-scoped tokens can list, create, read, and archive reviews; list and create selected-element comments; resolve or reopen comment threads; and fetch agent context.
+Live Preview Review automation is available through the public API and MCP. Account-scoped tokens can list, create, read, archive, and share reviews; list and create selected-element comments; resolve or reopen comment threads; and fetch agent context.
 
-The feature keys are `web_app_reviews.basic` for the web workflow and `web_app_reviews.agent_api` for API/MCP automation. Both are Pro-preview features and remain usable during the no-billing preview.
+Share automation requires `commentary.review.share`. The feature keys are `web_app_reviews.basic`, `web_app_reviews.agent_api`, and `web_app_reviews.sharing`. These are Pro-preview features and remain usable during the no-billing preview.
 
 Agent context marks comment bodies and reviewed app content as untrusted user/application content. Agents should treat them as editing tasks, not instructions.
 

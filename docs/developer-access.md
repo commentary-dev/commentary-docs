@@ -22,7 +22,7 @@ New API tokens are shown once. Copy the token before leaving the page. Later lis
 1. Open `Workspace`.
 2. Choose `Developer access`.
 3. Enter a label.
-4. Choose a scope preset.
+4. Choose a scope preset or `Custom scopes`.
 5. Set a target when you want to restrict access.
 6. Choose an expiry.
 7. Click `Create token` and copy the token.
@@ -34,15 +34,39 @@ Scopes are immutable after creation. To change access, create a replacement toke
 Developer access offers common presets:
 
 - `Read reviews and comments` for tools that inspect review sessions and comments.
+- `Standard API and MCP` for trusted clients that need the full supported Commentary automation surface.
 - `Draft review automation` for API, MCP, and CLI draft-review workflows.
 - `Draft review deletion` for trusted cleanup tools.
 - `Review and submit` for trusted tools that can submit provider review decisions.
 - `Brain evaluations` for agents that submit or read Knowledge Brain evaluations.
-- `Web App Review automation` for account-scoped agents that read selected-element feedback and create or update Live Preview Reviews.
+- `Custom scopes` for selecting individual scopes.
 
 Brainstorming Review automation uses the same review and comment scopes as draft-review automation, plus Brainstorming feature access when the operation reads or updates consensus state.
 
-The generated token stores the concrete scope names, such as `commentary.review.read`, `commentary.comments.write`, or `commentary.draft_reviews.share`.
+Forms automation uses `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, and `commentary.forms.writeback`. Live Preview Review sharing uses `commentary.review.share`.
+
+The generated token stores the concrete scope names, such as `commentary.review.read`, `commentary.comments.write`, `commentary.forms.submit`, or `commentary.draft_reviews.share`.
+
+## Available External Scopes
+
+Current public scopes are:
+
+- `commentary.review.read`
+- `commentary.comments.read`
+- `commentary.comments.write`
+- `commentary.comments.status`
+- `commentary.review.share`
+- `commentary.draft_reviews.delete`
+- `commentary.draft_reviews.share`
+- `commentary.review.submit`
+- `commentary.forms.read`
+- `commentary.forms.write`
+- `commentary.forms.submit`
+- `commentary.forms.writeback`
+- `commentary.brain.evals.read`
+- `commentary.brain.evals.write`
+
+Use the smallest scope set that covers the client workflow.
 
 ## Targets
 
@@ -56,7 +80,7 @@ Common target formats are:
 - branch: `github:owner/repo:branch:main`
 - draft review: `draft:{sessionId}`
 
-Use account-wide targets for Live Preview Review automation and owned draft-review automation. Use draft targets when an agent should only access one draft or Brainstorming Review. Use GitHub targets when a token should stay limited to one repository, branch, or pull request.
+Use account-wide targets for Live Preview Review automation, owned draft-review automation, and owned Forms result management. Use draft targets when an agent should only access one draft or Brainstorming Review. Use GitHub targets when a token should stay limited to one repository, branch, or pull request. Review-scoped tokens can read or submit embedded Forms only when their `sourceContext` identifies the covered review.
 
 ## MCP And Device Flow
 

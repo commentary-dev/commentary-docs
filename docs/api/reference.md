@@ -44,6 +44,26 @@ OpenAPI version: `3.1.0`
 | `GET` | `/api/v1/draft-reviews/{sessionId}/shares` | List share links and access grants for a draft review. | commentary.draft_reviews.share |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/shares` | Create a draft review share link. | commentary.draft_reviews.share |
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}/shares/{shareLinkId}` | Revoke a draft review share link. | commentary.draft_reviews.share |
+| `GET` | `/api/v1/forms` | List owned forms and visible result collections for the account-scoped token principal. | commentary.forms.read |
+| `POST` | `/api/v1/forms` | Reject standalone Forms API creation. | commentary.forms.write |
+| `GET` | `/api/v1/forms/{formId}` | Get a form contract and metadata. | commentary.forms.read |
+| `PATCH` | `/api/v1/forms/{formId}` | Reject standalone Forms API editing. | commentary.forms.write |
+| `GET` | `/api/v1/forms/{formId}/destinations` | List form destinations and read-only write-back status. | commentary.forms.read |
+| `GET` | `/api/v1/forms/{formId}/destinations/writeback` | Inspect optional GitHub writeback availability for a form target. | commentary.forms.read |
+| `POST` | `/api/v1/forms/{formId}/destinations/writeback` | Explicitly write a form definition or final submission to GitHub through the optional writeback app. | commentary.forms.writeback |
+| `GET` | `/api/v1/forms/{formId}/git-results` | List canonical git-hosted result files for a source-backed form. | commentary.forms.read |
+| `POST` | `/api/v1/forms/{formId}/git-results` | Preview result writeback or explicitly import canonical git-hosted result files. | commentary.forms.writeback |
+| `GET` | `/api/v1/forms/{formId}/submissions` | List submissions for a permitted result collection. | commentary.forms.read |
+| `POST` | `/api/v1/forms/{formId}/submissions` | Submit final form answers. | commentary.forms.submit |
+| `GET` | `/api/v1/forms/{formId}/submissions/{submissionId}` | Read or export one form submission including raw values for an authorized principal. | commentary.forms.read |
+| `POST` | `/api/v1/forms/{formId}/submissions/validate` | Validate form answers against the current form contract without storing a submission. | commentary.forms.submit |
+| `GET` | `/api/v1/forms/embedded-answers` | List embedded review form answers for an authorized result context. | commentary.forms.read |
+| `GET` | `/api/v1/forms/fillout-links` | List response links owned by the account-scoped token principal. | commentary.forms.read |
+| `POST` | `/api/v1/forms/fillout-links` | Create a response link from an accessible source-backed form. | commentary.forms.write |
+| `DELETE` | `/api/v1/forms/fillout-links/{linkId}` | Revoke a response link owned by the account-scoped token principal. | commentary.forms.write |
+| `GET` | `/api/v1/forms/fillout-links/{linkId}/results` | List result submissions owned by a response link. | commentary.forms.read |
+| `POST` | `/api/v1/forms/fillout-links/submit` | Submit answers through a response link. | commentary.forms.submit |
+| `POST` | `/api/v1/forms/validate` | Validate a literal Form Contract v1 payload without persisting it. | commentary.forms.read |
 | `GET` | `/api/v1/review/comments` | List review comments for a PR or branch document file. | commentary.comments.read |
 | `POST` | `/api/v1/review/comments` | Create a review comment thread on a PR or branch document. | commentary.comments.write |
 | `GET` | `/api/v1/review/mention-notifications` | List mention notifications for the current token principal. | commentary.comments.read |
@@ -60,10 +80,14 @@ OpenAPI version: `3.1.0`
 | `POST` | `/api/v1/web-app-reviews` | Create a Web App Review for a deployed or localhost preview URL. | commentary.comments.write |
 | `GET` | `/api/v1/web-app-reviews/{reviewId}` | Get Web App Review metadata. | commentary.review.read |
 | `PATCH` | `/api/v1/web-app-reviews/{reviewId}` | Update Web App Review metadata. | commentary.comments.write |
+| `DELETE` | `/api/v1/web-app-reviews/{reviewId}/access/{accessGrantId}` | Remove a Web App Review access grant. | commentary.review.share |
 | `GET` | `/api/v1/web-app-reviews/{reviewId}/agent-context` | Get Web App Review comments as actionable, untrusted agent editing tasks. | commentary.review.read |
 | `GET` | `/api/v1/web-app-reviews/{reviewId}/comments` | List selected-element comments for a Web App Review. | commentary.comments.read |
 | `POST` | `/api/v1/web-app-reviews/{reviewId}/comments` | Create a selected-element comment for a Web App Review. | commentary.comments.write |
 | `POST` | `/api/v1/web-app-reviews/{reviewId}/comments/{threadId}/status` | Resolve or reopen a Web App Review comment thread. | commentary.comments.status |
+| `GET` | `/api/v1/web-app-reviews/{reviewId}/shares` | List share links and access grants for a deployed Web App Review. | commentary.review.share |
+| `POST` | `/api/v1/web-app-reviews/{reviewId}/shares` | Create a deployed Web App Review share link. | commentary.review.share |
+| `DELETE` | `/api/v1/web-app-reviews/{reviewId}/shares/{shareLinkId}` | Revoke a Web App Review share link. | commentary.review.share |
 | `GET` | `/mcp` | Probe MCP endpoint authentication and protocol support. | session/public |
 | `POST` | `/mcp` | Call Commentary MCP over Streamable HTTP JSON-RPC. | session/public |
 | `GET` | `/oauth/authorize` | Show the OAuth authorization page. | session/public |
@@ -76,5 +100,5 @@ OpenAPI version: `3.1.0`
 
 ## Scopes
 
-`commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.brain.evals.read`, `commentary.brain.evals.write`
+`commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.review.share`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, `commentary.forms.writeback`, `commentary.brain.evals.read`, `commentary.brain.evals.write`
 

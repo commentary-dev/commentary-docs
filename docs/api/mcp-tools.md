@@ -3,12 +3,203 @@
 
 The `/mcp` endpoint advertises these tools through authenticated `tools/list`. This file is generated from the same definitions used by the route.
 
+## `commentary_forms`
+
+Validate, fill, submit, list, read, and inspect source-backed Commentary Forms without UI scraping.
+Use action=list, list_result_collections, list_fillout_links, create_fillout_link, revoke_fillout_link, submit_fillout_link, list_fillout_results, get, validate_contract, validate_answers, create_submission, save_draft, submit, list_submissions, get_submission, export_submission, list_embedded_answers, destinations, writeback_status, git_result_sync_status, preview_result_writeback, writeback_form, writeback_submission, list_git_results, or import_git_results.
+Standalone form create/update is not advertised; create or update draft review files through the draft_review tool, or author Git-backed form definitions in the reviewed source.
+Review-scoped tokens may read and submit embedded forms only when sourceContext identifies the covered review. Raw submission values require commentary.forms.read and result-view permission; submitters can read their own submission detail.
+writeback_status, git_result_sync_status, and list_git_results are read-only. preview_result_writeback, writeback_form, writeback_submission, and import_git_results require commentary.forms.writeback, the forms.github_writeback license feature, and an explicit repository target. Submission writeback uses the canonical JSON git result format.
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "list",
+        "list_result_collections",
+        "list_fillout_links",
+        "create_fillout_link",
+        "revoke_fillout_link",
+        "submit_fillout_link",
+        "list_fillout_results",
+        "get",
+        "validate_contract",
+        "validate_answers",
+        "create_submission",
+        "save_draft",
+        "submit",
+        "list_submissions",
+        "get_submission",
+        "export_submission",
+        "list_embedded_answers",
+        "destinations",
+        "writeback_status",
+        "git_result_sync_status",
+        "preview_result_writeback",
+        "writeback_form",
+        "writeback_submission",
+        "list_git_results",
+        "import_git_results"
+      ]
+    },
+    "formId": {
+      "type": "string"
+    },
+    "linkId": {
+      "type": "string"
+    },
+    "filloutLinkId": {
+      "type": "string"
+    },
+    "token": {
+      "type": "string"
+    },
+    "shareToken": {
+      "type": "string"
+    },
+    "submissionId": {
+      "type": "string"
+    },
+    "referenceId": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "private",
+        "shared",
+        "public_placeholder"
+      ]
+    },
+    "sourceType": {
+      "type": "string",
+      "enum": [
+        "commentary",
+        "github",
+        "embedded",
+        "custom"
+      ]
+    },
+    "contract": {
+      "type": "object"
+    },
+    "contractSource": {
+      "type": "string"
+    },
+    "sourceFormat": {
+      "type": "string",
+      "enum": [
+        "json",
+        "yaml",
+        "auto"
+      ]
+    },
+    "sourceMetadata": {
+      "type": "object"
+    },
+    "destinationConfig": {
+      "type": "object"
+    },
+    "target": {
+      "type": "object"
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "json",
+        "yaml",
+        "csv"
+      ]
+    },
+    "commitMessage": {
+      "type": "string"
+    },
+    "openPullRequest": {
+      "type": "boolean"
+    },
+    "pullRequestTitle": {
+      "type": "string"
+    },
+    "pullRequestBody": {
+      "type": "string"
+    },
+    "paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "values": {
+      "type": "object"
+    },
+    "sourceContext": {
+      "type": "object"
+    },
+    "sourceReviewHref": {
+      "type": "string"
+    },
+    "shareMode": {
+      "type": "string",
+      "enum": [
+        "specific_user",
+        "authenticated",
+        "anonymous"
+      ]
+    },
+    "replyMode": {
+      "type": "string",
+      "enum": [
+        "identified",
+        "anonymous"
+      ]
+    },
+    "repeatSubmissions": {
+      "type": "boolean"
+    },
+    "recipient": {
+      "type": "object"
+    },
+    "submissionOrigin": {
+      "type": "string",
+      "enum": [
+        "api",
+        "mcp",
+        "cli",
+        "agent_api"
+      ]
+    },
+    "agentAlias": {
+      "type": "string"
+    },
+    "clientName": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action"
+  ]
+}
+```
+
 ## `draft_review`
 
 Manage Draft Review Sessions with action=create, get, list, convert_to_brainstorming, update_metadata, upload_revision, rebase, delete, list_revisions, get_revision, get_content, get_consensus_rule, update_consensus_rule, get_consensus_state, list_events, list_shares, share, revoke_share, or remove_access.
 Brainstorming Reviews use the same sessionId/fileId/revision APIs and require the brainstorming_reviews.agent_api feature for remote agent operations.
 content is the full literal UTF-8 file content. There is no path resolution, URL fetching, or server-side file loading; the client must read files and inline their contents.
+Use forms/*.form.yaml, forms/*.form.yml, or forms/*.form.json for standalone draft-backed form contracts. Draft review responses include sourceContext and formSource identifiers for actual current files; pass those through commentary_forms when reading embedded answers or submitting draft-backed forms.
 Create with literal content: {"action":"create","title":"Spec","files":[{"path":"docs/spec.md","content":"# Spec\n","contentType":"markdown"}]}
+Create a form draft: {"action":"create","title":"Intake form","files":[{"path":"forms/intake.form.yaml","content":"commentaryForm: 1\nid: intake.quick\ntitle: Intake\nschema:\n  type: object\n","contentType":"auto"}]}
 Create empty draft: {"action":"create","title":"Spec"}
 Upload one changed file and omit unchanged files: {"action":"upload_revision","sessionId":"dr_123","files":[{"fileId":"file_1","content":"# Spec\nUpdated.\n"}]}
 
@@ -364,7 +555,7 @@ Input schema:
 
 ## `web_app_review`
 
-Manage Web App Reviews for agent handoff with action=list, get, create, update_metadata, list_comments, get_agent_context, create_comment, resolve, or reopen.
+Manage Web App Reviews for agent handoff with action=list, get, create, update_metadata, list_comments, get_agent_context, create_comment, resolve, reopen, list_shares, share, revoke_share, or remove_access.
 Web App Review tools require account-scoped tokens and the web_app_reviews.agent_api feature. Agent context marks comment bodies and reviewed app content as untrusted user/application content.
 Create comment with selected element context: {"action":"create_comment","reviewId":"rev_123","bodyMarkdown":"Make this CTA clearer.","route":"/settings","url":"http://localhost:5173/settings","origin":"http://localhost:5173","selector":"[data-commentary-id='save']","fallbackSelector":"main button:nth-of-type(1)","tagName":"button","viewport":{"width":1440,"height":900},"boundingRect":{"x":812,"y":644,"width":132,"height":40}}
 
@@ -385,10 +576,30 @@ Input schema:
         "get_agent_context",
         "create_comment",
         "resolve",
-        "reopen"
+        "reopen",
+        "list_shares",
+        "share",
+        "revoke_share",
+        "remove_access"
       ]
     },
     "reviewId": {
+      "type": "string"
+    },
+    "shareLinkId": {
+      "type": "string"
+    },
+    "accessGrantId": {
+      "type": "string"
+    },
+    "audience": {
+      "type": "string",
+      "enum": [
+        "anyone",
+        "user"
+      ]
+    },
+    "recipient": {
       "type": "string"
     },
     "title": {
@@ -485,7 +696,8 @@ Input schema:
 
 List review participants, add taggable users, add an agent alias for the current user, and manage mention notifications.
 Use action=list, add_user, add_agent, list_notifications, or mark_notification_read.
-Provider-backed add_user is taggable metadata only. Draft Review add_user creates a user share link as well.
+Pass provider/owner/repo with prNumber or branchRef, sessionId for Draft/Brainstorming Reviews, or webAppReviewId for Web App Reviews.
+Provider-backed add_user is taggable metadata only. Draft Review and deployed Web App Review add_user create a user share link as well.
 
 Input schema:
 
@@ -522,6 +734,9 @@ Input schema:
       "type": "string"
     },
     "sessionId": {
+      "type": "string"
+    },
+    "webAppReviewId": {
       "type": "string"
     },
     "providerLogin": {
