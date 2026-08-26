@@ -16,7 +16,7 @@ version; no version listed above will be removed before July 28, 2027.
 
 ## One durable Interaction tool
 
-The consolidated `interaction` tool supports six actions:
+The consolidated `interaction` tool supports eight actions:
 
 - `create`: requires `resource`, `content`, and `idempotencyKey`
 - `get`: requires the opaque `handle`
@@ -24,6 +24,9 @@ The consolidated `interaction` tool supports six actions:
 - `revise`: requires `handle`, `content`, `expectedVersion`, and `idempotencyKey`
 - `cancel`: requires `handle`, `expectedVersion`, and `idempotencyKey`
 - `status`: requires `handle` and returns immediate polling guidance
+- `decision_get`: requires `handle` and opaque `decisionId`
+- `decision_wait`: requires `handle`, optionally accepts opaque `after`, and
+  accepts a cancelable `waitMs` from 0 through 10000
 
 Create, revise, and cancel are retry-safe when the caller reuses an idempotency
 key only with identical input. Lists are newest-first and cursor-paginated.
@@ -33,6 +36,23 @@ Every successful call returns structured content plus a concise text fallback,
 a correlation id, and polling metadata. Poll `status` after `retryAfterMs` until
 `complete` is true; polling works for every client and does not hold a
 connection open.
+
+## Retrieve a human Decision
+
+Only an eligible signed-in human can submit a Decision. The creating agent can
+retrieve the resulting immutable receipt with `decision_get`, or wait briefly
+with `decision_wait`. Use `waitMs: 0` for the universal immediate-poll fallback;
+when no receipt is available, retry after the returned `retryAfterMs`.
+
+```json
+{"action":"decision_wait","handle":"ixn_opaque","after":"ixd_previous","waitMs":10000}
+```
+
+The receipt contains opaque Interaction, revision, action, and Decision ids;
+the exact proposal fingerprint; semantic action and outcome; timestamps;
+terminal state; and purge status. It never exposes human identity, linked
+Resource data, consequence content, or the action snapshot. A purged receipt
+keeps those immutable facts and reports that its content was purged.
 
 ```http
 POST /mcp HTTP/1.1
@@ -56,6 +76,7 @@ not grant Resource access. The feature key is `mcp.interactions`, Core/free
 preview.
 
 Durable Commentary Interactions and their Inbox projections remain canonical.
-This tool does not make human Decisions, approve on a user's behalf, report
+This tool cannot submit, revise, or delete human Decisions through any action,
+internal token, impersonation, or tool indirection. It does not approve on a user's behalf, report
 Fulfillment, expose MCP Tasks, or turn ephemeral MCP Elicitation into a durable
 Inbox request.
