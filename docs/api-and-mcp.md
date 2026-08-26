@@ -201,10 +201,11 @@ Read operations require review read scope and a token target that covers the rep
 
 ## MCP Endpoint
 
-The MCP endpoint is `/mcp`. It supports JSON-RPC initialization without auth, but tool listing and tool calls require bearer auth.
+The MCP endpoint is `/mcp`. MCP `2026-07-28` uses stateless, self-contained requests and optional `server/discover`; retained 2025 clients keep JSON-RPC initialization. Tool listing and calls require bearer auth in every version.
 
 Current tools are:
 
+- `interaction`
 - `commentary_forms`
 - `draft_review`
 - `review_comments`
@@ -214,6 +215,8 @@ Current tools are:
 - `web_app_review`
 
 See [MCP tools](./api/mcp-tools.md) for generated input schemas. Older one-off draft or comment tools are replaced by consolidated tools.
+
+See [MCP 2026 Interactions](./mcp-interactions.md) for version negotiation, required headers, idempotent action examples, polling, permissions, and compatibility policy.
 
 `commentary_forms` validates, submits, lists, exports, and syncs source-backed Forms. `draft_review` manages draft and Brainstorming Review sessions, revisions, sharing, live events, and consensus metadata. `review_comments` handles comments, replies, status, feedback signals, summaries, and owner decisions. `review_polls` reads poll comments and actionable poll outcomes. `review_document` reads anchors, files, and review progress. `web_app_review` manages Live Preview Reviews, sharing, and selected-element comment handoff for agents.
 

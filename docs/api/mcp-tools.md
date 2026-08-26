@@ -3,6 +3,269 @@
 
 The `/mcp` endpoint advertises these tools through authenticated `tools/list`. This file is generated from the same definitions used by the route.
 
+## `interaction`
+
+Create, get, list, revise, cancel, or poll the status of durable Commentary Interactions. Durable Inbox requests remain canonical. Poll with action=status and retryAfterMs; no held connection, Decision mutation, Fulfillment report, MCP Task, or agent approval authority is used.
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "revise",
+        "cancel",
+        "status"
+      ],
+      "x-mcp-header": "Action",
+      "description": "Operation to perform. Choose one advertised value; the remaining parameters are interpreted for that action."
+    },
+    "handle": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable opaque Interaction handle returned by create, get, list, or status."
+    },
+    "resource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "repository",
+            "pull_request",
+            "document",
+            "draft_review",
+            "form",
+            "research_study",
+            "knowledge_brain",
+            "web_app_review"
+          ],
+          "description": "Allowed type value for the selected Commentary Interaction action."
+        },
+        "id": {
+          "type": "string",
+          "description": "Id used by the selected Commentary Interaction action."
+        }
+      },
+      "required": [
+        "type",
+        "id"
+      ],
+      "additionalProperties": false,
+      "description": "Resource object used by the selected Commentary Interaction action."
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Human-readable title for the created or updated artifact."
+        },
+        "subtitle": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Subtitle used by the selected Commentary Interaction action."
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Concise human-readable summary produced or stored by the selected action."
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 65536,
+          "description": "Plain-text body accepted by actions that support a non-Markdown alias."
+        },
+        "blocks": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object"
+          },
+          "description": "Blocks values used by the selected Commentary Interaction action."
+        },
+        "actions": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id used by the selected Commentary Interaction action."
+              },
+              "type": {
+                "type": "string",
+                "description": "Type used by the selected Commentary Interaction action."
+              },
+              "label": {
+                "type": "string",
+                "description": "Label used by the selected Commentary Interaction action."
+              },
+              "payload": {
+                "type": "object",
+                "description": "Payload object used by the selected Commentary Interaction action."
+              }
+            },
+            "required": [
+              "type",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Actions values used by the selected Commentary Interaction action."
+        },
+        "links": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id used by the selected Commentary Interaction action."
+              },
+              "label": {
+                "type": "string",
+                "description": "Label used by the selected Commentary Interaction action."
+              },
+              "resource": {
+                "type": "object",
+                "description": "Resource object used by the selected Commentary Interaction action."
+              }
+            },
+            "required": [
+              "label",
+              "resource"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Links values used by the selected Commentary Interaction action."
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "additionalProperties": false,
+      "description": "Full literal UTF-8 file content. Commentary never resolves a local path or fetches a URL for this field."
+    },
+    "initialState": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active"
+      ],
+      "description": "Allowed initial state value for the selected Commentary Interaction action."
+    },
+    "expectedVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Current Interaction version used for optimistic concurrency on revise and cancel."
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Caller-generated retry key. Reuse it only for an identical create, revise, or cancel request."
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "description": "Maximum number of records to return. Server-side bounds still apply."
+    },
+    "cursor": {
+      "type": "string",
+      "description": "Opaque pagination cursor returned by a previous call."
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "waiting_for_human",
+        "waiting_for_agent",
+        "completed",
+        "rejected",
+        "canceled",
+        "expired"
+      ],
+      "description": "State filter supported by the selected action."
+    },
+    "resourceType": {
+      "type": "string",
+      "enum": [
+        "repository",
+        "pull_request",
+        "document",
+        "draft_review",
+        "form",
+        "research_study",
+        "knowledge_brain",
+        "web_app_review"
+      ],
+      "description": "Allowed resource type value for the selected Commentary Interaction action."
+    }
+  },
+  "required": [
+    "action"
+  ],
+  "additionalProperties": false
+}
+```
+
+Successful structured output schema:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "description": "Structured successful result from Commentary Interaction.",
+  "properties": {
+    "ok": {
+      "type": "boolean",
+      "enum": [
+        true
+      ],
+      "description": "True when the tool call completed successfully."
+    },
+    "tool": {
+      "type": "string",
+      "enum": [
+        "interaction"
+      ],
+      "description": "Programmatic name of the Commentary tool that produced this result."
+    },
+    "action": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Selected action, or null for a tool without an action parameter."
+    },
+    "result": {
+      "description": "Durable Interaction data, stable opaque handles, deterministic pages, polling state, retry hints, and correlation metadata."
+    }
+  },
+  "required": [
+    "ok",
+    "tool",
+    "action",
+    "result"
+  ],
+  "additionalProperties": false
+}
+```
+
 ## `commentary_forms`
 
 Validate, fill, submit, list, read, and inspect source-backed Commentary Forms without UI scraping.

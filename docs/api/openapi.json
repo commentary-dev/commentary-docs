@@ -15203,7 +15203,7 @@
           "MCP"
         ],
         "summary": "Call Commentary MCP over Streamable HTTP JSON-RPC.",
-        "description": "Authenticated tools/list advertises: commentary_forms, commentary_research, github_app_access, draft_review, review_comments, web_app_review, review_participants, review_polls, review_gate_status, review_document, brain_review.",
+        "description": "Authenticated tools/list advertises: interaction, commentary_forms, commentary_research, github_app_access, draft_review, review_comments, web_app_review, review_participants, review_polls, review_gate_status, review_document, brain_review.",
         "security": [
           {
             "bearerAuth": []
@@ -18326,6 +18326,7 @@
                 "name": {
                   "type": "string",
                   "enum": [
+                    "interaction",
                     "commentary_forms",
                     "commentary_research",
                     "github_app_access",
