@@ -9,6 +9,34 @@ The preview does not let an agent approve requests or treat Fulfillment as
 verified execution. A Fulfillment report is the authorized agent's append-only
 self-report, not cryptographic proof or provider success.
 
+## Escalate into human review
+
+When an Interaction needs more than a compact Decision, a signed-in human can
+choose one existing Commentary review workflow:
+
+- Document Review uses a canonical Draft Review Resource.
+- Form workflow uses a canonical Form Resource.
+- Brain review links an existing source-authorized Knowledge Brain review.
+- Live Preview Review uses a canonical Web App Review Resource.
+
+Commentary never chooses a high-impact review type from agent-provided text.
+The person confirms the exact type, current immutable Interaction revision, and
+proposal fingerprint, then either creates the Resource through its normal
+workflow or links one they can access. The underlying Resource keeps its normal
+authorization, comments, anchors, revisions, and provider synchronization.
+
+The Interaction shows review status and bounded links to the relevant comments
+without copying the reviewed document or changing comment authorship.
+App-native review threads remain authoritative. If provider synchronization
+fails, the Commentary outcome remains available with a retry path.
+
+An accepted review means the reviewed artifact revision was accepted. It does
+not mean an email was sent, a deployment ran, a provider changed, or any other
+external action executed. Accepted content or requested corrections return to
+the creator agent as a new immutable Interaction revision, so earlier approval
+fingerprints no longer apply. Canceled, deleted, inaccessible, or purged reviews
+surface recovery guidance instead of silently completing the request.
+
 ## Endpoints and scopes
 
 - `GET|POST /api/v1/interactions`

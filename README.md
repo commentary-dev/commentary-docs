@@ -1,6 +1,6 @@
 # Commentary Docs
 
-Commentary helps teams review Markdown, MDX, static HTML, private local drafts, structured Forms, and interactive preview apps like reviewable documents instead of diffs. It opens GitHub and Azure DevOps pull requests, branches, files, folders, repositories, draft review sessions, and review-hosted form sources in a reading-first workspace, keeps rendered documents at the center, and lets reviewers comment on paragraphs and semantic blocks instead of raw line numbers.
+Commentary turns Markdown, MDX, static HTML, private local drafts, structured Forms, and interactive preview apps into readable review surfaces instead of raw diffs. It opens GitHub and Azure DevOps pull requests, branches, files, folders, repositories, draft review sessions, and review-hosted form sources in a document-first workspace, keeps rendered content at the center, and lets reviewers comment on paragraphs and semantic blocks instead of raw line numbers.
 
 These docs are written for people using [commentary.dev](https://commentary.dev). They cover public read-only review, authenticated commenting, GitHub App access, Azure DevOps access, personal access token fallbacks, draft reviews, Brainstorming Reviews, Commentary Forms, Markdown extensions, static HTML review, Live Preview Reviews, Knowledge Brain review, workspace queues, developer access, the Commentary CLI, agent skills, API access, and MCP.
 
@@ -64,7 +64,8 @@ For a guided sample, open [/demo/select](https://commentary.dev/demo/select). Fo
 - Review comments can render safe Markdown, support long-form reading, sync eligible GitHub PR comments, and include poll comments when structured feedback is useful.
 - Markdown rendering supports common docs-framework syntax, MDX safety fallbacks, wikilinks, embeds, Mermaid, slides, safe raw HTML, docs previews, repository-aware links, heading folding, and heading deep links.
 - Knowledge Brain mode groups source, wiki, output, and control files, supports Open Knowledge Format review profiles, adds health and review context, and supports public reader pages for published public brains.
-- The public API includes an Interaction developer preview where agents can create durable requests, retrieve human Decision receipts, append authorized self-reported Fulfillment for an exact approval fingerprint, and poll state. Agents cannot approve, and completion is never labeled verified without proof.
+- The Interaction preview keeps proposals inside a human review and correction loop. A signed-in person can explicitly link an exact Interaction revision to the appropriate existing Document Review, Form workflow, Knowledge Brain review, or Live Preview Review; Commentary returns accepted content or requested corrections as a new immutable revision. Review approval accepts the reviewed artifact revision—it does not execute an external proposal.
+- The public API lets agents create durable requests, retrieve human Decision receipts, append authorized self-reported Fulfillment for an exact approval fingerprint, and poll state. Agents cannot approve, and completion is never labeled verified without proof.
 
 ## In This Repo
 
