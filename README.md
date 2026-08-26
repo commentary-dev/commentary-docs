@@ -64,7 +64,7 @@ For a guided sample, open [/demo/select](https://commentary.dev/demo/select). Fo
 - Review comments can render safe Markdown, support long-form reading, sync eligible GitHub PR comments, and include poll comments when structured feedback is useful.
 - Markdown rendering supports common docs-framework syntax, MDX safety fallbacks, wikilinks, embeds, Mermaid, slides, safe raw HTML, docs previews, repository-aware links, heading folding, and heading deep links.
 - Knowledge Brain mode groups source, wiki, output, and control files, supports Open Knowledge Format review profiles, adds health and review context, and supports public reader pages for published public brains.
-- The public API includes an Interaction developer preview where approved agents can create durable requests for their credential owner and poll state. It does not expose approval or fulfillment actions.
+- The public API includes an Interaction developer preview where agents can create durable requests, retrieve human Decision receipts, append authorized self-reported Fulfillment for an exact approval fingerprint, and poll state. Agents cannot approve, and completion is never labeled verified without proof.
 
 ## In This Repo
 

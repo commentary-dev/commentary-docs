@@ -16,7 +16,7 @@ version; no version listed above will be removed before July 28, 2027.
 
 ## One durable Interaction tool
 
-The consolidated `interaction` tool supports eight actions:
+The consolidated `interaction` tool supports ten actions:
 
 - `create`: requires `resource`, `content`, and `idempotencyKey`
 - `get`: requires the opaque `handle`
@@ -27,6 +27,9 @@ The consolidated `interaction` tool supports eight actions:
 - `decision_get`: requires `handle` and opaque `decisionId`
 - `decision_wait`: requires `handle`, optionally accepts opaque `after`, and
   accepts a cancelable `waitMs` from 0 through 10000
+- `fulfillment_report`: requires `handle`, the exact Decision/revision/action
+  ids and approved fingerprint, `status`, and `idempotencyKey`
+- `fulfillment_get`: requires `handle` and returns current status plus history
 
 Create, revise, and cancel are retry-safe when the caller reuses an idempotency
 key only with identical input. Lists are newest-first and cursor-paginated.
@@ -54,6 +57,22 @@ terminal state; and purge status. It never exposes human identity, linked
 Resource data, consequence content, or the action snapshot. A purged receipt
 keeps those immutable facts and reports that its content was purged.
 
+## Report Fulfillment honestly
+
+After an `approve` Decision, the creating or explicitly authorized agent may
+append `received`, `started`, `completed`, `failed`, or `unknown` with
+`fulfillment_report`. Reports require `commentary.interactions.fulfillment` and
+bind to the exact approved proposal fingerprint. Later reports correct failure
+or uncertainty without changing prior history.
+
+```json
+{"action":"fulfillment_report","handle":"ixn_opaque","decisionId":"ixd_opaque","revisionId":"ixr_opaque","actionId":"ixa_opaque","proposalFingerprint":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","status":"completed","idempotencyKey":"job-42-completed","evidence":{"reference":"job-42"}}
+```
+
+`fulfillment_get` is always pollable. Its reports set `selfReported: true` and
+`verified: false`: completed means agent-reported completion, not proof or
+verified provider success.
+
 ```http
 POST /mcp HTTP/1.1
 Authorization: Bearer $COMMENTARY_TOKEN
@@ -69,7 +88,7 @@ Mcp-Param-Action: status
 ## Permissions and boundaries
 
 Actions use the existing least-privilege `commentary.interactions.create`,
-`.read`, `.update`, and `.cancel` scopes. Mutations require an account-scoped
+`.read`, `.update`, `.cancel`, and `.fulfillment` scopes. Mutations require an account-scoped
 credential. The caller is bound to its credential owner's personal workspace,
 and every linked Resource receives a current ownership check; scopes alone do
 not grant Resource access. The feature key is `mcp.interactions`, Core/free
@@ -77,6 +96,6 @@ preview.
 
 Durable Commentary Interactions and their Inbox projections remain canonical.
 This tool cannot submit, revise, or delete human Decisions through any action,
-internal token, impersonation, or tool indirection. It does not approve on a user's behalf, report
-Fulfillment, expose MCP Tasks, or turn ephemeral MCP Elicitation into a durable
+internal token, impersonation, or tool indirection. It does not approve on a user's behalf, claim Fulfillment proof,
+expose MCP Tasks, or turn ephemeral MCP Elicitation into a durable
 Inbox request.

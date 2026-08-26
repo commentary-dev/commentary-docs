@@ -5,7 +5,7 @@ The `/mcp` endpoint advertises these tools through authenticated `tools/list`. T
 
 ## `interaction`
 
-Create, get, list, revise, cancel, or poll the status of durable Commentary Interactions. Durable Inbox requests remain canonical. Poll with action=status and retryAfterMs; no held connection, Decision mutation, Fulfillment report, MCP Task, or agent approval authority is used.
+Create, get, list, revise, cancel, or poll durable Commentary Interactions with no held connection; retrieve immutable human Decision receipts; and append or read self-reported Fulfillment bound to an approved fingerprint. Agents cannot create or modify Decisions. Fulfillment reports are history, not verified proof or provider success.
 
 Input schema:
 
@@ -21,7 +21,11 @@ Input schema:
         "list",
         "revise",
         "cancel",
-        "status"
+        "status",
+        "decision_get",
+        "decision_wait",
+        "fulfillment_report",
+        "fulfillment_get"
       ],
       "x-mcp-header": "Action",
       "description": "Operation to perform. Choose one advertised value; the remaining parameters are interpreted for that action."
@@ -31,6 +35,57 @@ Input schema:
       "minLength": 1,
       "maxLength": 256,
       "description": "Stable opaque Interaction handle returned by create, get, list, or status."
+    },
+    "decisionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable decision identifier used by the selected Commentary Interaction action."
+    },
+    "revisionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable Draft or Brainstorming revision identifier."
+    },
+    "actionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable action identifier used by the selected Commentary Interaction action."
+    },
+    "proposalFingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Proposal fingerprint used by the selected Commentary Interaction action."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "received",
+        "started",
+        "completed",
+        "failed",
+        "unknown"
+      ],
+      "description": "Status filter or requested state supported by the selected action."
+    },
+    "evidence": {
+      "type": "object",
+      "maxProperties": 32,
+      "description": "Evidence object used by the selected Commentary Interaction action."
+    },
+    "after": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "After used by the selected Commentary Interaction action."
+    },
+    "waitMs": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000,
+      "description": "Wait ms used by the selected Commentary Interaction action."
     },
     "resource": {
       "type": "object",

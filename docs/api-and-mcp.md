@@ -1,6 +1,6 @@
 # API And MCP
 
-Commentary exposes authenticated API and MCP access for review workflows. The HTTP API also includes an Interaction developer preview where agents can create durable requests for their credential owner and poll state.
+Commentary exposes authenticated API and MCP access for review workflows. The HTTP API also includes an Interaction developer preview where agents can create durable requests, retrieve human Decision receipts, append authorized self-reported Fulfillment for exact approvals, and poll state.
 
 ## Authentication Options
 
@@ -78,8 +78,9 @@ Read-only defaults include review and comments read access. MCP authorization de
 Agents can create durable owner-directed requests and poll their lifecycle
 through `/api/v1/interactions`. Retry-sensitive writes require idempotency
 keys, mutable writes require strong ETags, and lists use bounded opaque cursor
-pagination. This preview does not expose approvals, fulfillment,
-notifications, teams, or autonomous action. See
+pagination. Humans retain approval authority; agent Fulfillment is append-only
+self-reporting and never verified proof. It does not add notifications, teams,
+or autonomous action. See
 [Interaction API developer preview](./interaction-api.md).
 
 ## Review Comment API

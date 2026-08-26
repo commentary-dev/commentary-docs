@@ -73,6 +73,10 @@ OpenAPI version: `3.1.0`
 | `DELETE` | `/api/v1/interactions/{interactionId}` | Conditionally cancel an Interaction. | commentary.interactions.cancel |
 | `GET` | `/api/v1/interactions/{interactionId}` | Get one source-authorized Interaction. | commentary.interactions.read |
 | `PATCH` | `/api/v1/interactions/{interactionId}` | Conditionally update a non-decision Interaction lifecycle state. | commentary.interactions.update |
+| `GET` | `/api/v1/interactions/{interactionId}/decisions` | Read immutable human Decision receipts for one Interaction. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions/{interactionId}/decisions` | Record one immutable human Decision against an exact proposal action. | session/public |
+| `GET` | `/api/v1/interactions/{interactionId}/fulfillment` | Read current self-reported Fulfillment and append-only history. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions/{interactionId}/fulfillment` | Append an agent-reported Fulfillment status for an exact approved proposal. | commentary.interactions.fulfillment |
 | `GET` | `/api/v1/interactions/{interactionId}/messages` | List bounded messages already supported by the Interaction domain. | commentary.interactions.read |
 | `POST` | `/api/v1/interactions/{interactionId}/messages` | Conditionally append a message to the current or named revision. | commentary.interactions.update |
 | `POST` | `/api/v1/interactions/{interactionId}/revisions` | Create an immutable Interaction revision. | commentary.interactions.update |
@@ -140,5 +144,5 @@ OpenAPI version: `3.1.0`
 
 ## Scopes
 
-`commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.review.share`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, `commentary.forms.writeback`, `commentary.research.read`, `commentary.research.write`, `commentary.brain.evals.read`, `commentary.brain.evals.write`, `commentary.interactions.create`, `commentary.interactions.read`, `commentary.interactions.update`, `commentary.interactions.cancel`
+`commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.review.share`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, `commentary.forms.writeback`, `commentary.research.read`, `commentary.research.write`, `commentary.brain.evals.read`, `commentary.brain.evals.write`, `commentary.interactions.create`, `commentary.interactions.read`, `commentary.interactions.update`, `commentary.interactions.cancel`, `commentary.interactions.fulfillment`
 

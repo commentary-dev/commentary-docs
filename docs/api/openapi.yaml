@@ -246,7 +246,8 @@ paths:
       description: Approves only the permissions displayed and selected by the user.
         Sensitive custom permissions require a separate confirmation.
       security: &a3
-        - commentarySession: []
+        - &a20
+          commentarySession: []
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -5227,8 +5228,8 @@ paths:
         workspace.
       description: Requires Idempotency-Key. Only account-scoped tokens may create
         requests, and the linked Resource must currently be owned by the
-        credential owner. Decision and Fulfillment mutations are not available
-        in v1.
+        credential owner. Decision mutation is human-only; approved Fulfillment
+        reporting uses its dedicated route and scope.
       security:
         - bearerAuth:
             - commentary.interactions.create
@@ -5609,6 +5610,400 @@ paths:
                 $ref: "#/components/schemas/InteractionApiError"
         "428":
           description: If-Match is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InteractionApiError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/interactions/{interactionId}/decisions:
+    get:
+      operationId: listInteractionDecisions
+      tags:
+        - Interactions
+      summary: Read immutable human Decision receipts for one Interaction.
+      description: An eligible browser human may list receipts. The authorized
+        creating agent may retrieve one opaque receipt by decisionId or
+        poll/wait after a prior receipt for at most ten seconds. Agent results
+        omit human identity, Resource data, consequence content, and action
+        snapshots. waitMs=0 is the universal polling fallback.
+      security:
+        - *a20
+        - bearerAuth:
+            - commentary.interactions.read
+      parameters:
+        - *a19
+        - name: decisionId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Opaque Decision id for a creating agent.
+        - name: after
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Opaque prior Decision id used as a polling cursor.
+        - name: waitMs
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 10000
+          description: Bounded cancelable wait; zero performs an immediate poll.
+      x-commentary-feature-key: interactions.decisions
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    oneOf:
+                      - type: array
+                        items:
+                          $ref: "#/components/schemas/InteractionDecision"
+                      - $ref: "#/components/schemas/InteractionAgentDecisionReceipt"
+                      - type: "null"
+                  polling:
+                    type: object
+        "202":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: "null"
+                  polling:
+                    type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createInteractionDecision
+      tags:
+        - Interactions
+      summary: Record one immutable human Decision against an exact proposal action.
+      description: Requires exact revisionId, actionId, proposal fingerprint, current
+        strong If-Match, and Idempotency-Key. The first valid result is
+        immutable; replay never retargets a later revision. A Decision is
+        intent, not Fulfillment or execution evidence.
+      security: *a3
+      parameters:
+        - *a19
+        - name: If-Match
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            maxLength: 200
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - revisionId
+                - actionId
+                - proposalFingerprint
+                - outcome
+              additionalProperties: false
+              properties:
+                revisionId:
+                  type: string
+                actionId:
+                  type: string
+                proposalFingerprint:
+                  type: string
+                  pattern: ^[a-f0-9]{64}$
+                outcome:
+                  type: string
+                  enum:
+                    - approve
+                    - reject
+                    - acknowledge
+                    - choose
+                    - answer
+                    - comment
+                    - request_revision
+                    - snooze
+                consequence:
+                  type:
+                    - object
+                    - "null"
+      x-commentary-feature-key: interactions.decisions
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/InteractionDecision"
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/InteractionDecision"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "409":
+          description: Revision, action, fingerprint, revocation, or idempotency conflict.
+        "410":
+          description: Proposal expired or content was purged.
+        "412":
+          description: If-Match is stale or malformed.
+        "428":
+          description: If-Match is required.
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/interactions/{interactionId}/fulfillment:
+    get:
+      operationId: getInteractionFulfillment
+      tags:
+        - Interactions
+      summary: Read current self-reported Fulfillment and append-only history.
+      description: Polling remains available. Reports are not cryptographic proof or
+        verified provider success.
+      security:
+        - bearerAuth:
+            - commentary.interactions.read
+      parameters:
+        - *a19
+      x-commentary-feature-key: interactions.fulfillment
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      current:
+                        oneOf:
+                          - $ref: "#/components/schemas/InteractionFulfillmentReport"
+                          - type: "null"
+                      history:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/InteractionFulfillmentReport"
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: reportInteractionFulfillment
+      tags:
+        - Interactions
+      summary: Append an agent-reported Fulfillment status for an exact approved
+        proposal.
+      description: Requires ownership or explicit fulfillment authority, exact
+        Decision/revision/action/fingerprint binding, and Idempotency-Key. Later
+        reports correct history without rewriting it.
+      security:
+        - bearerAuth:
+            - commentary.interactions.fulfillment
+      parameters:
+        - *a19
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            maxLength: 200
+        - name: X-Correlation-Id
+          in: header
+          required: false
+          schema:
+            type: string
+            maxLength: 128
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - decisionId
+                - revisionId
+                - actionId
+                - proposalFingerprint
+                - status
+              additionalProperties: false
+              properties:
+                decisionId:
+                  type: string
+                revisionId:
+                  type: string
+                actionId:
+                  type: string
+                proposalFingerprint:
+                  type: string
+                  pattern: ^[a-f0-9]{64}$
+                status:
+                  type: string
+                  enum:
+                    - received
+                    - started
+                    - completed
+                    - failed
+                    - unknown
+                evidence:
+                  type:
+                    - object
+                    - "null"
+                  description: Sanitized JSON evidence, at most 8 KiB; credentials and raw logs
+                    are forbidden.
+      x-commentary-feature-key: interactions.fulfillment
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "409":
+          description: Approval, fingerprint, lifecycle, expiry, or idempotency conflict.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InteractionApiError"
+        "410":
+          description: Interaction content was purged.
           content:
             application/json:
               schema:
@@ -7292,7 +7687,7 @@ paths:
             - commentary.draft_reviews.share
       parameters:
         - *a16
-        - &a21
+        - &a22
           name: shareLinkId
           in: path
           required: true
@@ -7353,7 +7748,7 @@ paths:
             - commentary.draft_reviews.share
       parameters:
         - *a16
-        - &a22
+        - &a23
           name: accessGrantId
           in: path
           required: true
@@ -7532,7 +7927,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - &a20
+        - &a21
           name: reviewId
           in: path
           required: true
@@ -7592,7 +7987,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a20
+        - *a21
       requestBody:
         required: true
         content:
@@ -7653,7 +8048,7 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a20
+        - *a21
         - name: includeImages
           in: query
           required: false
@@ -7714,7 +8109,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a20
+        - *a21
       requestBody:
         required: true
         content:
@@ -7775,7 +8170,7 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
-        - *a20
+        - *a21
         - *a18
       requestBody:
         required: true
@@ -7841,7 +8236,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a20
+        - *a21
         - name: includeResolved
           in: query
           required: false
@@ -7905,7 +8300,7 @@ paths:
         - bearerAuth:
             - commentary.review.share
       parameters:
-        - *a20
+        - *a21
       x-commentary-feature-key: web_app_reviews.sharing
       responses:
         "200":
@@ -7961,7 +8356,7 @@ paths:
         - bearerAuth:
             - commentary.review.share
       parameters:
-        - *a20
+        - *a21
       requestBody:
         required: true
         content:
@@ -8025,8 +8420,8 @@ paths:
         - bearerAuth:
             - commentary.review.share
       parameters:
-        - *a20
         - *a21
+        - *a22
       x-commentary-feature-key: web_app_reviews.sharing
       responses:
         "200":
@@ -8080,8 +8475,8 @@ paths:
         - bearerAuth:
             - commentary.review.share
       parameters:
-        - *a20
-        - *a22
+        - *a21
+        - *a23
       x-commentary-feature-key: web_app_reviews.sharing
       responses:
         "200":
@@ -8995,6 +9390,204 @@ components:
         createdAt:
           type: string
           format: date-time
+    InteractionDecision:
+      type: object
+      required:
+        - id
+        - interactionId
+        - revisionId
+        - actionId
+        - proposalFingerprint
+        - semanticAction
+        - outcome
+        - actor
+        - decidedAt
+        - terminalState
+        - execution
+      additionalProperties: true
+      description: Immutable human intent receipt. execution.proven is always false in
+        this slice.
+      properties:
+        id:
+          type: string
+        interactionId:
+          type: string
+        revisionId:
+          type: string
+        actionId:
+          type: string
+        proposalFingerprint:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        semanticAction:
+          type: string
+        outcome:
+          type: string
+          enum:
+            - approve
+            - reject
+            - acknowledge
+            - choose
+            - answer
+            - comment
+            - request_revision
+            - snooze
+        actor:
+          type: object
+        decidedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        terminalState:
+          const: recorded
+        actionSnapshot:
+          type:
+            - object
+            - "null"
+        consequence:
+          type:
+            - object
+            - "null"
+        contentPurgeAfter:
+          type: string
+          format: date-time
+        contentPurgedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        execution:
+          type: object
+          required:
+            - proven
+          properties:
+            proven:
+              const: false
+    InteractionAgentDecisionReceipt:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - interactionId
+        - revisionId
+        - actionId
+        - proposalFingerprint
+        - semanticAction
+        - outcome
+        - decidedAt
+        - terminalState
+        - purged
+      description: Privacy-safe immutable receipt for the authorized creating agent.
+        Human identity, Resource data, consequence content, and action snapshots
+        are omitted.
+      properties:
+        id:
+          type: string
+        interactionId:
+          type: string
+        revisionId:
+          type: string
+        actionId:
+          type: string
+        proposalFingerprint:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        semanticAction:
+          type: string
+        outcome:
+          type: string
+          enum:
+            - approve
+            - reject
+            - acknowledge
+            - choose
+            - answer
+            - comment
+            - request_revision
+            - snooze
+        decidedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        terminalState:
+          type: string
+        purged:
+          type: boolean
+        contentPurgedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+    InteractionFulfillmentReport:
+      type: object
+      additionalProperties: true
+      required:
+        - id
+        - interactionId
+        - decisionId
+        - revisionId
+        - actionId
+        - proposalFingerprint
+        - status
+        - reportingAgent
+        - reportedAt
+        - selfReported
+        - verified
+      description: Append-only agent self-report. selfReported is true and verified is
+        false; this is not provider-success proof.
+      properties:
+        id:
+          type: string
+        interactionId:
+          type: string
+        decisionId:
+          type: string
+        revisionId:
+          type: string
+        actionId:
+          type: string
+        proposalFingerprint:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        status:
+          type: string
+          enum:
+            - received
+            - started
+            - completed
+            - failed
+            - unknown
+        reportingAgent:
+          type: object
+        evidence:
+          type:
+            - object
+            - "null"
+        reportedAt:
+          type: string
+          format: date-time
+        contentPurgeAfter:
+          type:
+            - string
+            - "null"
+          format: date-time
+        contentPurgedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        selfReported:
+          const: true
+        verified:
+          const: false
     ExternalError:
       type: object
       required:
@@ -9062,6 +9655,7 @@ components:
         - commentary.interactions.read
         - commentary.interactions.update
         - commentary.interactions.cancel
+        - commentary.interactions.fulfillment
     TokenTarget:
       type: string
       description: Target string such as account, github:owner/repo,
