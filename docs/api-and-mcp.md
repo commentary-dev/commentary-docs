@@ -1,6 +1,6 @@
 # API And MCP
 
-Commentary exposes authenticated API and MCP access for tools that need to read document anchors, inspect comments, create review feedback, manage draft, Brainstorming, Forms, and Live Preview Reviews, inspect review progress, read poll outcomes, or inspect Knowledge Brain review state.
+Commentary exposes authenticated API and MCP access for review workflows. The HTTP API also includes an Interaction developer preview where agents can create durable requests for their credential owner and poll state.
 
 ## Authentication Options
 
@@ -66,8 +66,21 @@ Supported external scopes are:
 - `commentary.forms.writeback`
 - `commentary.brain.evals.read`
 - `commentary.brain.evals.write`
+- `commentary.interactions.create`
+- `commentary.interactions.read`
+- `commentary.interactions.update`
+- `commentary.interactions.cancel`
 
 Read-only defaults include review and comments read access. MCP authorization defaults to review read, comments read, comments write, and comments status when no scopes are requested.
+
+## Interaction API Developer Preview
+
+Agents can create durable owner-directed requests and poll their lifecycle
+through `/api/v1/interactions`. Retry-sensitive writes require idempotency
+keys, mutable writes require strong ETags, and lists use bounded opaque cursor
+pagination. This preview does not expose approvals, fulfillment,
+notifications, teams, or autonomous action. See
+[Interaction API developer preview](./interaction-api.md).
 
 ## Review Comment API
 

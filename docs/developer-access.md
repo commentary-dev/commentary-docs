@@ -45,6 +45,11 @@ Brainstorming Review automation uses the same review and comment scopes as draft
 
 Forms automation uses `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, and `commentary.forms.writeback`. Live Preview Review sharing uses `commentary.review.share`.
 
+Interaction preview clients choose only the required
+`commentary.interactions.create`, `.read`, `.update`, and `.cancel`
+scopes. Creation requires an account-wide target because initial requests are
+addressed only to the credential owner in their personal workspace.
+
 The generated token stores the concrete scope names, such as `commentary.review.read`, `commentary.comments.write`, `commentary.forms.submit`, or `commentary.draft_reviews.share`.
 
 ## Available External Scopes
@@ -65,6 +70,10 @@ Current public scopes are:
 - `commentary.forms.writeback`
 - `commentary.brain.evals.read`
 - `commentary.brain.evals.write`
+- `commentary.interactions.create`
+- `commentary.interactions.read`
+- `commentary.interactions.update`
+- `commentary.interactions.cancel`
 
 Use the smallest scope set that covers the client workflow.
 

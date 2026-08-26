@@ -30,6 +30,8 @@ nav:
       - Commentary CLI: docs/commentary-cli.md
       - Agent skills: docs/agent-skills.md
       - API and MCP: docs/api-and-mcp.md
+      - Interaction API preview: docs/interaction-api.md
+      - Interaction API preview: docs/interaction-api.md
       - API reference: docs/api/reference.md
       - MCP tools: docs/api/mcp-tools.md
   - Help:
