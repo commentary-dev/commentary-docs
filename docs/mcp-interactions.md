@@ -97,5 +97,5 @@ preview.
 Durable Commentary Interactions and their Inbox projections remain canonical.
 This tool cannot submit, revise, or delete human Decisions through any action,
 internal token, impersonation, or tool indirection. It does not approve on a user's behalf, claim Fulfillment proof,
-expose MCP Tasks, or turn ephemeral MCP Elicitation into a durable
-Inbox request.
+use experimental MCP Tasks to write Decisions or prove execution, or turn ephemeral MCP Elicitation into a durable
+Inbox request. Capability-negotiated Tasks remain an optional view over canonical Interactions; see [Experimental MCP Tasks compatibility](./mcp-tasks.md).

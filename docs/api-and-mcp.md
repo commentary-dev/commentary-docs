@@ -223,6 +223,8 @@ See [MCP tools](./api/mcp-tools.md) for generated input schemas. Older one-off d
 
 See [MCP 2026 Interactions](./mcp-interactions.md) for version negotiation, required headers, idempotent action examples, polling, permissions, and compatibility policy.
 
+Optional [experimental MCP Tasks compatibility](./mcp-tasks.md) is capability-negotiated for eligible Interaction creation. Ordinary Interaction polling remains universal, and no enumerable Tasks list is exposed.
+
 `commentary_forms` validates, submits, lists, exports, and syncs source-backed Forms. `draft_review` manages draft and Brainstorming Review sessions, revisions, sharing, live events, and consensus metadata. `review_comments` handles comments, replies, status, feedback signals, summaries, and owner decisions. `review_polls` reads poll comments and actionable poll outcomes. `review_document` reads anchors, files, and review progress. `web_app_review` manages Live Preview Reviews, sharing, and selected-element comment handoff for agents.
 
 ## CLI And Skills

@@ -32,6 +32,7 @@ nav:
       - Agent skills: docs/agent-skills.md
       - API and MCP: docs/api-and-mcp.md
       - MCP 2026 Interactions: docs/mcp-interactions.md
+      - MCP Tasks compatibility: docs/mcp-tasks.md
       - Interaction API preview: docs/interaction-api.md
       - TypeScript Agent SDK: docs/agent-sdk.md
       - Interaction API preview: docs/interaction-api.md
