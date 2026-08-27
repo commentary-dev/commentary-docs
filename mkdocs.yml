@@ -16,6 +16,7 @@ nav:
       - Review progress: docs/review-progress.md
       - Review modes: docs/review-modes.md
       - Workspace: docs/workspace.md
+      - Enterprise governance: docs/enterprise-governance.md
   - Content types:
       - Markdown rendering: docs/markdown-rendering.md
       - Markdown extensions: docs/markdown-extensions.md
