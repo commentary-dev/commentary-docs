@@ -1,6 +1,6 @@
 # Commentary Docs
 
-Commentary turns Markdown, MDX, static HTML, private local drafts, structured Forms, and interactive preview apps into readable review surfaces instead of raw diffs. It opens GitHub and Azure DevOps pull requests, branches, files, folders, repositories, draft review sessions, and review-hosted form sources in a document-first workspace, keeps rendered content at the center, and lets reviewers comment on paragraphs and semantic blocks instead of raw line numbers.
+Commentary is the human decision layer for AI agents. Its trusted wedge remains rendered review: Markdown, MDX, static HTML, private local drafts, structured Forms, and interactive preview apps become readable review surfaces instead of raw diffs. It opens GitHub and Azure DevOps pull requests, branches, files, folders, repositories, draft review sessions, and review-hosted form sources in a document-first workspace, keeps rendered content at the center, and lets reviewers comment on paragraphs and semantic blocks instead of raw line numbers.
 
 These docs are written for people using [commentary.dev](https://commentary.dev). They cover public read-only review, authenticated commenting, GitHub App access, Azure DevOps access, personal access token fallbacks, draft reviews, Brainstorming Reviews, Commentary Forms, Markdown extensions, static HTML review, Live Preview Reviews, Knowledge Brain review, workspace queues, developer access, the Commentary CLI, agent skills, API access, and MCP.
 
@@ -16,6 +16,7 @@ These docs are written for people using [commentary.dev](https://commentary.dev)
 - Reviewing a running app preview: [Live Preview Reviews](./docs/web-app-reviews.md)
 - Tracking reviewed files and sections: [Review progress](./docs/review-progress.md)
 - Managing repository queues: [Workspace](./docs/workspace.md)
+- Managing agent decisions: [Agent Inbox](./docs/agent-inbox.md)
 - Managing preview workspace governance: [Enterprise governance](./docs/enterprise-governance.md)
 - Using Azure DevOps: [Azure DevOps](./docs/azure-devops.md)
 - Understanding review modes: [Review modes](./docs/review-modes.md)

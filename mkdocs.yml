@@ -16,6 +16,7 @@ nav:
       - Review progress: docs/review-progress.md
       - Review modes: docs/review-modes.md
       - Workspace: docs/workspace.md
+      - Agent Inbox: docs/agent-inbox.md
       - Enterprise governance: docs/enterprise-governance.md
   - Content types:
       - Markdown rendering: docs/markdown-rendering.md
@@ -35,7 +36,6 @@ nav:
       - MCP Tasks compatibility: docs/mcp-tasks.md
       - Interaction API preview: docs/interaction-api.md
       - TypeScript Agent SDK: docs/agent-sdk.md
-      - Interaction API preview: docs/interaction-api.md
       - API reference: docs/api/reference.md
       - MCP tools: docs/api/mcp-tools.md
   - Help:

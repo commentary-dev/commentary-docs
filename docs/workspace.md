@@ -23,6 +23,14 @@ GitHub workspace uses GitHub App installation scope. Azure DevOps workspace uses
 
 ## Main Sections
 
+### Inbox
+
+`/workspace/inbox` is the authenticated, workspace-scoped default for work that
+needs attention. It combines authorized Review and product updates with durable
+agent Interactions while leaving Resources and app-native review threads
+authoritative. `/workspace` keeps its broader overview meaning. See
+[Agent Inbox](./agent-inbox.md).
+
 ### Overview
 
 Use `Overview` to scan recent PR work, continue recent reviews, jump into repositories in scope, and resume draft reviews.
