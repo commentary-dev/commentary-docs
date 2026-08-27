@@ -24,6 +24,10 @@ The public HTTP contract is available at:
 - `/openapi.json`
 - `/openapi.yaml`
 
+Stable HTTP endpoints use explicit major paths such as `/api/v1`. Additive compatibility, stable error/tool schemas, deprecation notices, and minimum sunset windows are documented in the [TypeScript Agent SDK guide](./agent-sdk.md#compatibility-and-deprecation).
+
+For typed Interaction, Decision wait, Fulfillment, subscription, pagination, cancellation, and diagnostics helpers, install [`@commentary-dev/agent-sdk`](./agent-sdk.md). It is a transport client; server policy and authorization remain authoritative.
+
 The generated reference committed with these docs is [API reference](./api/reference.md). Browser, internal, webhook, and test routes are intentionally outside the public contract.
 
 ## API Tokens

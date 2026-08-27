@@ -4,8 +4,10 @@
     "title": "Commentary Public API",
     "version": "0.1.0",
     "summary": "Authenticated API and MCP surfaces for Commentary review automation.",
-    "description": "This contract documents the stable external API surface. Browser, internal, webhook, and test routes are intentionally excluded.",
-    "x-commentary-feature-key": "api.openapi_docs"
+    "description": "This contract documents the stable external API surface. Browser, internal, provider-ingress, and test routes are intentionally excluded.",
+    "x-commentary-feature-key": "api.openapi_docs",
+    "x-commentary-api-version": "v1",
+    "x-commentary-compatibility-policy": "/docs/api/versioning.md"
   },
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "servers": [
@@ -47,6 +49,9 @@
       "name": "Knowledge Brain"
     },
     {
+      "name": "Webhooks"
+    },
+    {
       "name": "MCP"
     },
     {
@@ -57,6 +62,887 @@
     }
   ],
   "paths": {
+    "/api/v1/webhook-subscriptions": {
+      "get": {
+        "operationId": "listWebhookSubscriptions",
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "List workspace webhook subscriptions.",
+        "description": "Owner/admin only. Secrets are never returned by reads.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.webhooks.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-commentary-feature-key": "interactions.webhooks",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createWebhookSubscription",
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Create a scoped webhook subscription and reveal its signing secret once.",
+        "description": "Owner/admin only. HTTPS destinations are DNS-resolved and SSRF-checked. Idempotency-Key makes creation retry-safe.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.webhooks.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "endpointUrl",
+                  "eventTypes"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "endpointUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://"
+                  },
+                  "eventTypes": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "interaction.created.v1",
+                        "interaction.updated.v1",
+                        "interaction.revision.created.v1",
+                        "interaction.decision.recorded.v1",
+                        "interaction.fulfillment.updated.v1",
+                        "interaction.terminal.v1",
+                        "interaction.content_purged.v1"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "interactions.webhooks",
+        "responses": {
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "The data.secret field is displayed only in this response."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/webhook-subscriptions/{subscriptionId}": {
+      "get": {
+        "operationId": "getWebhookSubscription",
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Get a webhook subscription without its secret.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.webhooks.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^whs_"
+            }
+          }
+        ],
+        "x-commentary-feature-key": "interactions.webhooks",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateWebhookSubscription",
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Conditionally update endpoint or event scopes.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.webhooks.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^whs_"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "endpointUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://"
+                  },
+                  "eventTypes": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "interaction.created.v1",
+                        "interaction.updated.v1",
+                        "interaction.revision.created.v1",
+                        "interaction.decision.recorded.v1",
+                        "interaction.fulfillment.updated.v1",
+                        "interaction.terminal.v1",
+                        "interaction.content_purged.v1"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "interactions.webhooks",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "The ETag is stale."
+          },
+          "428": {
+            "description": "If-Match is required."
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/webhook-subscriptions/{subscriptionId}/disable": {
+      "post": {
+        "operationId": "disableWebhookSubscription",
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Disable delivery and cancel pending attempts.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.webhooks.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^whs_"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-commentary-feature-key": "interactions.webhooks",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/webhook-subscriptions/{subscriptionId}/rotate-secret": {
+      "post": {
+        "operationId": "rotateWebhookSubscriptionSecret",
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Rotate and reveal a new signing secret once.",
+        "description": "The prior secret stops signing new attempts immediately; later reads never redisplay either secret.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.webhooks.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^whs_"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-commentary-feature-key": "interactions.webhooks",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/webhook-subscriptions/{subscriptionId}/deliveries": {
+      "get": {
+        "operationId": "listWebhookDeliveries",
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "List filtered redacted delivery diagnostics and dead letters.",
+        "description": "Response bodies are whitespace-normalized, size-bounded excerpts; request headers, secrets, and raw payload diagnostics are never returned.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.webhooks.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^whs_"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "x-commentary-feature-key": "interactions.webhooks",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/webhook-subscriptions/{subscriptionId}/deliveries/{deliveryId}/replay": {
+      "post": {
+        "operationId": "replayWebhookDelivery",
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Confirm replay of one delivery as a new delivery id.",
+        "description": "Replay reports state only; it never executes or approves an action.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.webhooks.write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^whs_"
+            }
+          },
+          {
+            "name": "deliveryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^whd_"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "confirm"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "confirm": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "interactions.webhooks",
+        "responses": {
+          "202": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/.well-known/oauth-authorization-server": {
       "get": {
         "operationId": "getOAuthAuthorizationServerMetadata",
@@ -8572,6 +9458,125 @@
         }
       }
     },
+    "/api/v1/inbox/views": {
+      "post": {
+        "operationId": "proposeInboxSavedView",
+        "tags": [
+          "Inbox"
+        ],
+        "summary": "Propose a typed private Inbox view to the credential owner.",
+        "description": "Registered account-scoped agents may create pending proposals only. A proposal stays inactive until the human owner accepts it in the Inbox; agents cannot change configuration.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.interactions.create"
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "definition"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "definition": {
+                    "type": "object",
+                    "required": [
+                      "version",
+                      "clauses",
+                      "sort"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "inbox.saved_views",
+        "responses": {
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The pending proposal or active-view limit was reached."
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/interactions": {
       "get": {
         "operationId": "listInteractions",
@@ -9384,6 +10389,402 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/interactions/{interactionId}/feedback": {
+      "post": {
+        "operationId": "createInteractionFeedback",
+        "tags": [
+          "Interactions"
+        ],
+        "summary": "Send typed human feedback against one immutable Interaction revision.",
+        "description": "Feedback never mutates proposal content and moves the request to waiting_for_agent.",
+        "security": [
+          {
+            "commentarySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^ixn_[A-Za-z0-9_-]{16,}$"
+            },
+            "description": "Opaque Interaction id."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "body",
+                  "revisionId"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "comment",
+                      "rejection_reason",
+                      "request_revision",
+                      "structured_correction"
+                    ]
+                  },
+                  "body": {
+                    "type": "string",
+                    "maxLength": 16384
+                  },
+                  "revisionId": {
+                    "type": "string"
+                  },
+                  "corrections": {
+                    "type": "array",
+                    "maxItems": 20,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "field",
+                        "operation"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "field": {
+                          "type": "string",
+                          "enum": [
+                            "title",
+                            "subtitle",
+                            "summary",
+                            "body",
+                            "target",
+                            "actions"
+                          ]
+                        },
+                        "operation": {
+                          "type": "string",
+                          "enum": [
+                            "replace",
+                            "remove"
+                          ]
+                        },
+                        "value": {}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "interactions.feedback",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The addressed revision is stale."
+          },
+          "412": {
+            "description": "If-Match is stale or malformed."
+          },
+          "428": {
+            "description": "If-Match is required."
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/interactions/{interactionId}/review-escalation": {
+      "post": {
+        "operationId": "createInteractionReviewEscalation",
+        "tags": [
+          "Interactions"
+        ],
+        "summary": "Explicitly link an Interaction revision to one canonical human review Resource.",
+        "description": "A same-origin authenticated human chooses the review type. Review approval accepts the artifact revision and never represents external execution.",
+        "security": [
+          {
+            "commentarySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^ixn_[A-Za-z0-9_-]{16,}$"
+            },
+            "description": "Opaque Interaction id."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "revisionId",
+                  "proposalFingerprint",
+                  "reviewType",
+                  "confirmation",
+                  "target"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revisionId": {
+                    "type": "string"
+                  },
+                  "proposalFingerprint": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "reviewType": {
+                    "type": "string",
+                    "enum": [
+                      "document_review",
+                      "form_workflow",
+                      "brain_review",
+                      "live_preview_review"
+                    ]
+                  },
+                  "confirmation": {
+                    "type": "object",
+                    "required": [
+                      "reviewType",
+                      "acknowledgedNoExecution"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "reviewType": {
+                        "type": "string",
+                        "enum": [
+                          "document_review",
+                          "form_workflow",
+                          "brain_review",
+                          "live_preview_review"
+                        ]
+                      },
+                      "acknowledgedNoExecution": {
+                        "type": "boolean",
+                        "enum": [
+                          true
+                        ]
+                      }
+                    }
+                  },
+                  "target": {
+                    "type": "object",
+                    "required": [
+                      "mode"
+                    ],
+                    "properties": {
+                      "mode": {
+                        "type": "string",
+                        "enum": [
+                          "create",
+                          "link"
+                        ]
+                      },
+                      "resourceId": {
+                        "type": "string"
+                      },
+                      "revisionId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "create": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "interactions.review_escalation",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The Interaction changed or already links a different review type."
+          },
+          "410": {
+            "description": "Interaction content was purged."
           },
           "429": {
             "description": "The request was rate limited.",
@@ -15854,7 +17255,7 @@
           "MCP"
         ],
         "summary": "Call Commentary MCP over Streamable HTTP JSON-RPC.",
-        "description": "Authenticated tools/list advertises: interaction, commentary_forms, commentary_research, github_app_access, draft_review, review_comments, web_app_review, review_participants, review_polls, review_gate_status, review_document, brain_review.",
+        "description": "Authenticated tools/list advertises: inbox_saved_view, interaction, commentary_forms, commentary_research, github_app_access, draft_review, review_comments, web_app_review, review_participants, review_polls, review_gate_status, review_document, brain_review.",
         "security": [
           {
             "bearerAuth": []
@@ -16496,7 +17897,9 @@
           "commentary.interactions.read",
           "commentary.interactions.update",
           "commentary.interactions.cancel",
-          "commentary.interactions.fulfillment"
+          "commentary.interactions.fulfillment",
+          "commentary.webhooks.read",
+          "commentary.webhooks.write"
         ]
       },
       "TokenTarget": {
@@ -19238,6 +20641,7 @@
                 "name": {
                   "type": "string",
                   "enum": [
+                    "inbox_saved_view",
                     "interaction",
                     "commentary_forms",
                     "commentary_research",

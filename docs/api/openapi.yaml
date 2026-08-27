@@ -4,8 +4,10 @@ info:
   version: 0.1.0
   summary: Authenticated API and MCP surfaces for Commentary review automation.
   description: This contract documents the stable external API surface. Browser,
-    internal, webhook, and test routes are intentionally excluded.
+    internal, provider-ingress, and test routes are intentionally excluded.
   x-commentary-feature-key: api.openapi_docs
+  x-commentary-api-version: v1
+  x-commentary-compatibility-policy: /docs/api/versioning.md
 jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
 servers:
   - url: https://commentary.dev
@@ -22,10 +24,517 @@ tags:
   - name: Draft reviews
   - name: Web App reviews
   - name: Knowledge Brain
+  - name: Webhooks
   - name: MCP
   - name: Health
   - name: OpenAPI
 paths:
+  /api/v1/webhook-subscriptions:
+    get:
+      operationId: listWebhookSubscriptions
+      tags:
+        - Webhooks
+      summary: List workspace webhook subscriptions.
+      description: Owner/admin only. Secrets are never returned by reads.
+      security:
+        - bearerAuth:
+            - commentary.webhooks.read
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+      x-commentary-feature-key: interactions.webhooks
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    post:
+      operationId: createWebhookSubscription
+      tags:
+        - Webhooks
+      summary: Create a scoped webhook subscription and reveal its signing secret once.
+      description: Owner/admin only. HTTPS destinations are DNS-resolved and
+        SSRF-checked. Idempotency-Key makes creation retry-safe.
+      security:
+        - bearerAuth:
+            - commentary.webhooks.write
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            maxLength: 200
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - endpointUrl
+                - eventTypes
+              additionalProperties: false
+              properties:
+                endpointUrl:
+                  type: string
+                  format: uri
+                  pattern: ^https://
+                eventTypes: &a2
+                  type: array
+                  minItems: 1
+                  uniqueItems: true
+                  items:
+                    type: string
+                    enum:
+                      - interaction.created.v1
+                      - interaction.updated.v1
+                      - interaction.revision.created.v1
+                      - interaction.decision.recorded.v1
+                      - interaction.fulfillment.updated.v1
+                      - interaction.terminal.v1
+                      - interaction.content_purged.v1
+      x-commentary-feature-key: interactions.webhooks
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The data.secret field is displayed only in this response.
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/webhook-subscriptions/{subscriptionId}:
+    get:
+      operationId: getWebhookSubscription
+      tags:
+        - Webhooks
+      summary: Get a webhook subscription without its secret.
+      security:
+        - bearerAuth:
+            - commentary.webhooks.read
+      parameters:
+        - &a1
+          name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^whs_
+      x-commentary-feature-key: interactions.webhooks
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+    patch:
+      operationId: updateWebhookSubscription
+      tags:
+        - Webhooks
+      summary: Conditionally update endpoint or event scopes.
+      security:
+        - bearerAuth:
+            - commentary.webhooks.write
+      parameters:
+        - *a1
+        - &a3
+          name: If-Match
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                endpointUrl:
+                  type: string
+                  format: uri
+                  pattern: ^https://
+                eventTypes: *a2
+      x-commentary-feature-key: interactions.webhooks
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "412":
+          description: The ETag is stale.
+        "428":
+          description: If-Match is required.
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/webhook-subscriptions/{subscriptionId}/disable:
+    post:
+      operationId: disableWebhookSubscription
+      tags:
+        - Webhooks
+      summary: Disable delivery and cancel pending attempts.
+      security:
+        - bearerAuth:
+            - commentary.webhooks.write
+      parameters:
+        - *a1
+        - *a3
+      x-commentary-feature-key: interactions.webhooks
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/webhook-subscriptions/{subscriptionId}/rotate-secret:
+    post:
+      operationId: rotateWebhookSubscriptionSecret
+      tags:
+        - Webhooks
+      summary: Rotate and reveal a new signing secret once.
+      description: The prior secret stops signing new attempts immediately; later
+        reads never redisplay either secret.
+      security:
+        - bearerAuth:
+            - commentary.webhooks.write
+      parameters:
+        - *a1
+        - *a3
+      x-commentary-feature-key: interactions.webhooks
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/webhook-subscriptions/{subscriptionId}/deliveries:
+    get:
+      operationId: listWebhookDeliveries
+      tags:
+        - Webhooks
+      summary: List filtered redacted delivery diagnostics and dead letters.
+      description: Response bodies are whitespace-normalized, size-bounded excerpts;
+        request headers, secrets, and raw payload diagnostics are never
+        returned.
+      security:
+        - bearerAuth:
+            - commentary.webhooks.read
+      parameters:
+        - *a1
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      x-commentary-feature-key: interactions.webhooks
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/webhook-subscriptions/{subscriptionId}/deliveries/{deliveryId}/replay:
+    post:
+      operationId: replayWebhookDelivery
+      tags:
+        - Webhooks
+      summary: Confirm replay of one delivery as a new delivery id.
+      description: Replay reports state only; it never executes or approves an action.
+      security:
+        - bearerAuth:
+            - commentary.webhooks.write
+      parameters:
+        - *a1
+        - name: deliveryId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^whd_
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - confirm
+              additionalProperties: false
+              properties:
+                confirm:
+                  const: true
+      x-commentary-feature-key: interactions.webhooks
+      responses:
+        "202":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
   /.well-known/oauth-authorization-server:
     get:
       operationId: getOAuthAuthorizationServerMetadata
@@ -245,8 +754,8 @@ paths:
       summary: Approve an OAuth authorization request.
       description: Approves only the permissions displayed and selected by the user.
         Sensitive custom permissions require a separate confirmation.
-      security: &a3
-        - &a20
+      security: &a6
+        - &a23
           commentarySession: []
       requestBody:
         content:
@@ -270,7 +779,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: &a1
+            schema: &a4
               type: object
               required:
                 - client_id
@@ -286,7 +795,7 @@ paths:
                 client_name:
                   type: string
           application/x-www-form-urlencoded:
-            schema: *a1
+            schema: *a4
       responses:
         "200":
           description: Successful response.
@@ -331,7 +840,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: &a2
+            schema: &a5
               type: object
               required:
                 - grant_type
@@ -358,7 +867,7 @@ paths:
                 resource:
                   type: string
           application/x-www-form-urlencoded:
-            schema: *a2
+            schema: *a5
       responses:
         "200":
           description: Successful response.
@@ -421,7 +930,7 @@ paths:
       tags:
         - Tokens
       summary: List API tokens for the signed-in provider connection.
-      security: *a3
+      security: *a6
       x-commentary-feature-key: api.agent_access
       responses:
         "200":
@@ -475,7 +984,7 @@ paths:
       tags:
         - Tokens
       summary: Create an API token for scripts, MCP clients, or agents.
-      security: *a3
+      security: *a6
       requestBody:
         required: true
         content:
@@ -543,7 +1052,7 @@ paths:
       tags:
         - Tokens
       summary: Revoke an API token.
-      security: *a3
+      security: *a6
       parameters:
         - name: tokenId
           in: path
@@ -886,7 +1395,7 @@ paths:
           required: false
           schema:
             type: string
-        - &a5
+        - &a8
           name: provider
           in: query
           required: false
@@ -894,56 +1403,56 @@ paths:
             type: string
             enum:
               - github
-        - &a6
+        - &a9
           name: owner
           in: query
           required: false
           schema:
             type: string
           description: Repository owner.
-        - &a7
+        - &a10
           name: repo
           in: query
           required: false
           schema:
             type: string
           description: Repository name.
-        - &a8
+        - &a11
           name: pr
           in: query
           required: false
           schema:
             type: integer
           description: Pull request number.
-        - &a9
+        - &a12
           name: prNumber
           in: query
           required: false
           schema:
             type: integer
           description: Pull request number alias used by Brain endpoints.
-        - &a10
+        - &a13
           name: branch
           in: query
           required: false
           schema:
             type: string
           description: Branch ref for branch document review.
-        - &a11
+        - &a14
           name: branchRef
           in: query
           required: false
           schema:
             type: string
           description: Branch ref alias used by Brain endpoints.
-        - &a12
+        - &a15
           name: rootFolder
           in: query
           required: false
           schema:
             type: string
           description: Knowledge Brain root folder.
-        - &a13
+        - &a16
           name: brainRootFolder
           in: query
           required: false
@@ -1272,7 +1781,7 @@ paths:
         - bearerAuth:
             - commentary.forms.write
       parameters:
-        - &a4
+        - &a7
           name: linkId
           in: path
           required: true
@@ -1330,7 +1839,7 @@ paths:
         - bearerAuth:
             - commentary.forms.read
       parameters:
-        - *a4
+        - *a7
       x-commentary-feature-key: forms.agent_api
       responses:
         "200":
@@ -1391,22 +1900,22 @@ paths:
         - bearerAuth:
             - commentary.forms.read
       parameters:
-        - &a14
+        - &a17
           name: formId
           in: path
           required: true
           schema:
             type: string
           description: Form id or reference id.
-        - *a5
-        - *a6
-        - *a7
         - *a8
         - *a9
         - *a10
         - *a11
         - *a12
         - *a13
+        - *a14
+        - *a15
+        - *a16
         - name: draftReviewSessionId
           in: query
           required: false
@@ -1481,7 +1990,7 @@ paths:
         - bearerAuth:
             - commentary.forms.write
       parameters:
-        - *a14
+        - *a17
       requestBody:
         required: true
         content:
@@ -1536,7 +2045,7 @@ paths:
         - bearerAuth:
             - commentary.forms.read
       parameters:
-        - *a14
+        - *a17
       x-commentary-feature-key: forms.agent_api
       responses:
         "200":
@@ -1601,7 +2110,7 @@ paths:
         - bearerAuth:
             - commentary.forms.read
       parameters:
-        - *a14
+        - *a17
         - name: owner
           in: query
           required: false
@@ -1692,7 +2201,7 @@ paths:
         - bearerAuth:
             - commentary.forms.writeback
       parameters:
-        - *a14
+        - *a17
       requestBody:
         required: true
         content:
@@ -1807,7 +2316,7 @@ paths:
         - bearerAuth:
             - commentary.forms.read
       parameters:
-        - *a14
+        - *a17
         - name: action
           in: query
           required: false
@@ -1912,7 +2421,7 @@ paths:
         - bearerAuth:
             - commentary.forms.writeback
       parameters:
-        - *a14
+        - *a17
       requestBody:
         required: true
         content:
@@ -1979,7 +2488,7 @@ paths:
         - bearerAuth:
             - commentary.forms.read
       parameters:
-        - *a14
+        - *a17
       x-commentary-feature-key: forms.agent_api
       responses:
         "200":
@@ -2036,7 +2545,7 @@ paths:
         - bearerAuth:
             - commentary.forms.submit
       parameters:
-        - *a14
+        - *a17
       requestBody:
         required: true
         content:
@@ -2099,7 +2608,7 @@ paths:
         - bearerAuth:
             - commentary.forms.read
       parameters:
-        - *a14
+        - *a17
         - name: cursor
           in: query
           required: false
@@ -2214,7 +2723,7 @@ paths:
         - bearerAuth:
             - commentary.forms.submit
       parameters:
-        - *a14
+        - *a17
       requestBody:
         required: true
         content:
@@ -2283,7 +2792,7 @@ paths:
         - bearerAuth:
             - commentary.forms.read
       parameters:
-        - *a14
+        - *a17
         - name: submissionId
           in: path
           required: true
@@ -2548,7 +3057,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - &a15
+        - &a18
           name: studyId
           in: path
           required: true
@@ -2605,7 +3114,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
+        - *a18
         - name: stepId
           in: query
           required: false
@@ -2660,7 +3169,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
+        - *a18
       x-commentary-feature-key: research.studies.agent_api
       responses:
         "200":
@@ -2710,8 +3219,8 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - &a16
+        - *a18
+        - &a19
           name: sessionId
           in: path
           required: true
@@ -2767,8 +3276,8 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - *a16
+        - *a18
+        - *a19
       x-commentary-feature-key: research.studies.agent_api
       responses:
         "200":
@@ -2819,8 +3328,8 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - *a16
+        - *a18
+        - *a19
         - name: stepId
           in: path
           required: true
@@ -2952,7 +3461,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
+        - *a18
       x-commentary-feature-key: research.studies.agent_api
       responses:
         "200":
@@ -3012,7 +3521,7 @@ paths:
         - bearerAuth:
             - commentary.research.write
       parameters:
-        - *a15
+        - *a18
       requestBody:
         required: true
         content:
@@ -3101,7 +3610,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
+        - *a18
       x-commentary-feature-key: research.studies.agent_api
       responses:
         "200":
@@ -3188,7 +3697,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
+        - *a18
         - name: limit
           in: query
           required: false
@@ -3270,7 +3779,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
+        - *a18
         - name: format
           in: query
           required: false
@@ -3347,7 +3856,7 @@ paths:
         - bearerAuth:
             - commentary.research.write
       parameters:
-        - *a15
+        - *a18
       requestBody:
         required: true
         content:
@@ -3433,7 +3942,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
+        - *a18
         - name: cursor
           in: query
           required: false
@@ -3512,7 +4021,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
+        - *a18
         - name: sessionId
           in: query
           required: false
@@ -3599,7 +4108,7 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
+        - *a18
         - name: sessionStatus
           in: query
           required: false
@@ -3697,8 +4206,8 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - *a16
+        - *a18
+        - *a19
       x-commentary-feature-key: research.studies.agent_api
       responses:
         "200":
@@ -3759,8 +4268,8 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - *a16
+        - *a18
+        - *a19
       x-commentary-feature-key: research.studies.agent_api
       responses:
         "200":
@@ -3821,9 +4330,9 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - *a16
-        - &a17
+        - *a18
+        - *a19
+        - &a20
           name: taskId
           in: path
           required: true
@@ -3889,9 +4398,9 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - *a16
-        - *a17
+        - *a18
+        - *a19
+        - *a20
         - name: limit
           in: query
           required: false
@@ -3967,8 +4476,8 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - *a16
+        - *a18
+        - *a19
         - name: limit
           in: query
           required: false
@@ -4044,8 +4553,8 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - *a16
+        - *a18
+        - *a19
         - name: limit
           in: query
           required: false
@@ -4121,8 +4630,8 @@ paths:
         - bearerAuth:
             - commentary.research.read
       parameters:
-        - *a15
-        - *a16
+        - *a18
+        - *a19
         - name: formId
           in: query
           required: false
@@ -4208,8 +4717,8 @@ paths:
         - bearerAuth:
             - commentary.research.write
       parameters:
-        - *a15
-        - *a16
+        - *a18
+        - *a19
       requestBody:
         required: true
         content:
@@ -4922,7 +5431,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - &a18
+        - &a21
           name: threadId
           in: path
           required: true
@@ -4995,7 +5504,7 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
-        - *a18
+        - *a21
       requestBody:
         required: true
         content:
@@ -5061,7 +5570,7 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
-        - *a18
+        - *a21
       requestBody:
         required: true
         content:
@@ -5112,6 +5621,83 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ExternalError"
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/inbox/views:
+    post:
+      operationId: proposeInboxSavedView
+      tags:
+        - Inbox
+      summary: Propose a typed private Inbox view to the credential owner.
+      description: Registered account-scoped agents may create pending proposals only.
+        A proposal stays inactive until the human owner accepts it in the Inbox;
+        agents cannot change configuration.
+      security:
+        - bearerAuth:
+            - commentary.interactions.create
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - definition
+              additionalProperties: false
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 80
+                definition:
+                  type: object
+                  required:
+                    - version
+                    - clauses
+                    - sort
+                  additionalProperties: false
+      x-commentary-feature-key: inbox.saved_views
+      responses:
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "409":
+          description: The pending proposal or active-view limit was reached.
         "429":
           description: The request was rate limited.
           content:
@@ -5324,7 +5910,7 @@ paths:
         - bearerAuth:
             - commentary.interactions.read
       parameters:
-        - &a19
+        - &a22
           name: interactionId
           in: path
           required: true
@@ -5382,7 +5968,7 @@ paths:
         - bearerAuth:
             - commentary.interactions.update
       parameters:
-        - *a19
+        - *a22
         - name: If-Match
           in: header
           required: true
@@ -5474,7 +6060,7 @@ paths:
         - bearerAuth:
             - commentary.interactions.cancel
       parameters:
-        - *a19
+        - *a22
         - name: If-Match
           in: header
           required: true
@@ -5549,7 +6135,7 @@ paths:
         - bearerAuth:
             - commentary.interactions.update
       parameters:
-        - *a19
+        - *a22
         - name: If-Match
           in: header
           required: true
@@ -5620,6 +6206,256 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ExternalError"
+  /api/v1/interactions/{interactionId}/feedback:
+    post:
+      operationId: createInteractionFeedback
+      tags:
+        - Interactions
+      summary: Send typed human feedback against one immutable Interaction revision.
+      description: Feedback never mutates proposal content and moves the request to
+        waiting_for_agent.
+      security: *a6
+      parameters:
+        - *a22
+        - name: If-Match
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            maxLength: 200
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - body
+                - revisionId
+              additionalProperties: false
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - comment
+                    - rejection_reason
+                    - request_revision
+                    - structured_correction
+                body:
+                  type: string
+                  maxLength: 16384
+                revisionId:
+                  type: string
+                corrections:
+                  type: array
+                  maxItems: 20
+                  items:
+                    type: object
+                    required:
+                      - field
+                      - operation
+                    additionalProperties: false
+                    properties:
+                      field:
+                        type: string
+                        enum:
+                          - title
+                          - subtitle
+                          - summary
+                          - body
+                          - target
+                          - actions
+                      operation:
+                        type: string
+                        enum:
+                          - replace
+                          - remove
+                      value: {}
+      x-commentary-feature-key: interactions.feedback
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "409":
+          description: The addressed revision is stale.
+        "412":
+          description: If-Match is stale or malformed.
+        "428":
+          description: If-Match is required.
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+  /api/v1/interactions/{interactionId}/review-escalation:
+    post:
+      operationId: createInteractionReviewEscalation
+      tags:
+        - Interactions
+      summary: Explicitly link an Interaction revision to one canonical human review
+        Resource.
+      description: A same-origin authenticated human chooses the review type. Review
+        approval accepts the artifact revision and never represents external
+        execution.
+      security: *a6
+      parameters:
+        - *a22
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            maxLength: 200
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - revisionId
+                - proposalFingerprint
+                - reviewType
+                - confirmation
+                - target
+              additionalProperties: false
+              properties:
+                revisionId:
+                  type: string
+                proposalFingerprint:
+                  type: string
+                  pattern: ^[a-f0-9]{64}$
+                reviewType:
+                  type: string
+                  enum:
+                    - document_review
+                    - form_workflow
+                    - brain_review
+                    - live_preview_review
+                confirmation:
+                  type: object
+                  required:
+                    - reviewType
+                    - acknowledgedNoExecution
+                  additionalProperties: false
+                  properties:
+                    reviewType:
+                      type: string
+                      enum:
+                        - document_review
+                        - form_workflow
+                        - brain_review
+                        - live_preview_review
+                    acknowledgedNoExecution:
+                      type: boolean
+                      enum:
+                        - true
+                target:
+                  type: object
+                  required:
+                    - mode
+                  properties:
+                    mode:
+                      type: string
+                      enum:
+                        - create
+                        - link
+                    resourceId:
+                      type: string
+                    revisionId:
+                      type:
+                        - string
+                        - "null"
+                    create:
+                      type: object
+      x-commentary-feature-key: interactions.review_escalation
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "201":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "401":
+          description: Authentication is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "403":
+          description: The token or session does not have permission for this resource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "404":
+          description: The resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
+        "409":
+          description: The Interaction changed or already links a different review type.
+        "410":
+          description: Interaction content was purged.
+        "429":
+          description: The request was rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalError"
   /api/v1/interactions/{interactionId}/decisions:
     get:
       operationId: listInteractionDecisions
@@ -5632,11 +6468,11 @@ paths:
         omit human identity, Resource data, consequence content, and action
         snapshots. waitMs=0 is the universal polling fallback.
       security:
-        - *a20
+        - *a23
         - bearerAuth:
             - commentary.interactions.read
       parameters:
-        - *a19
+        - *a22
         - name: decisionId
           in: query
           required: false
@@ -5725,9 +6561,9 @@ paths:
         strong If-Match, and Idempotency-Key. The first valid result is
         immutable; replay never retargets a later revision. A Decision is
         intent, not Fulfillment or execution evidence.
-      security: *a3
+      security: *a6
       parameters:
-        - *a19
+        - *a22
         - name: If-Match
           in: header
           required: true
@@ -5844,7 +6680,7 @@ paths:
         - bearerAuth:
             - commentary.interactions.read
       parameters:
-        - *a19
+        - *a22
       x-commentary-feature-key: interactions.fulfillment
       responses:
         "200":
@@ -5908,7 +6744,7 @@ paths:
         - bearerAuth:
             - commentary.interactions.fulfillment
       parameters:
-        - *a19
+        - *a22
         - name: Idempotency-Key
           in: header
           required: true
@@ -6024,7 +6860,7 @@ paths:
         - bearerAuth:
             - commentary.interactions.read
       parameters:
-        - *a19
+        - *a22
         - name: limit
           in: query
           required: false
@@ -6094,7 +6930,7 @@ paths:
         - bearerAuth:
             - commentary.interactions.update
       parameters:
-        - *a19
+        - *a22
         - name: If-Match
           in: header
           required: true
@@ -6469,7 +7305,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a16
+        - *a19
       x-commentary-feature-key: draft_reviews.agent_api
       responses:
         "200":
@@ -6523,7 +7359,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a16
+        - *a19
       requestBody:
         required: true
         content:
@@ -6583,7 +7419,7 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.delete
       parameters:
-        - *a16
+        - *a19
       x-commentary-feature-key: draft_reviews.delete
       responses:
         "200":
@@ -6637,7 +7473,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a16
+        - *a19
       x-commentary-feature-key: draft_reviews.agent_api
       responses:
         "200":
@@ -6694,7 +7530,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a16
+        - *a19
         - name: fileId
           in: path
           required: true
@@ -6749,7 +7585,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a16
+        - *a19
       x-commentary-feature-key: draft_reviews.agent_api
       responses:
         "200":
@@ -6806,7 +7642,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a16
+        - *a19
       requestBody:
         required: true
         content:
@@ -6881,7 +7717,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a16
+        - *a19
       x-commentary-feature-key: draft_reviews.agent_api
       responses:
         "200":
@@ -6937,7 +7773,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a16
+        - *a19
       requestBody:
         required: true
         content:
@@ -6998,7 +7834,7 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a16
+        - *a19
       x-commentary-feature-key: draft_reviews.agent_api
       responses:
         "200":
@@ -7066,7 +7902,7 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a16
+        - *a19
         - name: fileId
           in: query
           required: false
@@ -7160,7 +7996,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a16
+        - *a19
       requestBody:
         required: true
         content:
@@ -7223,8 +8059,8 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a16
-        - *a18
+        - *a19
+        - *a21
       requestBody:
         required: true
         content:
@@ -7291,8 +8127,8 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
-        - *a16
-        - *a18
+        - *a19
+        - *a21
       requestBody:
         required: true
         content:
@@ -7361,8 +8197,8 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a16
-        - *a18
+        - *a19
+        - *a21
       requestBody:
         required: true
         content:
@@ -7431,8 +8267,8 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
-        - *a16
-        - *a18
+        - *a19
+        - *a21
       requestBody:
         required: true
         content:
@@ -7505,7 +8341,7 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a16
+        - *a19
         - name: cursor
           in: query
           required: false
@@ -7568,7 +8404,7 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.share
       parameters:
-        - *a16
+        - *a19
       x-commentary-feature-key: draft_reviews.sharing
       responses:
         "200":
@@ -7622,7 +8458,7 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.share
       parameters:
-        - *a16
+        - *a19
       requestBody:
         required: true
         content:
@@ -7686,8 +8522,8 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.share
       parameters:
-        - *a16
-        - &a22
+        - *a19
+        - &a25
           name: shareLinkId
           in: path
           required: true
@@ -7747,8 +8583,8 @@ paths:
         - bearerAuth:
             - commentary.draft_reviews.share
       parameters:
-        - *a16
-        - &a23
+        - *a19
+        - &a26
           name: accessGrantId
           in: path
           required: true
@@ -7927,7 +8763,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - &a21
+        - &a24
           name: reviewId
           in: path
           required: true
@@ -7987,7 +8823,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a21
+        - *a24
       requestBody:
         required: true
         content:
@@ -8048,7 +8884,7 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a21
+        - *a24
         - name: includeImages
           in: query
           required: false
@@ -8109,7 +8945,7 @@ paths:
         - bearerAuth:
             - commentary.comments.write
       parameters:
-        - *a21
+        - *a24
       requestBody:
         required: true
         content:
@@ -8170,8 +9006,8 @@ paths:
         - bearerAuth:
             - commentary.comments.status
       parameters:
+        - *a24
         - *a21
-        - *a18
       requestBody:
         required: true
         content:
@@ -8236,7 +9072,7 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a21
+        - *a24
         - name: includeResolved
           in: query
           required: false
@@ -8300,7 +9136,7 @@ paths:
         - bearerAuth:
             - commentary.review.share
       parameters:
-        - *a21
+        - *a24
       x-commentary-feature-key: web_app_reviews.sharing
       responses:
         "200":
@@ -8356,7 +9192,7 @@ paths:
         - bearerAuth:
             - commentary.review.share
       parameters:
-        - *a21
+        - *a24
       requestBody:
         required: true
         content:
@@ -8420,8 +9256,8 @@ paths:
         - bearerAuth:
             - commentary.review.share
       parameters:
-        - *a21
-        - *a22
+        - *a24
+        - *a25
       x-commentary-feature-key: web_app_reviews.sharing
       responses:
         "200":
@@ -8475,8 +9311,8 @@ paths:
         - bearerAuth:
             - commentary.review.share
       parameters:
-        - *a21
-        - *a23
+        - *a24
+        - *a26
       x-commentary-feature-key: web_app_reviews.sharing
       responses:
         "200":
@@ -8605,15 +9441,15 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a5
-        - *a6
-        - *a7
         - *a8
         - *a9
         - *a10
         - *a11
         - *a12
         - *a13
+        - *a14
+        - *a15
+        - *a16
         - name: file
           in: query
           required: false
@@ -8686,15 +9522,15 @@ paths:
         - bearerAuth:
             - commentary.comments.read
       parameters:
-        - *a5
-        - *a6
-        - *a7
         - *a8
         - *a9
         - *a10
         - *a11
         - *a12
         - *a13
+        - *a14
+        - *a15
+        - *a16
         - name: file
           in: query
           required: false
@@ -8767,15 +9603,15 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a5
-        - *a6
-        - *a7
         - *a8
         - *a9
         - *a10
         - *a11
         - *a12
         - *a13
+        - *a14
+        - *a15
+        - *a16
         - name: file
           in: query
           required: false
@@ -8848,15 +9684,15 @@ paths:
         - bearerAuth:
             - commentary.review.read
       parameters:
-        - *a5
-        - *a6
-        - *a7
         - *a8
         - *a9
         - *a10
         - *a11
         - *a12
         - *a13
+        - *a14
+        - *a15
+        - *a16
         - name: file
           in: query
           required: false
@@ -8983,15 +9819,15 @@ paths:
         - bearerAuth:
             - commentary.brain.evals.read
       parameters:
-        - *a5
-        - *a6
-        - *a7
         - *a8
         - *a9
         - *a10
         - *a11
         - *a12
         - *a13
+        - *a14
+        - *a15
+        - *a16
       x-commentary-feature-key: brain.evaluations
       responses:
         "200":
@@ -9182,10 +10018,10 @@ paths:
       tags:
         - MCP
       summary: Call Commentary MCP over Streamable HTTP JSON-RPC.
-      description: "Authenticated tools/list advertises: interaction,
-        commentary_forms, commentary_research, github_app_access, draft_review,
-        review_comments, web_app_review, review_participants, review_polls,
-        review_gate_status, review_document, brain_review."
+      description: "Authenticated tools/list advertises: inbox_saved_view,
+        interaction, commentary_forms, commentary_research, github_app_access,
+        draft_review, review_comments, web_app_review, review_participants,
+        review_polls, review_gate_status, review_document, brain_review."
       security:
         - bearerAuth: []
       requestBody:
@@ -9656,6 +10492,8 @@ components:
         - commentary.interactions.update
         - commentary.interactions.cancel
         - commentary.interactions.fulfillment
+        - commentary.webhooks.read
+        - commentary.webhooks.write
     TokenTarget:
       type: string
       description: Target string such as account, github:owner/repo,
@@ -11582,6 +12420,7 @@ components:
               name:
                 type: string
                 enum:
+                  - inbox_saved_view
                   - interaction
                   - commentary_forms
                   - commentary_research

@@ -33,6 +33,7 @@ nav:
       - API and MCP: docs/api-and-mcp.md
       - MCP 2026 Interactions: docs/mcp-interactions.md
       - Interaction API preview: docs/interaction-api.md
+      - TypeScript Agent SDK: docs/agent-sdk.md
       - Interaction API preview: docs/interaction-api.md
       - API reference: docs/api/reference.md
       - MCP tools: docs/api/mcp-tools.md

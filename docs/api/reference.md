@@ -68,6 +68,7 @@ OpenAPI version: `3.1.0`
 | `POST` | `/api/v1/forms/fillout-links/submit` | Submit answers through a response link. | commentary.forms.submit |
 | `POST` | `/api/v1/forms/validate` | Validate a literal Form Contract v1 payload without persisting it. | commentary.forms.read |
 | `GET` | `/api/v1/github/app-access/diagnostics` | Diagnose GitHub App installation access for an account-scoped token. | commentary.review.read |
+| `POST` | `/api/v1/inbox/views` | Propose a typed private Inbox view to the credential owner. | commentary.interactions.create |
 | `GET` | `/api/v1/interactions` | List durable requests addressed to the credential owner. | commentary.interactions.read |
 | `POST` | `/api/v1/interactions` | Create a durable request for the credential owner in their personal workspace. | commentary.interactions.create |
 | `DELETE` | `/api/v1/interactions/{interactionId}` | Conditionally cancel an Interaction. | commentary.interactions.cancel |
@@ -75,10 +76,12 @@ OpenAPI version: `3.1.0`
 | `PATCH` | `/api/v1/interactions/{interactionId}` | Conditionally update a non-decision Interaction lifecycle state. | commentary.interactions.update |
 | `GET` | `/api/v1/interactions/{interactionId}/decisions` | Read immutable human Decision receipts for one Interaction. | commentary.interactions.read |
 | `POST` | `/api/v1/interactions/{interactionId}/decisions` | Record one immutable human Decision against an exact proposal action. | session/public |
+| `POST` | `/api/v1/interactions/{interactionId}/feedback` | Send typed human feedback against one immutable Interaction revision. | session/public |
 | `GET` | `/api/v1/interactions/{interactionId}/fulfillment` | Read current self-reported Fulfillment and append-only history. | commentary.interactions.read |
 | `POST` | `/api/v1/interactions/{interactionId}/fulfillment` | Append an agent-reported Fulfillment status for an exact approved proposal. | commentary.interactions.fulfillment |
 | `GET` | `/api/v1/interactions/{interactionId}/messages` | List bounded messages already supported by the Interaction domain. | commentary.interactions.read |
 | `POST` | `/api/v1/interactions/{interactionId}/messages` | Conditionally append a message to the current or named revision. | commentary.interactions.update |
+| `POST` | `/api/v1/interactions/{interactionId}/review-escalation` | Explicitly link an Interaction revision to one canonical human review Resource. | session/public |
 | `POST` | `/api/v1/interactions/{interactionId}/revisions` | Create an immutable Interaction revision. | commentary.interactions.update |
 | `GET` | `/api/v1/research-capabilities` | Discover supported Research methods, Forms, Reviews, approval gates, bounds, and companion agent tools. | commentary.research.read |
 | `GET` | `/api/v1/research-studies` | List Research Studies visible to the external token. | commentary.research.read |
@@ -125,6 +128,14 @@ OpenAPI version: `3.1.0`
 | `GET` | `/api/v1/web-app-reviews/{reviewId}/shares` | List share links and access grants for a deployed Web App Review. | commentary.review.share |
 | `POST` | `/api/v1/web-app-reviews/{reviewId}/shares` | Create a deployed Web App Review share link. | commentary.review.share |
 | `DELETE` | `/api/v1/web-app-reviews/{reviewId}/shares/{shareLinkId}` | Revoke a Web App Review share link. | commentary.review.share |
+| `GET` | `/api/v1/webhook-subscriptions` | List workspace webhook subscriptions. | commentary.webhooks.read |
+| `POST` | `/api/v1/webhook-subscriptions` | Create a scoped webhook subscription and reveal its signing secret once. | commentary.webhooks.write |
+| `GET` | `/api/v1/webhook-subscriptions/{subscriptionId}` | Get a webhook subscription without its secret. | commentary.webhooks.read |
+| `PATCH` | `/api/v1/webhook-subscriptions/{subscriptionId}` | Conditionally update endpoint or event scopes. | commentary.webhooks.write |
+| `GET` | `/api/v1/webhook-subscriptions/{subscriptionId}/deliveries` | List filtered redacted delivery diagnostics and dead letters. | commentary.webhooks.read |
+| `POST` | `/api/v1/webhook-subscriptions/{subscriptionId}/deliveries/{deliveryId}/replay` | Confirm replay of one delivery as a new delivery id. | commentary.webhooks.write |
+| `POST` | `/api/v1/webhook-subscriptions/{subscriptionId}/disable` | Disable delivery and cancel pending attempts. | commentary.webhooks.write |
+| `POST` | `/api/v1/webhook-subscriptions/{subscriptionId}/rotate-secret` | Rotate and reveal a new signing secret once. | commentary.webhooks.write |
 | `GET` | `/api/v2/research-studies` | List Research v2 linear typed workflows visible to the external token. | commentary.research.read |
 | `GET` | `/api/v2/research-studies/{studyId}` | Get one Research v2 workflow and its ordered typed steps. | commentary.research.read |
 | `GET` | `/api/v2/research-studies/{studyId}/events` | List bounded privacy-filtered workflow events, optionally filtered by stepId. | commentary.research.read |
@@ -144,5 +155,5 @@ OpenAPI version: `3.1.0`
 
 ## Scopes
 
-`commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.review.share`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, `commentary.forms.writeback`, `commentary.research.read`, `commentary.research.write`, `commentary.brain.evals.read`, `commentary.brain.evals.write`, `commentary.interactions.create`, `commentary.interactions.read`, `commentary.interactions.update`, `commentary.interactions.cancel`, `commentary.interactions.fulfillment`
+`commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.review.share`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, `commentary.forms.writeback`, `commentary.research.read`, `commentary.research.write`, `commentary.brain.evals.read`, `commentary.brain.evals.write`, `commentary.interactions.create`, `commentary.interactions.read`, `commentary.interactions.update`, `commentary.interactions.cancel`, `commentary.interactions.fulfillment`, `commentary.webhooks.read`, `commentary.webhooks.write`
 
