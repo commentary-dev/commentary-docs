@@ -16,7 +16,7 @@ version; no version listed above will be removed before July 28, 2027.
 
 ## One durable Interaction tool
 
-The consolidated `interaction` tool supports ten actions:
+The consolidated `interaction` tool supports twelve actions:
 
 - `create`: requires `resource`, `content`, and `idempotencyKey`
 - `get`: requires the opaque `handle`
@@ -30,13 +30,14 @@ The consolidated `interaction` tool supports ten actions:
 - `fulfillment_report`: requires `handle`, the exact Decision/revision/action
   ids and approved fingerprint, `status`, and `idempotencyKey`
 - `fulfillment_get`: requires `handle` and returns current status plus history
+- `guidance_list`: requires `handle`, with optional `limit` and opaque `cursor`
+- `guidance_ack`: requires `handle`, `guidanceId`, and `idempotencyKey`
 
 Create, revise, and cancel are retry-safe when the caller reuses an idempotency
 key only with identical input. Lists are newest-first and cursor-paginated.
 Treat handles and cursors as opaque.
 
-Every successful call returns structured content plus a concise text fallback,
-a correlation id, and polling metadata. Poll `status` after `retryAfterMs` until
+Successful calls return structured content, a concise text fallback, and a correlation id. Lifecycle and waiting operations also return polling metadata where applicable. Poll `status` after `retryAfterMs` until
 `complete` is true; polling works for every client and does not hold a
 connection open.
 
@@ -84,6 +85,16 @@ Mcp-Param-Action: status
 
 {"jsonrpc":"2.0","id":"poll-2","method":"tools/call","params":{"name":"interaction","arguments":{"action":"status","handle":"ixn_opaque"},"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"example-client","version":"1.0"},"io.modelcontextprotocol/clientCapabilities":{}}}}
 ```
+
+## Retrieve Future Guidance
+
+Only the creating agent can retrieve and acknowledge human guidance for its request. `guidance_list` uses `commentary.interactions.read`; `guidance_ack` uses `.update` and an idempotency key. Guidance is separate from replies, Decisions, proposal revisions, and Fulfillment.
+
+```json
+{"action":"guidance_list","handle":"ixn_opaque","limit":20}
+```
+
+Acknowledgment records receipt of that exact instruction; it does not claim the instruction was learned or applied. Human creation remains in **Teach this agent**, not an agent tool action. See [Agent Inbox](agent-inbox.md#conversation-and-agent-guidance).
 
 ## Permissions and boundaries
 

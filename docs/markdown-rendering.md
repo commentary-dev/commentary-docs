@@ -27,11 +27,11 @@ Repository-aware links can also route across docs preview pages, embedded Markdo
 
 ## Heading Folding And Deep Links
 
-Latest rendered Markdown can collapse and expand H2-H6 sections from compact heading-row controls. H1 headings stay visible. The toolbar can collapse all sections, collapse-all state is reflected in the URL, and folded sections show comment counts when they contain comments.
+Document-mode rendered Markdown can collapse and expand H2-H6 sections from compact heading-row controls. H1 headings stay visible. The toolbar can collapse all sections, collapse-all state is reflected in the URL, and folded sections show comment counts when they contain comments.
 
 Heading rows also expose copyable deep links. Opening a hash link reveals only the folded ancestors needed for the target so the destination can be read without losing the rest of the folding state.
 
-Folding is for Latest rendered Markdown. Raw mode, static HTML preview, rendered Diff, and slide-deck Present mode keep their own behavior.
+Folding is for Document-mode rendered Markdown. Raw mode, static HTML preview, rendered Changes, and slide-deck Present mode keep their own behavior.
 
 ## Forms In Markdown
 

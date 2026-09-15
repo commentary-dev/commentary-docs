@@ -21,8 +21,8 @@ Public GitHub PRs can open read-only without login. Private PRs and Azure DevOps
 - Use progress status to track which files or sections you have already reviewed.
 - Stay in `Preview` for normal reading.
 - Switch to `Raw` for Markdown, HTML, YAML, or JSON source context.
-- Start with `Latest`, then use `Diff` when you need the change.
-- Collapse or expand H2-H6 sections in Latest rendered Markdown.
+- Start with `Document`, then use `Changes` when you need the change.
+- Collapse or expand H2-H6 sections in Document-mode rendered Markdown.
 - Copy heading deep links when you need to point someone at a rendered section.
 - Use docs preview when a docs framework route is detected.
 - Use Present mode when a rendered document or slide deck needs a meeting-friendly view.
@@ -64,12 +64,12 @@ On PR routes, Commentary stages pending review work locally until you click `Sub
 
 The submit dialog shows how many pending threads still need to sync before the provider review event is sent. Choose `Comment`, `Approve`, or `Request changes`, optionally add an overall summary, then submit.
 
-## Use `Diff` Intentionally
+## Use `Changes` Intentionally
 
-`Diff` is useful when you need to answer:
+`Changes` is useful when you need to answer:
 
 - What changed in this paragraph, table row, or section?
 - Did this file change in a selected commit?
 - Is the rendered change clearer than the raw Markdown?
 
-For normal reading, `Preview` plus `Latest` is usually faster.
+For normal reading, `Preview` plus `Document` is usually faster.

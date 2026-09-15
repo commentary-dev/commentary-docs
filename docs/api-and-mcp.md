@@ -30,6 +30,12 @@ For typed Interaction, Decision wait, Fulfillment, subscription, pagination, can
 
 The generated reference committed with these docs is [API reference](./api/reference.md). Browser, internal, webhook, and test routes are intentionally outside the public contract.
 
+## Research And Interaction Extensions
+
+Research uses the explicit `/api/v2/research-studies` contract and `commentary_research` capability v2, with `stepId`/`stepRunId` result context. See [Research Studies](research-studies.md).
+
+The consolidated Interaction MCP tool also retrieves and acknowledges future guidance. Human reply corrections and guidance creation retain their human-session boundaries. [Outbound webhooks](outbound-webhooks.md) provide minimal state notifications with signed delivery, bounded retries, and replay diagnostics.
+
 ## API Tokens
 
 Use `/api/v1/tokens` while signed in:

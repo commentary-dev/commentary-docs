@@ -43,6 +43,9 @@ surface recovery guidance instead of silently completing the request.
 - `GET|PATCH|DELETE /api/v1/interactions/{interactionId}`
 - `POST /api/v1/interactions/{interactionId}/revisions`
 - `GET|POST /api/v1/interactions/{interactionId}/messages`
+- `GET|POST /api/v1/interactions/{interactionId}/messages/{messageId}/revisions` (eligible human-authored reply history/correction)
+- `GET|POST /api/v1/interactions/{interactionId}/guidance` (creating-agent retrieval; human-only creation)
+- `POST /api/v1/interactions/{interactionId}/guidance/{guidanceId}/acknowledgment` (creating agent only)
 - `GET /api/v1/interactions/{interactionId}/decisions`
 - `GET|POST /api/v1/interactions/{interactionId}/fulfillment`
 
@@ -52,6 +55,12 @@ and `.cancel` scopes. Reporting uses the separate least-privilege
 only the credential owner in their personal workspace. The linked Draft Review,
 Form, Research Study, or Web App Review must belong to that owner. Scopes do not
 replace Resource authorization, and revocation takes effect immediately.
+
+## Replies, Corrections, And Future Guidance
+
+Instance replies remain in the Interaction conversation. Eligible human authors can append corrections to their own editable replies; reads expose additive `messageVersion`, `editedAt`, and `editable` metadata. Corrections preserve history and cannot rewrite Decisions or another author's messages. Use the current [API reference](api/reference.md) for the human-session correction contract.
+
+Human guidance names the current revision and its future scope. Agents cannot create it. The creating agent can list guidance with `.read` and acknowledge the exact record with `.update` and an idempotency key. Delivered/acknowledged records do not approve the current request or prove future compliance.
 
 ## Create and retry safely
 

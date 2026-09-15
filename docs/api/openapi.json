@@ -722,7 +722,7 @@
           "Webhooks"
         ],
         "summary": "List filtered redacted delivery diagnostics and dead letters.",
-        "description": "Response bodies are whitespace-normalized, size-bounded excerpts; request headers, secrets, and raw payload diagnostics are never returned.",
+        "description": "Returns data and nullable nextCursor for bounded older-delivery navigation. Response bodies are whitespace-normalized, size-bounded excerpts; request headers, secrets, and raw payload diagnostics are never returned.",
         "security": [
           {
             "bearerAuth": [
@@ -742,6 +742,14 @@
           },
           {
             "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
             "in": "query",
             "required": false,
             "schema": {
@@ -1689,9 +1697,23 @@
           "Tokens"
         ],
         "summary": "Create an API token for scripts, MCP clients, or agents.",
+        "description": "Issuance is atomic. Retry unchanged settings with the same Idempotency-Key after an uncertain outcome. Replay confirms the existing credential without returning its one-time secret; deliberately rotate it in Account Developer access for recovery.",
         "security": [
           {
             "commentarySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "description": "Stable key for one issue. Omission preserves legacy non-idempotent requests."
           }
         ],
         "requestBody": {
@@ -1716,7 +1738,6 @@
                     "ok",
                     "id",
                     "grantId",
-                    "token",
                     "tokenHint"
                   ],
                   "properties": {
@@ -1729,8 +1750,12 @@
                     "grantId": {
                       "type": "string"
                     },
+                    "replayed": {
+                      "type": "boolean"
+                    },
                     "token": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "One-time secret, present only for the original successful issue."
                     },
                     "tokenHint": {
                       "type": "string"
@@ -1772,6 +1797,16 @@
           },
           "404": {
             "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The issuance key was reused with different settings or the connected account changed.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10596,6 +10631,700 @@
         }
       }
     },
+    "/api/v1/interactions/{interactionId}/messages/{messageId}/revisions": {
+      "get": {
+        "operationId": "listHumanReplyVersions",
+        "tags": [
+          "Interactions"
+        ],
+        "summary": "Read retained reply history through a human browser session.",
+        "security": [
+          {
+            "commentarySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^ixn_[A-Za-z0-9_-]{16,}$"
+            },
+            "description": "Opaque Interaction id."
+          },
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 2
+            }
+          }
+        ],
+        "x-commentary-feature-key": "interactions.feedback",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Reply content was purged."
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "reviseHumanReply",
+        "tags": [
+          "Interactions"
+        ],
+        "summary": "Append an author-owned conversational reply correction.",
+        "description": "Same-origin browser only; bearer tokens are rejected. If-Match names the message id and version. Retries reuse the same operation key and body. Decisions and other control receipts cannot be edited. Completion does not prevent correction while content and source access remain retained.",
+        "security": [
+          {
+            "commentarySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^ixn_[A-Za-z0-9_-]{16,}$"
+            },
+            "description": "Opaque Interaction id."
+          },
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "body"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "maxLength": 16384
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "interactions.feedback",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/InteractionMessage"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/InteractionMessage"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Message version or operation key conflict."
+          },
+          "410": {
+            "description": "Reply content was purged."
+          },
+          "412": {
+            "description": "Malformed message If-Match."
+          },
+          "428": {
+            "description": "Message If-Match is required."
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/interactions/{interactionId}/guidance": {
+      "get": {
+        "operationId": "listInteractionGuidance",
+        "tags": [
+          "Interactions"
+        ],
+        "summary": "List bounded future-facing guidance for the creating agent.",
+        "description": "Only the authorized agent that created the Interaction can retrieve guidance. Guidance is separate from conversation, Decisions, and lifecycle state.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.interactions.read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^ixn_[A-Za-z0-9_-]{16,}$"
+            },
+            "description": "Opaque Interaction id."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-commentary-feature-key": "interactions.guidance",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/InteractionGuidance"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createInteractionGuidance",
+        "tags": [
+          "Interactions"
+        ],
+        "summary": "Send future-facing guidance to the agent that created an Interaction.",
+        "description": "Same-origin human action. Delivery marks the card read but never changes the current request, lifecycle, bucket, rank, conversation, or Decisions.",
+        "security": [
+          {
+            "commentarySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^ixn_[A-Za-z0-9_-]{16,}$"
+            },
+            "description": "Opaque Interaction id."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "revisionId",
+                  "scope",
+                  "body"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revisionId": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "type": "string",
+                    "enum": [
+                      "similar_items",
+                      "same_source",
+                      "agent_behavior",
+                      "general"
+                    ]
+                  },
+                  "body": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 16384
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-commentary-feature-key": "interactions.guidance",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The Interaction revision or idempotency request conflicts."
+          },
+          "410": {
+            "description": "Interaction content was purged."
+          },
+          "412": {
+            "description": "If-Match is stale or malformed."
+          },
+          "428": {
+            "description": "If-Match is required."
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/interactions/{interactionId}/guidance/{guidanceId}/acknowledgment": {
+      "post": {
+        "operationId": "acknowledgeInteractionGuidance",
+        "tags": [
+          "Interactions"
+        ],
+        "summary": "Acknowledge one exact guidance record as the creating agent.",
+        "description": "Creates an immutable, content-free acknowledgment receipt. It does not claim that guidance was learned or applied.",
+        "security": [
+          {
+            "bearerAuth": [
+              "commentary.interactions.update"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "interactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^ixn_[A-Za-z0-9_-]{16,}$"
+            },
+            "description": "Opaque Interaction id."
+          },
+          {
+            "name": "guidanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        ],
+        "x-commentary-feature-key": "interactions.guidance",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/InteractionGuidance"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/InteractionGuidance"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token or session does not have permission for this resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The request was rate limited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/interactions/{interactionId}/review-escalation": {
       "post": {
         "operationId": "createInteractionReviewEscalation",
@@ -10870,9 +11599,20 @@
                     "data": {
                       "oneOf": [
                         {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/InteractionDecision"
+                          "type": "object",
+                          "properties": {
+                            "decisions": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/InteractionDecision"
+                              }
+                            },
+                            "approval": {
+                              "type": "object"
+                            },
+                            "responseProgress": {
+                              "$ref": "#/components/schemas/InteractionResponseProgress"
+                            }
                           }
                         },
                         {
@@ -11060,7 +11800,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/InteractionDecision"
+                      "$ref": "#/components/schemas/InteractionDecisionResult"
                     }
                   }
                 }
@@ -11075,7 +11815,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/InteractionDecision"
+                      "$ref": "#/components/schemas/InteractionDecisionResult"
                     }
                   }
                 }
@@ -17549,6 +18289,220 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "messageVersion": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "editedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "editable": {
+            "type": "boolean",
+            "description": "Human conversational eligibility; never grants bearer edit authority."
+          }
+        }
+      },
+      "InteractionGuidance": {
+        "type": "object",
+        "required": [
+          "id",
+          "interactionId",
+          "revisionId",
+          "scope",
+          "body",
+          "deliveredAt",
+          "status",
+          "acknowledgment"
+        ],
+        "additionalProperties": false,
+        "description": "Immutable future-facing human guidance plus an optional content-free agent acknowledgment receipt.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^ixg_[A-Za-z0-9_-]{16,}$"
+          },
+          "interactionId": {
+            "type": "string"
+          },
+          "revisionId": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "similar_items",
+              "same_source",
+              "agent_behavior",
+              "general"
+            ]
+          },
+          "body": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 16384
+          },
+          "deliveredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contentPurgedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "delivered",
+              "acknowledged"
+            ]
+          },
+          "acknowledgment": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "acknowledgedAt",
+                  "acknowledgedByAgentId"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "acknowledgedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "acknowledgedByAgentId": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "InteractionResponseProgress": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "description": "Browser-human recipient progress for the current exact revision. Does not change the Interaction lifecycle or prove external execution. Agent receipt transports do not expose this projection.",
+        "properties": {
+          "revisionId": {
+            "type": "string"
+          },
+          "responded": {
+            "type": "boolean"
+          },
+          "revisionChanges": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousResponses": {
+            "type": "array",
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "contentPurged": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "next": {
+            "type": "string",
+            "enum": [
+              "you",
+              "agent",
+              "approvers",
+              "revision",
+              "none"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "availableActionIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "approvedActionIds": {
+            "type": "array",
+            "description": "Actions whose current approval policy is satisfied; not proof of execution.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "receipts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "actionId": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "contentPurged": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InteractionDecisionResult": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "$ref": "#/components/schemas/InteractionDecision"
+          },
+          "aggregate": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "responseProgress": {
+            "$ref": "#/components/schemas/InteractionResponseProgress"
           }
         }
       },

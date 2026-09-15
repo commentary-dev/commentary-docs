@@ -1,6 +1,6 @@
 # Draft Reviews
 
-Draft reviews let signed-in users review Markdown, MDX, static HTML, or plain text before the content exists in a Git branch or pull request.
+Draft reviews let signed-in users review Markdown, MDX, static HTML, plain text, Form Contracts, and supported visual artifacts before the content exists in a Git branch or pull request.
 
 Open [/workspace/drafts/new](https://commentary.dev/workspace/drafts/new) to start a private draft review.
 
@@ -9,13 +9,13 @@ Open [/workspace/drafts/new](https://commentary.dev/workspace/drafts/new) to sta
 ## Create A Draft Review
 
 1. Sign in to Commentary.
-2. Open `New review` from the homepage or workspace.
+2. Select the destination Workspace and open **New review → Document review**.
 3. Choose `Paste` or `Upload`.
 4. Add a title.
-5. Paste Markdown, HTML, MDX, or plain text, or upload one text file.
+5. Paste supported text content or upload a supported document, Form Contract, image, SVG, or Mermaid source.
 6. Click `Create review`.
 
-Pasted content can be auto-detected or explicitly marked as Markdown, HTML, or plain text. Upload accepts `.md`, `.markdown`, `.mdx`, `.html`, `.htm`, and `.txt` files.
+Pasted content can be auto-detected or explicitly marked as Markdown, HTML, or plain text. Text upload accepts `.md`, `.markdown`, `.mdx`, `.html`, `.htm`, and `.txt`; supported Form Contract and visual formats are also available. See [Images and diagram reviews](visual-reviews.md) for formats, upload limits, region comments, and agent upload flow.
 
 ## Optional GitHub Base
 
@@ -42,7 +42,7 @@ Use `Upload new revision` to paste or upload replacement content. API, MCP, CLI,
 
 Revision uploads can be partial. If a tool uploads only changed files, Commentary carries omitted files forward into the new immutable revision.
 
-Open draft pages listen for live comment, reply, status, revision, rebase, and deletion events. The `Live` control can pause or resume updates. Latest-mode pages refresh when a new revision arrives, while pinned previous-revision views stay on the selected revision.
+Open draft pages listen for live comment, reply, status, revision, rebase, and deletion events. The `Live` control can pause or resume updates. Current Document pages refresh when a new revision arrives, while pinned previous-revision views stay on the selected revision.
 
 ## Draft Actions
 

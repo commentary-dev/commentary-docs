@@ -79,8 +79,13 @@ OpenAPI version: `3.1.0`
 | `POST` | `/api/v1/interactions/{interactionId}/feedback` | Send typed human feedback against one immutable Interaction revision. | session/public |
 | `GET` | `/api/v1/interactions/{interactionId}/fulfillment` | Read current self-reported Fulfillment and append-only history. | commentary.interactions.read |
 | `POST` | `/api/v1/interactions/{interactionId}/fulfillment` | Append an agent-reported Fulfillment status for an exact approved proposal. | commentary.interactions.fulfillment |
+| `GET` | `/api/v1/interactions/{interactionId}/guidance` | List bounded future-facing guidance for the creating agent. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions/{interactionId}/guidance` | Send future-facing guidance to the agent that created an Interaction. | session/public |
+| `POST` | `/api/v1/interactions/{interactionId}/guidance/{guidanceId}/acknowledgment` | Acknowledge one exact guidance record as the creating agent. | commentary.interactions.update |
 | `GET` | `/api/v1/interactions/{interactionId}/messages` | List bounded messages already supported by the Interaction domain. | commentary.interactions.read |
 | `POST` | `/api/v1/interactions/{interactionId}/messages` | Conditionally append a message to the current or named revision. | commentary.interactions.update |
+| `GET` | `/api/v1/interactions/{interactionId}/messages/{messageId}/revisions` | Read retained reply history through a human browser session. | session/public |
+| `POST` | `/api/v1/interactions/{interactionId}/messages/{messageId}/revisions` | Append an author-owned conversational reply correction. | session/public |
 | `POST` | `/api/v1/interactions/{interactionId}/review-escalation` | Explicitly link an Interaction revision to one canonical human review Resource. | session/public |
 | `POST` | `/api/v1/interactions/{interactionId}/revisions` | Create an immutable Interaction revision. | commentary.interactions.update |
 | `GET` | `/api/v1/research-capabilities` | Discover supported Research methods, Forms, Reviews, approval gates, bounds, and companion agent tools. | commentary.research.read |

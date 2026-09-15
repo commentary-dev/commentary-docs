@@ -3,9 +3,90 @@
 
 The `/mcp` endpoint advertises these tools through authenticated `tools/list`. This file is generated from the same definitions used by the route.
 
+## `inbox_saved_view`
+
+Propose a bounded typed private Inbox view to the credential owner. The proposal remains inactive until that human accepts it; agents cannot accept, reject, activate, edit, reorder, delete, or set defaults.
+
+Input schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "propose"
+      ],
+      "description": "Operation to perform. Choose one advertised value; the remaining parameters are interpreted for that action."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "description": "Name used by the selected Propose Inbox saved view action."
+    },
+    "definition": {
+      "type": "object",
+      "maxProperties": 3,
+      "description": "Definition object used by the selected Propose Inbox saved view action."
+    }
+  },
+  "required": [
+    "action",
+    "name",
+    "definition"
+  ],
+  "additionalProperties": false
+}
+```
+
+Successful structured output schema:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "description": "Structured successful result from Propose Inbox saved view.",
+  "properties": {
+    "ok": {
+      "type": "boolean",
+      "enum": [
+        true
+      ],
+      "description": "True when the tool call completed successfully."
+    },
+    "tool": {
+      "type": "string",
+      "enum": [
+        "inbox_saved_view"
+      ],
+      "description": "Programmatic name of the Commentary tool that produced this result."
+    },
+    "action": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Selected action, or null for a tool without an action parameter."
+    },
+    "result": {
+      "description": "Result returned by Propose Inbox saved view."
+    }
+  },
+  "required": [
+    "ok",
+    "tool",
+    "action",
+    "result"
+  ],
+  "additionalProperties": false
+}
+```
+
 ## `interaction`
 
-Create, get, list, revise, cancel, or poll durable Commentary Interactions with no held connection; retrieve immutable human Decision receipts; and append or read self-reported Fulfillment bound to an approved fingerprint. Agents cannot create or modify Decisions. Fulfillment reports are history, not verified proof or provider success.
+Create, get, list, revise, cancel, or poll durable Commentary Interactions with no held connection; retrieve immutable human Decision receipts but cannot create or modify Decisions; append or read self-reported Fulfillment; and use guidance_list or guidance_ack for future-facing human guidance. Guidance acknowledgment never claims the instruction was learned or applied.
 
 Input schema:
 
@@ -25,7 +106,9 @@ Input schema:
         "decision_get",
         "decision_wait",
         "fulfillment_report",
-        "fulfillment_get"
+        "fulfillment_get",
+        "guidance_list",
+        "guidance_ack"
       ],
       "x-mcp-header": "Action",
       "description": "Operation to perform. Choose one advertised value; the remaining parameters are interpreted for that action."
@@ -53,6 +136,12 @@ Input schema:
       "minLength": 1,
       "maxLength": 256,
       "description": "Stable action identifier used by the selected Commentary Interaction action."
+    },
+    "guidanceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable guidance identifier used by the selected Commentary Interaction action."
     },
     "proposalFingerprint": {
       "type": "string",
@@ -156,7 +245,7 @@ Input schema:
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Id used by the selected Commentary Interaction action."
+                "description": "Optional revision-local producer correlation id. Opaque Decision action ids are assigned by Commentary and returned by interaction get."
               },
               "type": {
                 "type": "string",
@@ -220,6 +309,25 @@ Input schema:
         "active"
       ],
       "description": "Allowed initial state value for the selected Commentary Interaction action."
+    },
+    "interactionType": {
+      "type": "string",
+      "enum": [
+        "request",
+        "notification",
+        "decision_request"
+      ],
+      "description": "Registered-agent Interaction type. Current owner policy is enforced for new requests."
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ],
+      "description": "Requested attention priority. It may not exceed the registered agent ceiling."
     },
     "expectedVersion": {
       "type": "integer",

@@ -1,49 +1,58 @@
 # Agent Inbox
 
-Commentary is the human decision layer for AI agents. Agent Inbox gives
-asynchronous agents one durable place to ask for a question, choice, exact
-approval, correction, or full Review without requiring a person to stay in chat.
+Open [Inbox](https://commentary.dev/inbox) after signing in to see requests and updates across the workspaces you can access. Inbox and Workspace are peer destinations: Inbox is your attention feed; Workspace is where you organize the underlying work.
 
-Open `/workspace/inbox` after signing in. It is the workspace-scoped default.
-`/workspace` remains the broader workspace overview, and optional `/inbox`
-aggregates only items the current account may still access across workspaces.
-Workspace or team membership never substitutes for provider or Resource access.
+![Signed-in Inbox with Active, History, sorting, and quick filters](assets/inbox-active.png)
 
-## Inbox Or Review
+*Captured on commentary.dev on September 15, 2026. Account identity is anonymized; this account had no active items.*
 
-- Use Inbox for bounded questions, choices, status updates, and exact approvals.
-- Use Review when a plan, document, Form, Knowledge Brain, or preview needs
-  paragraph-level feedback, semantic anchors, or several revision rounds.
-- Escalation links the exact Interaction revision to a canonical Review Resource.
-  App-native review threads remain authoritative and are not copied into Inbox.
+## Active And History
 
-Agents create Interactions through HTTP v1, consolidated MCP, the Commentary CLI,
-the TypeScript Agent SDK, or the Commentary Inbox skills. Only an eligible signed-in
-human can write a Decision. Every consequential Decision binds the immutable
-revision, action, consequence, and proposal fingerprint the person saw.
+**Active** combines requests that need you, updates, and work waiting on someone else. **History** contains completed items and items you dismissed. Use **All workspaces** to narrow the feed and **Recommended**, **Newest**, or **Due soon** to change its order. Quick filters include **needs action**, **unread**, **Due this week**, and **waiting**; **Filters** exposes more criteria.
 
-After approval, the agent executes through its own separately configured connector
-and may append Fulfillment. Fulfillment is the agent's report, not cryptographic
-proof or independent confirmation that email, calendar, deployment, or another
-external provider changed.
+Load older items explicitly. When the selected view has no more work, **You're caught up** is the successful end state. A partial or failed source load does not mean every workspace has been checked.
 
-## Attention, Teams, And Governance
+Workspace membership never replaces permission to the repository or Resource behind an item. Commentary checks access again when you open or act on it. A Resource is the original review, Form, study, Brain, or preview that the request concerns.
 
-Personal read, pin, snooze, priority, and due state is durable and recipient
-isolated. Explainable attention, saved views, notifications, team routing,
-multi-approver policy, enterprise governance, cross-workspace aggregation,
-attention policies, and trust insights are Pro-preview capabilities.
+## Read And Respond
 
-Core/free-preview and Pro-preview capabilities remain usable during the current
-no-billing phase. Pro product surfaces show the reusable notice. Commentary does
-not currently claim active billing, guaranteed availability, compliance
-certification, autonomous approval, or verified external execution.
+Each card identifies the sender, workspace, and reason it is in your feed. Open the card's non-action area for the full request, supporting context, related artifact, images when present, and conversation. The focused view keeps its actions available while you scroll. Back or Escape returns to the feed context.
 
-Trust insights use content-free aggregates with a minimum cohort of 20. They can
-propose an inert policy version, but a human must separately approve and enable
-that exact version. Raw Interaction content is not used for insight training.
+Choose the action that matches your intent:
 
-See [Interaction API preview](./interaction-api.md),
-[MCP 2026 Interactions](./mcp-interactions.md),
-[MCP Tasks compatibility](./mcp-tasks.md), [Commentary CLI](./commentary-cli.md),
-[TypeScript Agent SDK](./agent-sdk.md), and [Agent skills](./agent-skills.md).
+| Control | Effect |
+| --- | --- |
+| Requested response, such as an answer, choice, or approval | Responds to the current request. Consequential responses record an exact human Decision. |
+| Reply | Adds to this request's conversation without approving it. |
+| Teach this agent | Sends guidance for future work without answering or deciding this request. |
+| Snooze | Defers the item's visibility and notifications for you. |
+| Dismiss | Moves the current event to your History without canceling the underlying work. |
+| Postpone, when offered as a requested response | Tells the agent about the postponement; it is separate from personal Snooze. |
+
+Scrolling alone never marks an item read. Deliberately opening it, replying, marking it read, or submitting a requested response does. **Mark unread** explicitly clears read state.
+
+Use **Item options** for Pin, read state, **Attention settings**, **Why this is here**, and **Technical details** when applicable. Priority and due time are personal attention settings; clearing them does not send an agent response. Scheduling shows the applicable time zone and asks you to disambiguate repeated daylight-saving times.
+
+Dismiss offers an eight-second **Undo**, and History provides restoration afterward. A materially newer event can bring dismissed work back to Active. Dismissal affects only your feed, not other recipients or the underlying request.
+
+## Conversation And Agent Guidance
+
+Replies stay in one chronological conversation. **Load older messages** retrieves earlier replies without creating separate feed posts. Eligible authors can use **Edit reply** on their own replies; **Edited** opens retained revision history. Failed sends and edit conflicts retain the draft for recovery. Editing a reply does not rewrite a Decision or an agent's proposal.
+
+For an agent-authored request, open **Item options → Teach this agent**. Choose where the instruction should apply and send future-facing guidance. **Delivered** means Commentary stored it for that agent; **Acknowledged** means the creating agent acknowledged the exact record. Neither status proves the agent has applied it to later work.
+
+## Exact Decisions And Full Review
+
+Only an eligible signed-in person can approve. Read the current proposal, consequence, and requested action before confirming. The receipt binds to that exact revision and action. If the proposal changes, refresh and review the new version; an earlier approval does not authorize a different proposal. Multi-approver requests show remaining approval requirements and your own response separately.
+
+Use full Review when a document, Form, Knowledge Brain, or Live Preview needs anchored comments and revision rounds. Escalation links the exact request revision to a canonical Review Resource. Accepted content or requested corrections return through a new immutable Interaction revision; app-native review threads remain authoritative.
+
+An agent retrieves the receipt and continues through its own tools. **Fulfillment** records the agent's report of receipt, start, completion, failure, or uncertainty. It is not independent proof that an external email, calendar event, or deployment changed.
+
+## Preferences And Availability
+
+Personal settings live under [Inbox settings](https://commentary.dev/settings/inbox) and [Notifications](https://commentary.dev/settings/notifications). See [Saved views and notifications](inbox-preferences.md) and [Teams, agents, and automation](teams-and-agents.md).
+
+Basic Inbox, all-workspaces access, exact Decisions, replies, and future guidance are Core/free capabilities. Explainable attention, saved views, notifications, team routing, multi-approver policies, governance, attention policies, and trust insights have Pro-preview features. These remain usable during the no-billing preview and show the Pro notice where applicable.
+
+For integrations, see [Interaction API](interaction-api.md), [MCP Interactions](mcp-interactions.md), [Agent SDK](agent-sdk.md), [CLI](commentary-cli.md), and [Agent skills](agent-skills.md). Older `/workspace/inbox` links remain compatibility entry points; use `/inbox` for new bookmarks.

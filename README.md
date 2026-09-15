@@ -4,6 +4,17 @@ Commentary is the human decision layer for AI agents. Its trusted wedge remains 
 
 These docs are written for people using [commentary.dev](https://commentary.dev). They cover public read-only review, authenticated commenting, GitHub App access, Azure DevOps access, personal access token fallbacks, draft reviews, Brainstorming Reviews, Commentary Forms, Markdown extensions, static HTML review, Live Preview Reviews, Knowledge Brain review, workspace queues, developer access, the Commentary CLI, agent skills, API access, and MCP.
 
+## September 2026 Updates
+
+Inbox is now the account-level `/inbox` feed, separate from the selected Workspace. Read about the current navigation, human response and guidance flows, Research workflows, image/diagram review, and Live Preview recovery:
+
+- [What changed](./docs/whats-new.md)
+- [Saved views and notifications](./docs/inbox-preferences.md)
+- [Teams, agents, and automation](./docs/teams-and-agents.md)
+- [Research Studies](./docs/research-studies.md)
+- [Images and diagram reviews](./docs/visual-reviews.md)
+- [Outbound webhooks](./docs/outbound-webhooks.md)
+
 ## Start Here
 
 - New to Commentary: [Getting started](./docs/getting-started.md)
@@ -44,12 +55,12 @@ These docs are written for people using [commentary.dev](https://commentary.dev)
 1. Open [/](https://commentary.dev/).
 2. Paste a GitHub or Azure DevOps PR, branch, repository, file, or folder URL.
 3. Click `Open review`.
-4. Read in `Preview` and `Latest`.
+4. Read in `Preview` and `Document`.
 5. Sign in when you want to comment, reply, submit a review, create or share drafts, create Live Preview Reviews, manage Forms, or use API/MCP access.
 
 ![Homepage review intake](./docs/assets/homepage-intake.png)
 
-For a guided sample, open [/demo/select](https://commentary.dev/demo/select). For cross-repository work, sign in and open [/workspace](https://commentary.dev/workspace). For source-backed form results, open [/workspace/forms](https://commentary.dev/workspace/forms). For draft review before content exists in Git, open [/workspace/drafts/new](https://commentary.dev/workspace/drafts/new). For interactive preview apps, open [/workspace/web-app-reviews/new](https://commentary.dev/workspace/web-app-reviews/new).
+For a guided sample, open [/demo/select](https://commentary.dev/demo/select). For requests across workspaces, open [Inbox](https://commentary.dev/inbox). For organized work, sign in and open [/workspace](https://commentary.dev/workspace). For source-backed form results, open [/workspace/forms](https://commentary.dev/workspace/forms). For draft review before content exists in Git, open [/workspace/drafts/new](https://commentary.dev/workspace/drafts/new). For interactive preview apps, open [/workspace/web-app-reviews/new](https://commentary.dev/workspace/web-app-reviews/new).
 
 ## Current Product Shape
 
@@ -57,7 +68,7 @@ For a guided sample, open [/demo/select](https://commentary.dev/demo/select). Fo
 - Commenting, replies, review submission, private content, workspaces, draft reviews, Forms management, API tokens, and MCP access require authentication.
 - GitHub App is the default GitHub connection for workspace discovery and private access. GitHub PAT remains the advanced fallback.
 - Azure DevOps supports Microsoft Entra sign-in and PAT fallback.
-- Pull request review supports `Preview`, `Raw`, `Latest`, `Diff`, docs preview, Present mode, all-change and commit-specific change sets, comments, live GitHub comment sync, refresh, and review submission.
+- Pull request review supports `Preview`, `Raw`, `Document`, `Changes`, docs preview, Present mode, all-change and commit-specific change sets, comments, live GitHub comment sync, refresh, and review submission.
 - Direct document review supports branches, folders, Markdown, MDX, static HTML files, standalone Form Contract files, branch selectors, commit-specific diff context, and Commentary-only comments.
 - Latest rendered Markdown supports H2-H6 heading folding, collapse-all URL state, folded comment counts, and copyable heading deep links.
 - Draft reviews support pasted or uploaded Markdown, MDX, HTML, plain text, and Form Contract files before content exists in Git, with revisions, live updates, sharing, export, agent instructions, CLI workflows, API access, and MCP access.
@@ -73,4 +84,4 @@ For a guided sample, open [/demo/select](https://commentary.dev/demo/select). Fo
 
 ## In This Repo
 
-This repository is also the public branch review example for Commentary's direct document review flow. The root `README.md` is the landing page for `/docs`, and the rest of the guides live in `docs/` with relative Markdown links between them.
+This repository is also the public branch review example for Commentary's direct document review flow. The root `README.md` introduces the repository; `docs/index.md` is the MkDocs homepage. The guides live in `docs/` with relative Markdown links between them.

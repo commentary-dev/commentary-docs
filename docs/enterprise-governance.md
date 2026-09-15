@@ -2,6 +2,8 @@
 
 Commentary’s enterprise governance controls are a Pro preview. They remain usable during the no-billing preview and show the standard Pro notice in the product. They provide administrative controls; they are not proof of regulatory compliance or a certification.
 
+Open **Workspace → Manage → Governance** for the selected workspace. The page separates **Policy**, **Insights**, and **Audit**. Workspace **Automation** owns routing and attention-rule editing; personal Inbox and notification preferences stay in account settings.
+
 ## Workspace roles
 
 Team workspaces use four administrative roles:
@@ -34,6 +36,10 @@ The Governance workspace page shows whether each policy is inherited or a worksp
 Governance audit events are immutable and content-minimized. Authorized exports use filtered newline-delimited JSON with bounded row and byte limits. Export requests and completions are themselves audited. Subjects use privacy-safe hashes rather than raw provider identities or repository URLs, and purge markers remain visible without preserving removed content.
 
 These events help administrators inspect Commentary policy changes. They are not a compliance report, regulatory attestation, or execution proof.
+
+## Outcome Insights
+
+Insights summarize content-free outcomes only after a minimum cohort of 20. Suggested attention-policy changes remain inactive until a human separately approves and enables the exact version. Auditor access is read-only. A suggestion never grants automatic approval or execution authority. See [Teams, agents, and automation](teams-and-agents.md).
 
 ## Identity provisioning boundary
 

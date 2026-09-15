@@ -1,43 +1,49 @@
 site_name: Commentary Docs
-docs_dir: "."
+docs_dir: docs
 nav:
-  - Home: README.md
+  - Home: index.md
   - Start:
-      - Getting started: docs/getting-started.md
-      - Core concepts: docs/core-concepts.md
-      - Demo walkthrough: docs/demo-walkthrough.md
+      - Getting started: getting-started.md
+      - Core concepts: core-concepts.md
+      - Demo walkthrough: demo-walkthrough.md
   - Review workflows:
-      - Review pull requests: docs/review-pull-requests.md
-      - Review repository branches: docs/review-repository-branches.md
-      - Draft reviews: docs/draft-reviews.md
-      - Brainstorming Reviews: docs/brainstorming-reviews.md
-      - Live Preview Reviews: docs/web-app-reviews.md
-      - Commentary Forms: docs/commentary-forms.md
-      - Review progress: docs/review-progress.md
-      - Review modes: docs/review-modes.md
-      - Workspace: docs/workspace.md
-      - Agent Inbox: docs/agent-inbox.md
-      - Enterprise governance: docs/enterprise-governance.md
+      - Review pull requests: review-pull-requests.md
+      - Review repository branches: review-repository-branches.md
+      - Draft reviews: draft-reviews.md
+      - Brainstorming Reviews: brainstorming-reviews.md
+      - Live Preview Reviews: web-app-reviews.md
+      - Commentary Forms: commentary-forms.md
+      - Review progress: review-progress.md
+      - Review modes: review-modes.md
+      - Workspace: workspace.md
+      - Agent Inbox: agent-inbox.md
+      - Saved views and notifications: inbox-preferences.md
+      - Teams, agents, and automation: teams-and-agents.md
+      - Research Studies: research-studies.md
+      - Enterprise governance: enterprise-governance.md
   - Content types:
-      - Markdown rendering: docs/markdown-rendering.md
-      - Markdown extensions: docs/markdown-extensions.md
-      - Static HTML review: docs/static-html-review.md
-      - Knowledge Brain: docs/knowledge-brain.md
+      - Markdown rendering: markdown-rendering.md
+      - Markdown extensions: markdown-extensions.md
+      - Static HTML review: static-html-review.md
+      - Images and diagrams: visual-reviews.md
+      - Knowledge Brain: knowledge-brain.md
   - Providers and access:
-      - Access and authentication: docs/access-and-authentication.md
-      - Developer access: docs/developer-access.md
-      - Generate a GitHub PAT: docs/generate-a-github-pat.md
-      - Azure DevOps: docs/azure-devops.md
+      - Access and authentication: access-and-authentication.md
+      - Developer access: developer-access.md
+      - Generate a GitHub PAT: generate-a-github-pat.md
+      - Azure DevOps: azure-devops.md
   - Integrations:
-      - Commentary CLI: docs/commentary-cli.md
-      - Agent skills: docs/agent-skills.md
-      - API and MCP: docs/api-and-mcp.md
-      - MCP 2026 Interactions: docs/mcp-interactions.md
-      - MCP Tasks compatibility: docs/mcp-tasks.md
-      - Interaction API preview: docs/interaction-api.md
-      - TypeScript Agent SDK: docs/agent-sdk.md
-      - API reference: docs/api/reference.md
-      - MCP tools: docs/api/mcp-tools.md
+      - Commentary CLI: commentary-cli.md
+      - Agent skills: agent-skills.md
+      - API and MCP: api-and-mcp.md
+      - MCP 2026 Interactions: mcp-interactions.md
+      - MCP Tasks compatibility: mcp-tasks.md
+      - Interaction API preview: interaction-api.md
+      - Outbound webhooks: outbound-webhooks.md
+      - TypeScript Agent SDK: agent-sdk.md
+      - API reference: api/reference.md
+      - MCP tools: api/mcp-tools.md
   - Help:
-      - Blog: docs/blog.md
-      - Troubleshooting and FAQ: docs/troubleshooting-and-faq.md
+      - September 2026 updates: whats-new.md
+      - Blog: blog.md
+      - Troubleshooting and FAQ: troubleshooting-and-faq.md
