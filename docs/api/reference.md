@@ -44,18 +44,21 @@ OpenAPI version: `3.1.0`
 | `GET` | `/api/v1/draft-reviews/{sessionId}/shares` | List share links and access grants for a draft review. | commentary.draft_reviews.share |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/shares` | Create a draft review share link. | commentary.draft_reviews.share |
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}/shares/{shareLinkId}` | Revoke a draft review share link. | commentary.draft_reviews.share |
+| `PUT` | `/api/v1/draft-reviews/assets/{uploadId}` | Upload exactly the raster bytes declared by a prepared upload. | commentary.comments.write |
+| `POST` | `/api/v1/draft-reviews/assets/prepare` | Prepare an actor-bound, expiring raster upload for a Draft or Brainstorming Review. | commentary.comments.write |
 | `GET` | `/api/v1/forms` | List owned forms and visible result collections for the account-scoped token principal. | commentary.forms.read |
 | `POST` | `/api/v1/forms` | Reject standalone Forms API creation. | commentary.forms.write |
 | `GET` | `/api/v1/forms/{formId}` | Get a form contract and metadata. | commentary.forms.read |
 | `PATCH` | `/api/v1/forms/{formId}` | Reject standalone Forms API editing. | commentary.forms.write |
 | `GET` | `/api/v1/forms/{formId}/destinations` | List form destinations and read-only write-back status. | commentary.forms.read |
 | `GET` | `/api/v1/forms/{formId}/destinations/writeback` | Inspect optional GitHub writeback availability for a form target. | commentary.forms.read |
-| `POST` | `/api/v1/forms/{formId}/destinations/writeback` | Explicitly write a form definition or final submission to GitHub through the optional writeback app. | commentary.forms.writeback |
+| `POST` | `/api/v1/forms/{formId}/destinations/writeback` | Explicitly write a form definition or final submission batch to GitHub through the optional writeback app. | commentary.forms.writeback |
 | `GET` | `/api/v1/forms/{formId}/git-results` | List canonical git-hosted result files for a source-backed form. | commentary.forms.read |
 | `POST` | `/api/v1/forms/{formId}/git-results` | Preview result writeback or explicitly import canonical git-hosted result files. | commentary.forms.writeback |
 | `GET` | `/api/v1/forms/{formId}/submissions` | List submissions for a permitted result collection. | commentary.forms.read |
 | `POST` | `/api/v1/forms/{formId}/submissions` | Submit final form answers. | commentary.forms.submit |
 | `GET` | `/api/v1/forms/{formId}/submissions/{submissionId}` | Read or export one form submission including raw values for an authorized principal. | commentary.forms.read |
+| `GET` | `/api/v1/forms/{formId}/submissions/events` | Stream final form submission events using Server-Sent Events. | commentary.forms.read |
 | `POST` | `/api/v1/forms/{formId}/submissions/validate` | Validate form answers against the current form contract without storing a submission. | commentary.forms.submit |
 | `GET` | `/api/v1/forms/embedded-answers` | List embedded review form answers for an authorized result context. | commentary.forms.read |
 | `GET` | `/api/v1/forms/fillout-links` | List response links owned by the account-scoped token principal. | commentary.forms.read |
@@ -64,13 +67,55 @@ OpenAPI version: `3.1.0`
 | `GET` | `/api/v1/forms/fillout-links/{linkId}/results` | List result submissions owned by a response link. | commentary.forms.read |
 | `POST` | `/api/v1/forms/fillout-links/submit` | Submit answers through a response link. | commentary.forms.submit |
 | `POST` | `/api/v1/forms/validate` | Validate a literal Form Contract v1 payload without persisting it. | commentary.forms.read |
+| `GET` | `/api/v1/github/app-access/diagnostics` | Diagnose GitHub App installation access for an account-scoped token. | commentary.review.read |
+| `POST` | `/api/v1/inbox/views` | Propose a typed private Inbox view to the credential owner. | commentary.interactions.create |
+| `GET` | `/api/v1/interactions` | List durable requests addressed to the credential owner. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions` | Create a durable request for the credential owner in their personal workspace. | commentary.interactions.create |
+| `DELETE` | `/api/v1/interactions/{interactionId}` | Conditionally cancel an Interaction. | commentary.interactions.cancel |
+| `GET` | `/api/v1/interactions/{interactionId}` | Get one source-authorized Interaction. | commentary.interactions.read |
+| `PATCH` | `/api/v1/interactions/{interactionId}` | Conditionally update a non-decision Interaction lifecycle state. | commentary.interactions.update |
+| `GET` | `/api/v1/interactions/{interactionId}/decisions` | Read immutable human Decision receipts for one Interaction. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions/{interactionId}/decisions` | Record one immutable human Decision against an exact proposal action. | session/public |
+| `POST` | `/api/v1/interactions/{interactionId}/feedback` | Send typed human feedback against one immutable Interaction revision. | session/public |
+| `GET` | `/api/v1/interactions/{interactionId}/fulfillment` | Read current self-reported Fulfillment and append-only history. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions/{interactionId}/fulfillment` | Append an agent-reported Fulfillment status for an exact approved proposal. | commentary.interactions.fulfillment |
+| `GET` | `/api/v1/interactions/{interactionId}/guidance` | List bounded future-facing guidance for the creating agent. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions/{interactionId}/guidance` | Send future-facing guidance to the agent that created an Interaction. | session/public |
+| `POST` | `/api/v1/interactions/{interactionId}/guidance/{guidanceId}/acknowledgment` | Acknowledge one exact guidance record as the creating agent. | commentary.interactions.update |
+| `GET` | `/api/v1/interactions/{interactionId}/messages` | List bounded messages already supported by the Interaction domain. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions/{interactionId}/messages` | Conditionally append a message to the current or named revision. | commentary.interactions.update |
+| `GET` | `/api/v1/interactions/{interactionId}/messages/{messageId}/revisions` | Read retained reply history through a human browser session. | session/public |
+| `POST` | `/api/v1/interactions/{interactionId}/messages/{messageId}/revisions` | Append an author-owned conversational reply correction. | session/public |
+| `POST` | `/api/v1/interactions/{interactionId}/review-escalation` | Explicitly link an Interaction revision to one canonical human review Resource. | session/public |
+| `POST` | `/api/v1/interactions/{interactionId}/revisions` | Create an immutable Interaction revision. | commentary.interactions.update |
+| `GET` | `/api/v1/research-capabilities` | Discover supported Research methods, Forms, Reviews, approval gates, bounds, and companion agent tools. | commentary.research.read |
+| `GET` | `/api/v1/research-studies` | List Research Studies visible to the external token. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}` | Get Research Study metadata, source/sync state, and setup context. | commentary.research.read |
+| `POST` | `/api/v1/research-studies/{studyId}` | Submit an evidence-linked Research Study finding or report. | commentary.research.write |
+| `GET` | `/api/v1/research-studies/{studyId}/events` | Observe new Research Study participant events using Server-Sent Events. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/evidence` | List normalized evidence for a Research Study. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/export` | Export Research Study results as structured JSON or report-friendly Markdown. | commentary.research.read |
+| `POST` | `/api/v1/research-studies/{studyId}/export` | Preview or write Research Study export artifacts to GitHub through the optional writeback app. | commentary.research.write |
+| `GET` | `/api/v1/research-studies/{studyId}/participants` | List bounded pseudonymous participant projections for an owned Research Study. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/sessions` | List participant sessions for a Research Study. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}` | Get a Research Study participant session summary. | commentary.research.read |
+| `POST` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}/actions` | Create a controlled external-agent Research Session action. | commentary.research.write |
+| `GET` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}/comments` | List participant comments for a Research session. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}/events` | List sanitized participant events for a Research session. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}/responses` | List form responses linked to a Research session. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}/tasks` | List live task result projections for a Research session. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}/tasks/{taskId}/result` | Get one live task result projection. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}/tasks/{taskId}/telemetry` | Read a bounded page of sanitized telemetry for one Research task run. | commentary.research.read |
+| `GET` | `/api/v1/research-studies/{studyId}/workflow-status` | Inspect source, participant, evidence, media, destination, and approval status for an agent workflow. | commentary.research.read |
 | `GET` | `/api/v1/review/comments` | List review comments for a PR or branch document file. | commentary.comments.read |
 | `POST` | `/api/v1/review/comments` | Create a review comment thread on a PR or branch document. | commentary.comments.write |
+| `GET` | `/api/v1/review/gate` | Read the approval-gate status for an exact review revision. | commentary.review.read |
 | `GET` | `/api/v1/review/mention-notifications` | List mention notifications for the current token principal. | commentary.comments.read |
 | `POST` | `/api/v1/review/mention-notifications/{notificationId}/read` | Mark a mention notification read for the current token principal. | commentary.comments.write |
 | `GET` | `/api/v1/review/participants` | List users and agents taggable in a review. | commentary.comments.read |
 | `POST` | `/api/v1/review/participants` | Add a taggable user or register an agent alias for the current user. | commentary.comments.write |
 | `GET` | `/api/v1/review/progress` | Read per-reviewer progress for a PR, branch document, or draft review. | commentary.review.read |
+| `POST` | `/api/v1/review/threads/{threadId}/anchor` | Re-attach a review thread to a semantic block in the current document version. | commentary.comments.status |
 | `POST` | `/api/v1/review/threads/{threadId}/comments` | Reply to an existing review thread. | commentary.comments.write |
 | `POST` | `/api/v1/review/threads/{threadId}/status` | Resolve or reopen an existing review thread. | commentary.comments.status |
 | `GET` | `/api/v1/tokens` | List API tokens for the signed-in provider connection. | session/public |
@@ -82,12 +127,27 @@ OpenAPI version: `3.1.0`
 | `PATCH` | `/api/v1/web-app-reviews/{reviewId}` | Update Web App Review metadata. | commentary.comments.write |
 | `DELETE` | `/api/v1/web-app-reviews/{reviewId}/access/{accessGrantId}` | Remove a Web App Review access grant. | commentary.review.share |
 | `GET` | `/api/v1/web-app-reviews/{reviewId}/agent-context` | Get Web App Review comments as actionable, untrusted agent editing tasks. | commentary.review.read |
-| `GET` | `/api/v1/web-app-reviews/{reviewId}/comments` | List selected-element comments for a Web App Review. | commentary.comments.read |
-| `POST` | `/api/v1/web-app-reviews/{reviewId}/comments` | Create a selected-element comment for a Web App Review. | commentary.comments.write |
+| `GET` | `/api/v1/web-app-reviews/{reviewId}/comments` | List selector, screenshot, and general comments for a Web App Review. | commentary.comments.read |
+| `POST` | `/api/v1/web-app-reviews/{reviewId}/comments` | Create a selector, screenshot, or general comment for a Web App Review. | commentary.comments.write |
 | `POST` | `/api/v1/web-app-reviews/{reviewId}/comments/{threadId}/status` | Resolve or reopen a Web App Review comment thread. | commentary.comments.status |
 | `GET` | `/api/v1/web-app-reviews/{reviewId}/shares` | List share links and access grants for a deployed Web App Review. | commentary.review.share |
 | `POST` | `/api/v1/web-app-reviews/{reviewId}/shares` | Create a deployed Web App Review share link. | commentary.review.share |
 | `DELETE` | `/api/v1/web-app-reviews/{reviewId}/shares/{shareLinkId}` | Revoke a Web App Review share link. | commentary.review.share |
+| `GET` | `/api/v1/webhook-subscriptions` | List workspace webhook subscriptions. | commentary.webhooks.read |
+| `POST` | `/api/v1/webhook-subscriptions` | Create a scoped webhook subscription and reveal its signing secret once. | commentary.webhooks.write |
+| `GET` | `/api/v1/webhook-subscriptions/{subscriptionId}` | Get a webhook subscription without its secret. | commentary.webhooks.read |
+| `PATCH` | `/api/v1/webhook-subscriptions/{subscriptionId}` | Conditionally update endpoint or event scopes. | commentary.webhooks.write |
+| `GET` | `/api/v1/webhook-subscriptions/{subscriptionId}/deliveries` | List filtered redacted delivery diagnostics and dead letters. | commentary.webhooks.read |
+| `POST` | `/api/v1/webhook-subscriptions/{subscriptionId}/deliveries/{deliveryId}/replay` | Confirm replay of one delivery as a new delivery id. | commentary.webhooks.write |
+| `POST` | `/api/v1/webhook-subscriptions/{subscriptionId}/disable` | Disable delivery and cancel pending attempts. | commentary.webhooks.write |
+| `POST` | `/api/v1/webhook-subscriptions/{subscriptionId}/rotate-secret` | Rotate and reveal a new signing secret once. | commentary.webhooks.write |
+| `GET` | `/api/v2/research-studies` | List Research v2 linear typed workflows visible to the external token. | commentary.research.read |
+| `GET` | `/api/v2/research-studies/{studyId}` | Get one Research v2 workflow and its ordered typed steps. | commentary.research.read |
+| `GET` | `/api/v2/research-studies/{studyId}/events` | List bounded privacy-filtered workflow events, optionally filtered by stepId. | commentary.research.read |
+| `GET` | `/api/v2/research-studies/{studyId}/sessions` | List participant sessions and ordered step runs. | commentary.research.read |
+| `GET` | `/api/v2/research-studies/{studyId}/sessions/{sessionId}` | Get a session with step-scoped comments, responses, and events. | commentary.research.read |
+| `GET` | `/api/v2/research-studies/{studyId}/sessions/{sessionId}/steps` | List ordered step results for one participant session. | commentary.research.read |
+| `GET` | `/api/v2/research-studies/{studyId}/sessions/{sessionId}/steps/{stepId}` | Get one step result with its run, evidence, Form provenance, comments, telemetry, and Activity outcome. | commentary.research.read |
 | `GET` | `/mcp` | Probe MCP endpoint authentication and protocol support. | session/public |
 | `POST` | `/mcp` | Call Commentary MCP over Streamable HTTP JSON-RPC. | session/public |
 | `GET` | `/oauth/authorize` | Show the OAuth authorization page. | session/public |
@@ -100,5 +160,5 @@ OpenAPI version: `3.1.0`
 
 ## Scopes
 
-`commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.review.share`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, `commentary.forms.writeback`, `commentary.brain.evals.read`, `commentary.brain.evals.write`
+`commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.review.share`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, `commentary.forms.writeback`, `commentary.research.read`, `commentary.research.write`, `commentary.brain.evals.read`, `commentary.brain.evals.write`, `commentary.interactions.create`, `commentary.interactions.read`, `commentary.interactions.update`, `commentary.interactions.cancel`, `commentary.interactions.fulfillment`, `commentary.webhooks.read`, `commentary.webhooks.write`
 

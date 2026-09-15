@@ -1,6 +1,6 @@
 # Live Preview Reviews
 
-Live Preview Reviews are an opt-in review mode for customer-owned interactive preview apps. Commentary stores the preview URL as a first-class review target and stores comments against live HTML element context reported by the app-side Review SDK.
+Live Preview Reviews are an opt-in review mode for customer-owned interactive preview apps. Commentary stores the preview URL as a first-class review target and stores selected-element comments from the opt-in Review SDK or bounded screenshot-region comments when a framed preview lacks the SDK.
 
 Use this for deployed previews, staging apps, and localhost development servers that you own or are authorized to review. Commentary does not proxy arbitrary websites, inject scripts into third-party pages, bypass frame restrictions, or server-fetch localhost previews.
 
@@ -8,7 +8,7 @@ Use this for deployed previews, staging apps, and localhost development servers 
 
 ## Review Targets
 
-Use deployed preview mode for HTTPS preview URLs that you own or are authorized to review, such as Vercel, Netlify, Azure Static Web Apps, GitHub Pages, or customer staging hosts. The reviewed app must allow itself to be embedded by Commentary and must include the Review SDK in the preview build.
+Use deployed preview mode for HTTPS preview URLs that you own or are authorized to review, such as Vercel, Netlify, Azure Static Web Apps, GitHub Pages, or customer staging hosts. Choose **Automatic**, **Inside Commentary**, or **New tab** delivery. Embedded delivery requires permission to frame the app. Install the Review SDK for selected-element comments in either embedded or standalone delivery; a frameable preview without it can use screenshot feedback.
 
 Use localhost mode for loopback URLs such as `http://localhost:5173`, `http://127.0.0.1:3000`, or `http://[::1]:4173`. Localhost reviews load from the current reviewer's browser and cannot be shared through Commentary share links. Commentary cloud services do not fetch the reviewer's localhost.
 
@@ -18,13 +18,13 @@ Private LAN hosts such as `192.168.x.x`, `10.x.x.x`, `172.16.x.x` through `172.3
 
 ## Create A Review
 
-1. Sign in and open [/workspace/web-app-reviews/new](https://commentary.dev/workspace/web-app-reviews/new).
+1. Sign in, select the destination Workspace, and choose **New review → Live Preview**. The older [/workspace/web-app-reviews/new](https://commentary.dev/workspace/web-app-reviews/new) entry remains supported.
 2. Choose `Deployed preview` or `Localhost`.
 3. Enter a preview URL you own or are authorized to review.
 4. Add optional repository, branch, commit, deployment, or build metadata when it helps agents or reviewers understand the source.
 5. Create the review and open the generated `/review/web-app/{reviewId}` link.
 
-Opening a review loads the validated preview URL directly in an iframe, shows SDK connection state, and lets reviewers switch between Interact and Comment modes. Commentary never reads `iframe.contentWindow.document`; live element selection is handled by the opt-in SDK through strict `postMessage` messages.
+Embedded reviews load the validated URL in an iframe, show SDK connection state, and provide Interact and Comment modes. New-tab delivery opens the website separately and reports its connection state in the original Commentary tab. Commentary never reads `iframe.contentWindow.document`; live element selection is handled by the opt-in SDK through strict `postMessage` messages.
 
 ## Sharing
 
@@ -32,7 +32,7 @@ Owners can share deployed Live Preview Reviews from the review page. Commentary 
 
 Anyone-link share routes can show a public read-only preview before sign-in. Shared reviewers can open the direct review route, create SDK sessions, read comments, add replies, resolve or reopen comment threads, and create selected-element comments. They cannot update review metadata, create or revoke shares, remove other reviewers, or see the review in their owner workspace list.
 
-Localhost Live Preview Reviews are intentionally excluded from sharing. The preview URL points at the current reviewer's machine, so sharing is available only after the app is deployed to an HTTPS preview that can be embedded by Commentary.
+Localhost Live Preview Reviews are intentionally excluded from sharing. The preview URL points at the current reviewer's machine, so sharing is available only for an authorized deployed HTTPS preview.
 
 ## Review Modes
 
@@ -45,7 +45,25 @@ Saved comments appear in the comments panel with route, status, replies, target 
 
 ![Live Preview Review workspace](./assets/web-app-review-workspace.png)
 
-When a preview blocks embedding or the SDK is not available, the review shell shows setup guidance instead of enabling element selection.
+If the SDK does not connect, the shell offers applicable recovery, including new-tab launch or screenshot feedback for a rendered frame. A timeout cannot reliably prove that framing was blocked. Element selection requires a working SDK connection.
+
+## New-Tab Delivery
+
+Standalone delivery opens the reviewed website at top level with an isolated Commentary control overlay. The preview must load a compatible SDK and allow `frame-src https://commentary.dev`. This does not bypass the host's security policy.
+
+Choose **Open review in new tab** from the original review. If the popup is blocked, allow it and retry from that control. Connection states distinguish Connecting, Connected, Reconnecting, Closed, and Session expired. Reopen after an expired connection or an authentication redirect that loses its launch context. Launch handles are single-use and expire after five minutes; a connected session has a two-hour limit.
+
+SDK 0.3 supports the standalone overlay; newer compatible versions add reload recovery and optional overlay dragging. An older SDK can remain usable for embedded review without supporting these standalone controls.
+
+## Screenshot Feedback
+
+For a framed preview without usable SDK selection, Comment mode can use screenshot targets. Explicitly start browser tab capture, select the review area, and comment on the captured region. Only the cropped review area is uploaded; a full-screen capture is not stored. This mode does not recover DOM selectors or bypass iframe restrictions.
+
+API/MCP comment reads return screenshot metadata by default. Use `includeImages=true` when an authorized consumer needs the image bytes for visual review. This option is separate from `includeVisualContent` used for document visual artifacts.
+
+## Research Activities
+
+[Research Studies](research-studies.md) reuse Live Preview delivery inside a participant workflow. Activities independently choose embedded/new-tab delivery and SDK-tracked/manual evidence. Tracked standalone Activities finish through **Done and return**; manual participants return to the Research tab to report completion. Missing behavior evidence is not an inferred outcome.
 
 ## Full Page Mode
 
@@ -126,7 +144,7 @@ Script-tag usage:
 <script src="https://cdn.commentary.dev/review-sdk/latest/commentary-review-sdk.js"></script>
 ```
 
-The SDK is framework-agnostic, but it is browser and DOM specific. It needs `window`, `document`, DOM events, selectors, element geometry, History or Hash routing events, iframe embedding, and `postMessage`. React, Next.js, Vue, Svelte, Angular, Astro, Vite, and plain HTML previews can use it when the reviewed page renders selectable DOM elements.
+The SDK is framework-agnostic, but it is browser and DOM specific. It needs browser DOM APIs, routing events, and the supported embedded or standalone communication bridge. React, Next.js, Vue, Svelte, Angular, Astro, Vite, and plain HTML previews can use it when the reviewed page renders selectable DOM elements.
 
 Optional source metadata improves anchors and agent handoff:
 
@@ -151,7 +169,7 @@ Commentary stores bounded review metadata for selected elements:
 - optional component/source metadata
 - optional commit SHA
 
-Commentary does not store DOM dumps, cookies, localStorage, sessionStorage, token values, input values, screenshots, or raw app HTML for this persistence path.
+Selector comments do not store DOM dumps, cookies, browser storage, token/input values, or raw app HTML. Screenshot targets separately store the explicitly captured, cropped review image and bounded region metadata.
 
 ## API And MCP
 
@@ -165,7 +183,7 @@ See [API and MCP](./api-and-mcp.md), [API reference](./api/reference.md), and [M
 
 ## Frame Setup
 
-Preview apps must allow Commentary to embed them. For CSP-based setups, configure a narrow review-environment policy:
+For embedded delivery, preview apps must allow Commentary to frame them. For CSP-based setups, configure a narrow review-environment policy:
 
 ```http
 Content-Security-Policy: frame-ancestors https://commentary.dev
@@ -182,4 +200,4 @@ GitHub Pages can be useful for demos, but custom response-header control may be 
 - Commentary cloud services do not fetch reviewer localhost previews.
 - Private LAN URLs are rejected by default.
 - The reviewed app must load the SDK before element selection can work.
-- The preview host must allow iframe embedding by Commentary.
+- Embedded delivery needs host framing permission; standalone delivery needs a compatible SDK and permission to frame Commentary controls.

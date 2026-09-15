@@ -80,9 +80,9 @@ Scopes are immutable after token creation. Create a replacement token from [Deve
 
 Start in `Preview`. Switch to `Raw` only when you need source-level Markdown, HTML, YAML, or JSON context.
 
-### Should I start in `Latest` or `Diff`?
+### Should I start in `Document` or `Changes`?
 
-Start in `Latest` for reading. Use `Diff` when you need to inspect the actual change.
+Start in `Document` for reading. Use `Changes` when you need to inspect the actual change.
 
 ### Can I review a repository branch before a PR exists?
 
@@ -112,6 +112,24 @@ Eligible GitHub PR comments can sync before review submission when Commentary dr
 
 Yes, for public GitHub read-only review when GitHub's anonymous API limit allows it. Writing actions still require authentication.
 
+## Inbox And Workspace
+
+### Where did the workspace Inbox go?
+
+Open [Inbox](https://commentary.dev/inbox). It is one account-level feed across your authorized workspaces, with Active and History. The separate Workspace destination opens your selected personal/team workbench.
+
+### Why did Workspace open a team instead of Personal?
+
+`/workspace` restores your latest accessible selection. Use the workspace-name switcher, or [Open Personal](https://commentary.dev/workspace?personal=1). Source and Resource access are still checked separately from membership.
+
+### Does Dismiss cancel a request, or Teach this agent answer it?
+
+No. Dismiss moves the current event to your History. Teach this agent sends future guidance. Reply discusses the current instance; use its requested action to answer or decide it. See [Agent Inbox](agent-inbox.md).
+
+### Why is an email or push option missing?
+
+The deployment must support the channel before it is offered. Only enabled channels appear in [Notification settings](https://commentary.dev/settings/notifications). A queued test is not yet a delivery receipt.
+
 ## Live Preview Reviews
 
 ### Why does my preview show SDK not detected?
@@ -120,7 +138,7 @@ The reviewed app must load the Commentary Review SDK in the preview page. Add `@
 
 ### Why is my preview blocked in the frame?
 
-The preview host controls whether Commentary can embed it. Configure a narrow `frame-ancestors https://commentary.dev` policy for review environments instead of trying to proxy or bypass the host policy.
+The preview host controls whether Commentary can embed it. A connection timeout alone does not prove framing was blocked. For embedded review, configure a narrow `frame-ancestors https://commentary.dev` policy. Alternatively use New tab with a compatible Review SDK and permission to frame Commentary controls. If a frame renders without the SDK, screenshot feedback may be available. See [Live Preview delivery and recovery](web-app-reviews.md#new-tab-delivery).
 
 ### Can other reviewers open my localhost review?
 

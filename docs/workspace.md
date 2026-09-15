@@ -1,80 +1,66 @@
 # Workspace
 
-The workspace is the signed-in view for finding review work, managing source-backed Forms, creating drafts, and managing developer access across connected provider accounts.
+[Open Workspace](https://commentary.dev/workspace) to organize reviews, Forms, Research, Brain resources, and Sources in your selected personal or team workspace. Use the separate [Inbox](agent-inbox.md) destination for requests and updates across workspaces.
 
-![GitHub workspace overview](./assets/github-workspace-overview.png)
+![Workspace overview and current Work and Manage navigation](assets/workspace-overview.png)
 
-## What The Workspace Does
+*Captured on commentary.dev on September 15, 2026. Account identity, review titles, and preview hostnames are replaced with neutral examples.*
 
-- shows active pull requests
-- lists repositories in scope
-- resumes recent review sessions from this browser
-- shows provider access health
-- opens PR review and branch review without copying URLs
-- creates and resumes draft reviews
-- creates and resumes Brainstorming Reviews
-- lists source-backed Forms, response links, result-share links, submissions, exports, and destination status
-- creates and resumes Live Preview Reviews
-- manages API, OAuth, device-flow, and MCP grants
-- supports CLI and agent workflows through developer access
-- exposes Knowledge Brain-oriented review queues when available
+## Personal And Team Workspaces
 
-GitHub workspace uses GitHub App installation scope. Azure DevOps workspace uses Microsoft Entra or Azure DevOps PAT access. Draft reviews, Forms records, Live Preview Reviews, and developer credentials are tied to the signed-in Commentary account.
+Your Commentary account has one durable personal workspace across browsers, devices, provider sessions, and API/MCP clients. GitHub installations and Azure DevOps connections are Sources, not additional workspace identities.
 
-## Main Sections
+Use the workspace-name switcher to search the workspaces you belong to and see their Personal/Team kind and your role. `/workspace` returns to your most recently selected accessible workspace; a specific `/workspaces/{workspaceId}` link opens that workspace. If a saved selection is no longer accessible, Commentary recovers to your personal workspace. [Open Personal](https://commentary.dev/workspace?personal=1) is an explicit recovery shortcut.
 
-### Overview
+Membership, agent grants, and Resource/Source permissions are separate. Joining a workspace or linking an item does not grant repository access.
 
-Use `Overview` to scan recent PR work, continue recent reviews, jump into repositories in scope, and resume draft reviews.
+## Work Sections
 
-### Pull requests
+| Section | Use it for |
+| --- | --- |
+| Overview | Resume recent work or start a review. |
+| Reviews | Find PR, repository-document, draft, Brainstorming, and Live Preview reviews. |
+| Forms | Add source-backed Forms and reach preview, response links, submissions, and results. |
+| Research | Create or continue studies; move to available results, including archived studies. |
+| Brain | Find Knowledge Brain review work. |
+| Sources | Inspect linked repositories and source material, and open related reviews. |
 
-Use `Pull requests` when you need a queue of active PRs. You can search by repository, PR title, branch, or author details shown by the provider.
+Collections provide search, applicable filters, ordering, and explicit continuation. **Clear filters** recovers from a filtered empty view. **Refresh results** restarts an expired page sequence while retaining the query and ordering. Partial or unavailable results expose recovery instead of claiming there are no matches.
 
-### Repositories
+From Sources, **View related reviews** filters Reviews to that repository. Remove the source chip to broaden the collection again. A row's **Link to workspace** action, when available, links the same Resource to another authorized workspace without copying its content. Rename is available for supported Commentary-owned resources.
 
-Use `Repositories` to open branch review directly or narrow the PR queue to one repository.
+## Start A Review
 
-### Draft reviews
+1. Select the workspace that should receive the review.
+2. Choose **New review** from the page header.
+3. Paste a GitHub or Azure DevOps URL, or browse recent pull requests and repositories. Narrow discovery by provider, source, and search.
+4. For a repository, choose a PR or continue to its files and branches.
+5. Alternatively, choose **Document review** to write/upload a draft, or **Live Preview** for a running website.
 
-Use `New review` or the draft review list when you need document-style feedback before a branch or pull request exists. Draft reviews can be created from pasted Markdown, HTML, MDX, plain text, Form Contract files, or uploaded text files. See [Draft reviews](./draft-reviews.md).
+![New review chooser with URL intake and recent pull requests](assets/review-launcher.png)
 
-Use Brainstorming Reviews when collaborators need to discuss options, signal agreement or blockers, and let agents apply accepted changes. See [Brainstorming Reviews](./brainstorming-reviews.md).
+*Live chooser with repository names and PR titles anonymized.*
 
-### Forms
+The selected workspace carries through creation and opening. Every new Resource receives an initial workspace link before creation succeeds. Later, an authorized **Link to workspace** action can associate it with another workspace.
 
-Use `Forms` for source-backed form collections the current user can manage or has discovered from review surfaces. The Forms workspace can show source links, response links, result-share links, submissions, exports, diagnostics, and destination status.
+Discovery checks current provider access. If a source cannot load, use its retry/recovery controls; incomplete discovery does not imply a missing repository. Creating a draft or Live Preview retains retry identity for an unchanged submission, allowing recovery from a lost response without creating another review.
 
-Form authoring stays in PR, branch, draft, Markdown, HTML, MDX, standalone YAML/JSON, or dedicated fillout source artifacts instead of a standalone workspace editor. See [Commentary Forms](./commentary-forms.md).
+## Manage Sections
 
-### Live Preview Reviews
+- **Members:** membership, invitations, and roles.
+- **Agents:** workspace agent inventory and permitted participation controls.
+- **Automation:** routing, assignment, and attention-policy configuration.
+- **Governance:** effective policy, privacy-preserving insights, and audit.
+- **Developer:** workspace integrations, including [outbound webhooks](outbound-webhooks.md).
 
-Use `Live Preview Reviews` for customer-owned deployed or localhost app previews. The reviewed app loads in your browser, connects through the opt-in Review SDK, and lets reviewers leave comments on selected UI elements. Deployed reviews can be shared by owner-created links; localhost reviews cannot be shared. See [Live Preview Reviews](./web-app-reviews.md).
+Controls depend on your role. See [Teams, agents, and automation](teams-and-agents.md) and [Enterprise governance](enterprise-governance.md).
 
-### Agent review
+Personal saved views, notification preferences, and API/OAuth credentials live in account settings. [Developer access](developer-access.md) remains owned by the connected account; selecting a team does not transfer or broaden those credentials.
 
-Use `Agent review` when it is available to scan likely agent-maintained Knowledge Brain pull requests, unresolved review notes, and requested-revision follow-up work.
+## Provider Access And Recovery
 
-### Access
+GitHub discovery uses the connected GitHub App installation scope. Azure DevOps uses Microsoft Entra or the advanced PAT fallback. If content is missing, check the connected provider and repository permissions. Sources and collection links never override those checks.
 
-Use `Access` to inspect connected installations, organizations, repository reachability, and provider permission state.
+Older `/workspace/...` links resolve through compatibility routes where supported. Prefer links from the current workspace for bookmarks and sharing context. Unavailable workspace pages offer safe Personal/Inbox recovery without exposing restricted workspace details.
 
-### Developer access
-
-Use `Developer access` to create API tokens, inspect OAuth/device-flow grants, choose standard or custom scopes, and revoke credentials used by API clients, MCP clients, the [Commentary CLI](./commentary-cli.md), and agents. See [Developer access](./developer-access.md).
-
-## GitHub Workspace
-
-GitHub workspace depends on GitHub App installation. If a repository is missing, install Commentary for that repository, switch account, or use a PAT fallback when your organization requires token access.
-
-## Azure DevOps Workspace
-
-Azure DevOps workspace follows the organization, project, repository, and pull request hierarchy. Use the organization selector when your account can access more than one organization.
-
-![Azure DevOps workspace overview](./assets/ado-workspace-overview.png)
-
-## Opening A Review
-
-Use `Open review` in the workspace header to paste a URL without returning to the homepage. Repository rows also include shortcuts for branch review and PR queues.
-
-For draft work, create a [Draft review](./draft-reviews.md). For structured answers, open [Commentary Forms](./commentary-forms.md). For Knowledge Brain work, open a Brain branch or PR in the review shell and use Brain mode to group source, wiki, output, and control files. See [Knowledge Brain](./knowledge-brain.md).
+Continue with [Draft reviews](draft-reviews.md), [Forms](commentary-forms.md), [Research Studies](research-studies.md), [Live Preview Reviews](web-app-reviews.md), or [Knowledge Brain](knowledge-brain.md).

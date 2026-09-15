@@ -2,6 +2,14 @@
 
 Commentary is a document-review layer on top of Git providers, private draft review sessions, source-backed structured Forms, and customer-owned app previews. GitHub is the default provider, and Azure DevOps is also supported.
 
+## Inbox, Workspace, And Resources
+
+[Inbox](agent-inbox.md) is your account-level attention feed across authorized workspaces. [Workspace](workspace.md) is the selected personal/team workbench. A Resource is the underlying review, Form, study, Brain, or preview; it can link to multiple workspaces without being copied or gaining broader access.
+
+Agents create durable Interactions that request human input. A Decision binds to the exact revision/action a person approved; Fulfillment is the agent's later execution report. Replies discuss the instance, while **Teach this agent** records future guidance separately.
+
+[Research Studies](research-studies.md) arrange Consent, Content/Activity/Form steps, and Complete. [Visual reviews](visual-reviews.md) add image and diagram region comments to the standard Review model.
+
 ## Review Surfaces
 
 ### Pull request review
@@ -43,9 +51,9 @@ Commentary is a document-review layer on top of Git providers, private draft rev
 ### Live Preview Review
 
 - Opens a customer-owned deployed or localhost preview app in Commentary.
-- Requires the preview app to opt in with the Commentary Review SDK.
+- Uses the Review SDK for selected-element comments, with screenshot feedback available for framed previews without it.
 - Stores selected-element comments with route, selector, viewport, and optional source metadata.
-- Supports full page mode and deployed review sharing.
+- Supports embedded or new-tab delivery, full page mode, and deployed review sharing.
 - Best for reviewing interactive UI changes before or during implementation handoff.
 
 ## `Preview` vs `Raw`
@@ -55,12 +63,12 @@ Commentary is a document-review layer on top of Git providers, private draft rev
 
 Stay in `Preview` for normal review. Use `Raw` when exact source matters.
 
-## `Latest` vs `Diff`
+## `Document` vs `Changes`
 
-- `Latest` shows the current selected file.
-- `Diff` shows what changed against the base or selected change set.
+- `Document` shows a clean current or historical snapshot of the selected file.
+- `Changes` shows what changed against the base or selected change set.
 - PR and document routes can expose all-change and commit-specific change sets.
-- Draft review latest mode follows the newest revision; previous revisions are readable history.
+- Current Document follows new revisions; pinned historical snapshots and comparisons stay on the selected versions. Preview/Raw is independent of Document/Changes. See [Review modes](review-modes.md).
 
 ![Review mode toolbar](./assets/review-mode-toolbar.png)
 
@@ -82,7 +90,7 @@ The file navigator shows changed or available reviewable documents. Review route
 
 Commentary comments on semantic document blocks, not only raw diff lines. That means comments can attach to headings, paragraphs, tables, front matter rows, HTML sections, form blocks, and other rendered blocks.
 
-Latest rendered Markdown can collapse and expand H2-H6 sections, keep H1 headings visible, preserve collapse-all state in the URL, show folded comment counts, and copy heading deep links from the heading row. Hash links reveal only the folded ancestors needed for the target.
+Document-mode rendered Markdown can collapse and expand H2-H6 sections, keep H1 headings visible, preserve collapse-all state in the URL, show folded comment counts, and copy heading deep links from the heading row. Hash links reveal only the folded ancestors needed for the target.
 
 Comment bodies can render safe Markdown in the thread rail. Longer or wider comments can open in a focused reading surface. Poll comments can collect structured choices while staying attached to ordinary review threads.
 

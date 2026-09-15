@@ -8,6 +8,16 @@ Use Forms when a review needs repeatable structured input, such as release readi
 
 ![Commentary Forms review demo](./assets/forms-demo-review.png)
 
+## Find Forms In A Workspace
+
+Choose **Workspace → Forms** to add a source-backed Form or continue existing work. Search and filter the collection, then open the Form's preview, response links, submissions, or settings. Form and submission links retain the selected workspace context. Workspace linking does not copy the Form or grant source access.
+
+## Review Without Filling Every Field
+
+Where the native renderer offers **Review mode**, you can move between sections with required questions unanswered. This helps inspect the whole Form before filling it out. Submitting still requires a complete, valid response; Review mode does not bypass final server validation.
+
+Forms can also be ordered steps in [Research Studies](research-studies.md), pinned to the exact contract used by a participant session.
+
 ## Source Model
 
 Forms are source-authored. The workspace manages discovered sources and results, but it is not the primary form editor.

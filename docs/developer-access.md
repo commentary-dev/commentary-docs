@@ -1,10 +1,10 @@
 # Developer Access
 
-Developer access is the signed-in workspace area for managing Commentary credentials used by scripts, API clients, MCP clients, CLIs, and agents.
+Developer access is the signed-in account settings area for managing Commentary credentials used by scripts, API clients, MCP clients, CLIs, and agents.
 
-Open [/workspace/developer](https://commentary.dev/workspace/developer) after signing in.
+Open [/settings/developer](https://commentary.dev/settings/developer) after signing in.
 
-![Developer access](./assets/developer-access.png)
+Credentials belong to your connected account. Selecting a workspace does not change their access. Workspace Developer settings contain integrations such as webhooks; they link back here for account credentials. The older `/workspace/developer` link redirects here.
 
 ## What You Can Manage
 
@@ -19,13 +19,14 @@ New API tokens are shown once. Copy the token before leaving the page. Later lis
 
 ## Create An API Token
 
-1. Open `Workspace`.
-2. Choose `Developer access`.
-3. Enter a label.
-4. Choose a scope preset or `Custom scopes`.
-5. Set a target when you want to restrict access.
-6. Choose an expiry.
-7. Click `Create token` and copy the token.
+1. Open account **Developer access** and choose **Create token**.
+2. Enter a label.
+3. Choose a Target: **Account-owned Commentary work**, **One draft review**, or **One GitHub repository or review**.
+4. Choose the **Capabilities** preset or **Custom scopes** and an expiry.
+5. Choose **Review credential** and inspect the target and capabilities.
+6. Choose **Issue credential** and copy the one-time secret.
+
+If issuing fails, **Retry same issue** checks the same operation. A successful replay does not reveal the secret again. Use deliberate rotation if the secret was lost.
 
 Scopes are immutable after creation. To change access, create a replacement token and revoke the old grant.
 
@@ -44,6 +45,11 @@ Developer access offers common presets:
 Brainstorming Review automation uses the same review and comment scopes as draft-review automation, plus Brainstorming feature access when the operation reads or updates consensus state.
 
 Forms automation uses `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, and `commentary.forms.writeback`. Live Preview Review sharing uses `commentary.review.share`.
+
+Interaction preview clients choose only the required
+`commentary.interactions.create`, `.read`, `.update`, and `.cancel`
+scopes. Creation requires an account-wide target because initial requests are
+addressed only to the credential owner in their personal workspace.
 
 The generated token stores the concrete scope names, such as `commentary.review.read`, `commentary.comments.write`, `commentary.forms.submit`, or `commentary.draft_reviews.share`.
 
@@ -65,6 +71,15 @@ Current public scopes are:
 - `commentary.forms.writeback`
 - `commentary.brain.evals.read`
 - `commentary.brain.evals.write`
+- `commentary.interactions.create`
+- `commentary.interactions.read`
+- `commentary.interactions.update`
+- `commentary.interactions.cancel`
+- `commentary.interactions.fulfillment`
+- `commentary.research.read`
+- `commentary.research.write`
+- `commentary.webhooks.read`
+- `commentary.webhooks.write`
 
 Use the smallest scope set that covers the client workflow.
 
@@ -91,6 +106,12 @@ The developer access page lists device-flow and OAuth grants so they can be revo
 The [Commentary CLI](./commentary-cli.md) can authenticate through device flow with `commentary login` or through an API token with `commentary login --token <token>`.
 
 See [Agent skills](./agent-skills.md) for agent workflows that use the CLI or MCP.
+
+## Rotate Or Replace
+
+Use **Rotate** on an active API token to replace its secret immediately while preserving target, capabilities, and expiry. Update the client with the new one-time secret; the old one stops working. To change target or capabilities, create a replacement credential and revoke the old grant. OAuth/device-flow grants are managed as grants rather than rotated as API-token secrets.
+
+Research scopes cover authorized study reads and permitted agent participation, not owner-only study authoring. Webhook scopes still require workspace owner/admin permission. Fulfillment uses its separate scope and the exact human-approved fingerprint.
 
 ## Revoking Access
 

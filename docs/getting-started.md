@@ -7,7 +7,7 @@ Use Commentary when you want to review Markdown, MDX, static HTML, structured Fo
 1. Open [/](https://commentary.dev/).
 2. Paste a GitHub or Azure DevOps URL.
 3. Click `Open review`.
-4. Start in `Preview` and `Latest`.
+4. Start in `Preview` and `Document`.
 5. Sign in only when you need to comment, reply, refresh private content, submit a review, create or share drafts, manage Forms, create Live Preview Reviews, or use developer access.
 
 Commentary accepts pull request, repository, branch, file, and folder URLs. It resolves the URL to the matching review surface for Markdown, MDX, static `.html` or `.htm` documents, and standalone Form Contract files.

@@ -25,7 +25,7 @@ For GitHub, Commentary accepts repository roots, `/tree/...` URLs, and `/blob/..
 - The file navigator lists reviewable Markdown, MDX, and static HTML files from the selected branch or folder.
 - Use the branch selector to switch branch context when available.
 - Use folder view for docs-heavy repositories.
-- Use `Latest` for reading and `Diff` for branch-backed change inspection.
+- Use `Document` for reading and `Changes` for branch-backed change inspection.
 - Use the commit selector when you need to inspect one document change set.
 - Switch files inside the shell without a full page reload when the next document projection is available or can be materialized.
 - Use personal [Review progress](./review-progress.md) to mark files or sections reviewed and revisit changed-since-reviewed content.

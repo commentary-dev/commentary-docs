@@ -1,6 +1,6 @@
 # Review Modes
 
-Commentary separates two decisions: the surface you read and the version scope you inspect.
+Commentary separates three decisions: the surface you read, whether you want a clean document or changes, and the exact version or comparison.
 
 ![Review mode toolbar](./assets/review-mode-toolbar.png)
 
@@ -16,19 +16,33 @@ Use `Preview` for prose review. Use `Raw` when exact document syntax, source lin
 
 ![Presentation mode](./assets/presentation-mode.png)
 
-## Scope
+## Document And Changes
 
-- `Latest` shows the current selected file.
-- `Diff` shows the change for the selected file and change set.
+- `Document` shows a clean snapshot without diff markup. Choose Current or a historical version from the adjacent newest-first selector; if history cannot be loaded, Commentary explains that no snapshots are available instead of showing an empty menu.
+- `Changes` shows a comparison. Choose a recommended range, a revision or PR update, a commit, or Custom comparison.
+- Switching Preview and Raw keeps the selected document or comparison unchanged.
+- Historical documents and comparisons stay pinned when new updates arrive.
 
-## Change Sets
+When a historical document is open, Commentary shows a quiet notice with actions to return to current or compare it with current. Historical draft revisions are read-only.
 
-Pull request and document diff routes can expose a change-set selector:
+## Comparisons
 
-- `All changes` shows the combined change.
-- A commit-specific option shows only that commit's Markdown change.
+- `All PR changes` compares the immutable PR base and head SHAs captured by the link.
+- `Latest PR update` appears when Commentary has recorded two distinct refresh endpoints.
+- Commit options compare a commit with its first parent.
+- Custom comparison asks for a Newer version followed by an Older version. Commentary always uses the older version as the baseline and the newer version as the result, so additions and removals keep their normal meaning.
 - Files that do not participate in the selected commit may appear disabled.
 - If a commit has no Markdown changes, Commentary shows an explicit empty state.
+
+Histories are newest-first, bounded, scrollable, and searchable when they contain more than 12 entries.
+
+## Exact Links
+
+- Current document: the normal review URL, optionally with `surface`.
+- Historical document: `version=<stable-ref>`.
+- Comparison: `scope=diff&from=<stable-ref>&to=<stable-ref>&preset=<semantic-id>`.
+
+Git-backed refs use full commit SHAs. Draft refs use stable revision ids. Older `view`, `diff`, `commit`, `changes`, `revision`, and `baseRevision` links remain compatible and are normalized to the current URL shape; reversed custom ranges are normalized to older baseline and newer result.
 
 ## Raw Word Wrap
 

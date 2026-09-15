@@ -16,7 +16,7 @@ The fastest way to understand Commentary is to open the built-in sample chooser 
 - presentation-mode and Marp samples
 - the document-first review shell
 - rendered `Preview` mode as the default surface
-- `Latest` and `Diff` review modes
+- `Document` and `Changes` review modes
 - file navigation, heading folding, progress, and thread rail behavior
 - sign-in prompts before write actions
 
@@ -24,9 +24,9 @@ The fastest way to understand Commentary is to open the built-in sample chooser 
 
 1. Open [/demo/select](https://commentary.dev/demo/select).
 2. Choose a sample that matches the workflow you want to evaluate.
-3. Read the first file in `Preview` and `Latest`.
+3. Read the first file in `Preview` and `Document`.
 4. Switch files in the navigator.
-5. Try `Diff`, heading folding, and the change-set menu when available.
+5. Try `Changes`, heading folding, and the change-set menu when available.
 6. Open the comments rail.
 7. Sign in if you want to try authenticated comment, form submission, share, or submit-review behavior.
 

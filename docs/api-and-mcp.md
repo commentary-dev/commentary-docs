@@ -1,6 +1,6 @@
 # API And MCP
 
-Commentary exposes authenticated API and MCP access for tools that need to read document anchors, inspect comments, create review feedback, manage draft, Brainstorming, Forms, and Live Preview Reviews, inspect review progress, read poll outcomes, or inspect Knowledge Brain review state.
+Commentary exposes authenticated API and MCP access for review workflows. The HTTP API also includes an Interaction developer preview where agents can create durable requests, retrieve human Decision receipts, append authorized self-reported Fulfillment for exact approvals, and poll state.
 
 ## Authentication Options
 
@@ -24,7 +24,17 @@ The public HTTP contract is available at:
 - `/openapi.json`
 - `/openapi.yaml`
 
+Stable HTTP endpoints use explicit major paths such as `/api/v1`. Additive compatibility, stable error/tool schemas, deprecation notices, and minimum sunset windows are documented in the [TypeScript Agent SDK guide](./agent-sdk.md#compatibility-and-deprecation).
+
+For typed Interaction, Decision wait, Fulfillment, subscription, pagination, cancellation, and diagnostics helpers, install [`@commentary-dev/agent-sdk`](./agent-sdk.md). It is a transport client; server policy and authorization remain authoritative.
+
 The generated reference committed with these docs is [API reference](./api/reference.md). Browser, internal, webhook, and test routes are intentionally outside the public contract.
+
+## Research And Interaction Extensions
+
+Research uses the explicit `/api/v2/research-studies` contract and `commentary_research` capability v2, with `stepId`/`stepRunId` result context. See [Research Studies](research-studies.md).
+
+The consolidated Interaction MCP tool also retrieves and acknowledges future guidance. Human reply corrections and guidance creation retain their human-session boundaries. [Outbound webhooks](outbound-webhooks.md) provide minimal state notifications with signed delivery, bounded retries, and replay diagnostics.
 
 ## API Tokens
 
@@ -66,8 +76,22 @@ Supported external scopes are:
 - `commentary.forms.writeback`
 - `commentary.brain.evals.read`
 - `commentary.brain.evals.write`
+- `commentary.interactions.create`
+- `commentary.interactions.read`
+- `commentary.interactions.update`
+- `commentary.interactions.cancel`
 
 Read-only defaults include review and comments read access. MCP authorization defaults to review read, comments read, comments write, and comments status when no scopes are requested.
+
+## Interaction API Developer Preview
+
+Agents can create durable owner-directed requests and poll their lifecycle
+through `/api/v1/interactions`. Retry-sensitive writes require idempotency
+keys, mutable writes require strong ETags, and lists use bounded opaque cursor
+pagination. Humans retain approval authority; agent Fulfillment is append-only
+self-reporting and never verified proof. It does not add notifications, teams,
+or autonomous action. See
+[Interaction API developer preview](./interaction-api.md).
 
 ## Review Comment API
 
@@ -188,10 +212,11 @@ Read operations require review read scope and a token target that covers the rep
 
 ## MCP Endpoint
 
-The MCP endpoint is `/mcp`. It supports JSON-RPC initialization without auth, but tool listing and tool calls require bearer auth.
+The MCP endpoint is `/mcp`. MCP `2026-07-28` uses stateless, self-contained requests and optional `server/discover`; retained 2025 clients keep JSON-RPC initialization. Tool listing and calls require bearer auth in every version.
 
 Current tools are:
 
+- `interaction`
 - `commentary_forms`
 - `draft_review`
 - `review_comments`
@@ -201,6 +226,10 @@ Current tools are:
 - `web_app_review`
 
 See [MCP tools](./api/mcp-tools.md) for generated input schemas. Older one-off draft or comment tools are replaced by consolidated tools.
+
+See [MCP 2026 Interactions](./mcp-interactions.md) for version negotiation, required headers, idempotent action examples, polling, permissions, and compatibility policy.
+
+Optional [experimental MCP Tasks compatibility](./mcp-tasks.md) is capability-negotiated for eligible Interaction creation. Ordinary Interaction polling remains universal, and no enumerable Tasks list is exposed.
 
 `commentary_forms` validates, submits, lists, exports, and syncs source-backed Forms. `draft_review` manages draft and Brainstorming Review sessions, revisions, sharing, live events, and consensus metadata. `review_comments` handles comments, replies, status, feedback signals, summaries, and owner decisions. `review_polls` reads poll comments and actionable poll outcomes. `review_document` reads anchors, files, and review progress. `web_app_review` manages Live Preview Reviews, sharing, and selected-element comment handoff for agents.
 
