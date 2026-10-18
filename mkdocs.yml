@@ -6,6 +6,19 @@ nav:
       - Getting started: getting-started.md
       - Core concepts: core-concepts.md
       - Demo walkthrough: demo-walkthrough.md
+  - Projects and deliverables:
+      - Organize Projects: projects.md
+      - PM workflow: project-workflows.md
+      - Create and use Trackers: trackers.md
+      - Portability and Git recovery: tracker-portability.md
+      - Publish review packages: review-packages.md
+      - Exact Review Sessions: project-review-sessions.md
+      - Engineering and source review: engineering-project-reviews.md
+      - Claims and evidence: project-evidence.md
+      - Human acceptance and impact: project-acceptance.md
+      - Tracker embeds and renderers: tracker-renderers.md
+      - Human and agent quickstarts: projects-quickstarts.md
+      - Capabilities and migration: projects-compatibility.md
   - Review workflows:
       - Review pull requests: review-pull-requests.md
       - Review repository branches: review-repository-branches.md
@@ -42,7 +55,10 @@ nav:
       - Outbound webhooks: outbound-webhooks.md
       - TypeScript Agent SDK: agent-sdk.md
       - API reference: api/reference.md
+      - Projects agent contracts: api/projects-agent-contracts.md
       - MCP tools: api/mcp-tools.md
+      - Agent operation matrix: api/agent-capability-matrix.md
+      - Transport implementation boundaries: engineering/project-agent-parity.md
   - Help:
       - September 2026 updates: whats-new.md
       - Blog: blog.md

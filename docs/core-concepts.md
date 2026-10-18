@@ -111,3 +111,7 @@ Knowledge Brain mode is an optional review layer for AI-maintained knowledge-bas
 - Brainstorming Review keeps comments, feedback, consensus, and revisions in Commentary.
 - Forms keep structured submissions separate from comments and polls.
 - Azure DevOps and GitHub use provider-aware labels and links, but the review model stays document-first.
+
+## Projects and exact deliverables
+
+[Projects](projects.md) optionally organize Resources; [Trackers](trackers.md) optionally structure work. Neither is required for existing reviews, and links never grant source access. [Packages](review-packages.md) publish immutable walkthroughs. [Sessions](project-review-sessions.md) compose exact revisions. [Source exploration](engineering-project-reviews.md) and [evidence](project-evidence.md) support the argument. [Human acceptance](project-acceptance.md), reported execution, artifact existence, review and independent verification remain separate facts.

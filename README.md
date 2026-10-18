@@ -60,7 +60,7 @@ Inbox is now the account-level `/inbox` feed, separate from the selected Workspa
 
 ![Homepage review intake](./docs/assets/homepage-intake.png)
 
-For a guided sample, open [/demo/select](https://commentary.dev/demo/select). For requests across workspaces, open [Inbox](https://commentary.dev/inbox). For organized work, sign in and open [/workspace](https://commentary.dev/workspace). For source-backed form results, open [/workspace/forms](https://commentary.dev/workspace/forms). For draft review before content exists in Git, open [/workspace/drafts/new](https://commentary.dev/workspace/drafts/new). For interactive preview apps, open [/workspace/web-app-reviews/new](https://commentary.dev/workspace/web-app-reviews/new).
+For a guided sample, open [/demo/select](https://commentary.dev/demo/select). For requests across workspaces, open [Inbox](https://commentary.dev/inbox). For organized work, select your workspace at `/workspaces/{workspaceId}`. Forms, Draft creation and Live Preview creation use the selected workspace navigation and header actions; retain explicit workspace context in shared links.
 
 ## Current Product Shape
 
@@ -85,3 +85,7 @@ For a guided sample, open [/demo/select](https://commentary.dev/demo/select). Fo
 ## In This Repo
 
 This repository is also the public branch review example for Commentary's direct document review flow. The root `README.md` introduces the repository; `docs/index.md` is the MkDocs homepage. The guides live in `docs/` with relative Markdown links between them.
+
+## Projects documentation candidates
+
+[Projects](docs/projects.md), [Trackers](docs/trackers.md), [packages](docs/review-packages.md), [exact Sessions](docs/project-review-sessions.md), [engineering source/evidence review](docs/engineering-project-reviews.md) and [human/agent quickstarts](docs/projects-quickstarts.md) document current implementation candidates. [Compatibility](docs/projects-compatibility.md) records tested versions and remaining provider/deployment/human acceptance boundaries. These guides are not a production-launch claim. The existing publishing snapshot workflow remains the delivery path.

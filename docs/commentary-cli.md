@@ -129,3 +129,7 @@ commentary brainstorm rule --consensus-mode no_open_blockers --min-response-coun
 The CLI does not create GitHub branches, commits, pull requests, provider comments, or GitHub tokens. It sends literal file content to Commentary through the public API and leaves local Git operations to you.
 
 See [Draft reviews](./draft-reviews.md), [Brainstorming Reviews](./brainstorming-reviews.md), and [Developer access](./developer-access.md).
+
+## Projects and engineering commands (0.2.0 candidate)
+
+Singular project, tracker, package, review-session, source-snapshot and evidence families extend existing commands. Choose --workspace and explicit --project/--tracker context, use strict JSON/core-YAML files or stdin, and pass exact ETags/retry keys where declared. Package directory collection/watch is separate from Draft collection. Read [runnable quickstarts](projects-quickstarts.md), [Git recovery](tracker-portability.md) and the [exact command/action matrix](api/agent-capability-matrix.md). Scope does not authorize human governance or Decisions. These are tested build versions; inspect deployed capability and reviewed release assets before installation.

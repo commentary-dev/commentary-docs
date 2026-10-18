@@ -36,3 +36,7 @@ provider connections; personal access tokens remain advanced recovery options.
 For API, MCP, CLI, and agent integrations, continue with [Developer
 access](developer-access.md), [API and MCP](api-and-mcp.md), or [Commentary
 CLI](commentary-cli.md).
+
+## Projects implementation candidates
+
+Start with [Projects](projects.md), [PM workflows](project-workflows.md), [engineering review](engineering-project-reviews.md), or [human/agent quickstarts](projects-quickstarts.md). Check [capabilities and retained release boundaries](projects-compatibility.md) before use. Existing reviews remain independent; no Project or Tracker is required.

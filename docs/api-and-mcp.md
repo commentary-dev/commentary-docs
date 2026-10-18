@@ -244,3 +244,7 @@ The [Agent skills](./agent-skills.md) repository documents how compatible agents
 Device clients call `/oauth/device/code`, show the user code, and ask the reviewer to open `/device`. After approval, the client exchanges the device code at `/oauth/token`.
 
 ![Device and provider access use the same Commentary account model](./assets/auth-provider-dialog.png)
+
+## Projects transport parity
+
+Six implemented grouped tools and 158 HTTP/Agent SDK operations extend v1 additively. MCP uses action/input with transport etag/idempotencyKey. Check deployed tools/list and OpenAPI paths; the legacy reserved-extension name is compatibility metadata. Read [contracts](api/projects-agent-contracts.md), [action matrix](api/agent-capability-matrix.md), [quickstarts](projects-quickstarts.md) and [cursor recovery](projects-compatibility.md). Human Decisions, personal visits and renderer mounts retain browser authority.

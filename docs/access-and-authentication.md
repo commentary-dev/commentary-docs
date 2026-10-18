@@ -58,3 +58,7 @@ For GitHub token setup, see [Generate a GitHub PAT](./generate-a-github-pat.md).
 ## API And MCP Access
 
 API tokens, OAuth grants, device authorization, and MCP access require an authenticated Commentary session. Manage credentials in [Developer access](./developer-access.md), then use the endpoints and tools documented in [API and MCP](./api-and-mcp.md).
+
+## Project and source access
+
+Project workspace/participants visibility is independent of Resource rights and current provider authorization. Linking grants no source access. New registered Agents use explicit workspace-bound consent; existing tokens gain no new scopes. Only eligible signed-in humans decide exact acceptance. See [Projects access](projects.md) and [capabilities](projects-compatibility.md).
