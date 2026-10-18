@@ -6800,6 +6800,25 @@ x-commentary-reserved-project-contract:
               $ref: "#/$defs/TrackerDiagnostic"
             maxItems: 10000
             minItems: 0
+          entries:
+            type: array
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                kind:
+                  type: string
+                  enum:
+                    - tracker
+                    - schemas
+                    - records
+                    - views
+                id: *a8
+              required:
+                - kind
+                - id
+            maxItems: 1201
+            minItems: 0
           idMap:
             type: object
             additionalProperties: false
@@ -12791,7 +12810,7 @@ x-commentary-reserved-project-contract:
       Decision or direct Git write
     events: ordered durable outbox; authorized opaque cursor pages, 10-second waits
       and bounded SSE batches; additive signed webhook wakeups
-  digest: 6b4d9834b5199dae173b80c0d6667c192d1a377c6fd0175acdea1ca4566ca852
+  digest: 2cfe555aefdd55ab51157d966c581c3214853cce4dca404193ea3359463d44c2
 servers:
   - url: https://commentary.dev
     description: Configured Commentary origin.
@@ -66456,6 +66475,29 @@ components:
           items:
             $ref: "#/components/schemas/ProjectAgentTrackerDiagnostic"
           maxItems: 10000
+          minItems: 0
+        entries:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              kind:
+                type: string
+                enum:
+                  - tracker
+                  - schemas
+                  - records
+                  - views
+              id:
+                type: string
+                minLength: 1
+                maxLength: 512
+                pattern: ^[^\s]+$
+            required:
+              - kind
+              - id
+          maxItems: 1201
           minItems: 0
         idMap:
           type: object

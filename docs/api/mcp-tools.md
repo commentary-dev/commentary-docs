@@ -16400,6 +16400,36 @@ Input schema:
           "maxItems": 10000,
           "minItems": 0
         },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "tracker",
+                  "schemas",
+                  "records",
+                  "views"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[^\\s]+$"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ]
+          },
+          "maxItems": 1201,
+          "minItems": 0
+        },
         "idMap": {
           "type": "object",
           "additionalProperties": false,
@@ -25260,6 +25290,36 @@ Successful structured output schema:
             "$ref": "#/$defs/TrackerDiagnostic"
           },
           "maxItems": 10000,
+          "minItems": 0
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "tracker",
+                  "schemas",
+                  "records",
+                  "views"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[^\\s]+$"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ]
+          },
+          "maxItems": 1201,
           "minItems": 0
         },
         "idMap": {
