@@ -1,6 +1,6 @@
 # Workspace
 
-[Open Workspace](https://commentary.dev/workspace) to organize reviews, Forms, Research, Brain resources, and Sources in your selected personal or team workspace. Use the separate [Inbox](agent-inbox.md) destination for requests and updates across workspaces.
+Open your selected workspace at `/workspaces/{workspaceId}` to organize reviews, Forms, Research, Brain resources, and Sources in your selected personal or team workspace. Use the separate [Inbox](agent-inbox.md) destination for requests and updates across workspaces.
 
 ![Workspace overview and current Work and Manage navigation](assets/workspace-overview.png)
 
@@ -19,6 +19,8 @@ Membership, agent grants, and Resource/Source permissions are separate. Joining 
 | Section | Use it for |
 | --- | --- |
 | Overview | Resume recent work or start a review. |
+| Projects | Organize optional initiatives and link independently authorized deliverables. |
+| Trackers | Maintain typed work and native saved views without requiring a Project. |
 | Reviews | Find PR, repository-document, draft, Brainstorming, and Live Preview reviews. |
 | Forms | Add source-backed Forms and reach preview, response links, submissions, and results. |
 | Research | Create or continue studies; move to available results, including archived studies. |

@@ -47,3 +47,7 @@ Production receivers must use HTTPS and cannot resolve to private, loopback, lin
 Creation uses `Idempotency-Key`; conditional changes use the strong ETag in `If-Match`. Keep a failed edit draft and refresh the current version before an explicit retry. See [API reference](api/reference.md) for subscription, delivery, disable, rotation, and replay endpoints, or use [Agent SDK](agent-sdk.md) pagination helpers.
 
 Outbound webhooks use the Pro-preview `interactions.webhooks` feature and remain usable during the no-billing preview. Receiving or replaying an event never grants access to its linked Resource.
+
+## Projects change hints
+
+Projects, Trackers, package revisions, Sessions, source and evidence add version-1 minimal change events to the existing outbox/signing pipeline. They carry authorized retrieval handles, not source bodies or permission grants. Deduplicate IDs, retrieve current state and reconcile after gaps. Acceptance-change notifications reference existing exact human Decisions; receiving a webhook never approves new material. [Recovery and bounded polling](projects-compatibility.md) remain available without a persistent receiver.

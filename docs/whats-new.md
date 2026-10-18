@@ -1,5 +1,10 @@
 # September 2026 Documentation Update
 
+The [October Projects candidate notes](https://staging.commentary.dev/guides/projects-candidate-release-notes)
+and [technical announcement candidate](https://staging.commentary.dev/blog/projects-candidate)
+describe the implementation undergoing acceptance. They do not claim a production
+release, complete acceptance results or a genuine human Decision.
+
 This refresh covers the current implementation through September 15, 2026. It updates the August 27 Inbox/Workspace documentation and fills earlier gaps in Research, visual review, and Live Preview guidance.
 
 ## Inbox And Workspace
@@ -25,3 +30,7 @@ The [HTTP reference](api/reference.md), OpenAPI files, and [MCP reference](api/m
 New screenshots were captured with Playwright on the signed-in live commentary.dev site on September 15. They show Inbox, Workspace Overview, the New review chooser, notification settings, and Research creation. Account names, private titles, and hostnames were anonymized in the browser before capture; captions identify neutral replacements.
 
 The account had no active Inbox items or Research studies, and only In-app notification delivery was exposed. Detailed request actions, populated Research results, external delivery, and other unavailable states are documented from current implementation and tests rather than represented as live screenshots. No requests, Decisions, invitations, studies, or outbound deliveries were created for this refresh. Older screenshots elsewhere remain illustrative and may show previous chrome.
+
+## Projects implementation candidates — October 2026
+
+Candidate documentation now covers optional [Projects](projects.md)/[Trackers](trackers.md), immutable [packages](review-packages.md), exact [Sessions](project-review-sessions.md), [source/evidence](engineering-project-reviews.md), [human acceptance](project-acceptance.md), renderer isolation and [agent workflows](projects-quickstarts.md). Tested code versions and retained release gaps are in [compatibility](projects-compatibility.md). This entry is not a production-launch, package-publication, performance or human-acceptance claim.

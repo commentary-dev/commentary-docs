@@ -143,3 +143,7 @@ The preview host controls whether Commentary can embed it. A connection timeout 
 ### Can other reviewers open my localhost review?
 
 Only if they run the same app locally. Localhost previews load from each reviewer's browser; Commentary cloud services do not fetch your machine. Deployed HTTPS Live Preview Reviews can be shared by owner-created links.
+
+## Projects and exact-review recovery
+
+Use the [failure/recovery table](projects-compatibility.md) for ETags, retry receipts, schema mappings, upload expiry/checksums, Git conflicts, unsupported Azure writes, renderer disconnect and event cursor gaps. Preserve local intent on conflict. An unavailable historical target does not fall back to latest, and changed material needs [fresh human acceptance](project-acceptance.md). Check current scopes/workspace/grant/original source rights separately; a Project link never fixes source denial.

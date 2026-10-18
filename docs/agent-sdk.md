@@ -62,3 +62,7 @@ Stable HTTP endpoints use explicit major paths such as `/api/v1`. Within a major
 Deprecated operations receive at least 12 months' public notice and at least two minor SDK releases, whichever is longer. Notice appears in OpenAPI, release notes, docs, and deprecation/sunset response headers where practical. Breaking changes require a new major path with an overlap window. Security or legal emergencies may shorten the window with a documented reason and migration path.
 
 The package artifact is built and tested against the committed OpenAPI contract, inspected with `npm pack`, and installed by an isolated smoke consumer before the manual provenance-enabled publication step. Publication credentials remain a release responsibility.
+
+## Projects domain groups in 0.2.0
+
+The tested 0.2.0 candidate adds projects, trackers, reviewPackages, projectReviews, sourceSnapshots and evidence: 158 domain operations use canonical HTTP handlers. Each takes one typed input with path identities and transport options; writes declare exact ETag/retry requirements. Literal uploads and attachment bytes are supported; filesystem collection/watch stays CLI-only. Existing 0.1.0 methods remain additive-compatible. See [runnable example](projects-quickstarts.md), [operation matrix](api/agent-capability-matrix.md) and [capability/migration recovery](projects-compatibility.md). Registry publication remains separately owned; never embed bearer credentials in a renderer.

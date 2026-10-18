@@ -118,3 +118,7 @@ Research scopes cover authorized study reads and permitted agent participation, 
 Use `Revoke` on an active grant when a token or client should stop working. Revocation affects API, OAuth, and MCP use immediately for that grant.
 
 See [API and MCP](./api-and-mcp.md) for endpoint details.
+
+## Projects scopes and workspace context
+
+Select separate commentary.projects.read/write, commentary.trackers.read/write/writeback, commentary.review_packages.read/write, commentary.project_reviews.read/write, commentary.source_snapshots.read/write and commentary.evidence.read/write/verify scopes only for the intended workflow. Slash pairs are separate scopes. Keep the Agent grant's explicit workspace binding; participation and original source authority remain additional checks. Git writes require independent write authority; no Decision-write scope exists. See [agent quickstarts](projects-quickstarts.md) and [implemented contracts](api/projects-agent-contracts.md).
