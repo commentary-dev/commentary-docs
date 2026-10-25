@@ -1,6 +1,6 @@
 # Commentary CLI
 
-The Commentary CLI is the terminal companion for draft reviews and Brainstorming Reviews. It creates hosted reviews from local Markdown, MDX, static HTML, and plain text files, then syncs new revisions as local files change.
+The Commentary CLI supports local Draft review and package publication, Interactions, workspace discovery, Projects, Trackers, exact Review guides, source snapshots and evidence. Its Draft workflow creates hosted reviews from local Markdown, MDX, static HTML and plain text, then syncs new revisions as files change. Per-review Polls and Consensus use the shared collaboration workflow.
 
 Project: [commentary-dev/commentary-cli](https://github.com/commentary-dev/commentary-cli)
 
@@ -8,7 +8,7 @@ Package: `@commentary-dev/cli`
 
 ## Install
 
-Use it without installing:
+For a published compatible release, use it without installing:
 
 ```bash
 npx @commentary-dev/cli --help
@@ -21,7 +21,7 @@ npm install -g @commentary-dev/cli
 commentary --help
 ```
 
-The CLI requires Node.js 22 or newer.
+The CLI requires Node.js 22 or newer. The 0.2.0 branch baseline is a tested candidate, not a registry-publication claim; install a reviewed package artifact when testing an unpublished candidate.
 
 ## Authentication
 
@@ -99,33 +99,16 @@ commentary pull --output reviewed
 commentary pull --backup --yes
 ```
 
-## Brainstorming Reviews
+## Review collaboration
 
-Create or convert a Brainstorming Review:
-
-```bash
-commentary review ./docs/spec.md --mode brainstorming --title "Product spec"
-commentary brainstorm enable
-```
-
-Inspect and act on accepted consensus:
-
-```bash
-commentary brainstorm status --json
-commentary brainstorm next --consensus-state accepted_for_change --timeout 60s --json
-commentary sync --message "Apply brainstorming consensus" --addressed-thread <thread-id>
-```
-
-Set feedback or owner decisions only when that is part of your workflow:
-
-```bash
-commentary brainstorm signal <thread-id> agree --alias "Docs agent"
-commentary brainstorm decide <thread-id> accepted_for_change
-commentary brainstorm rule --consensus-mode no_open_blockers --min-response-count 2
-```
+Use the [shared Polls and Consensus workflow](review-collaboration.md).
 
 ## What The CLI Does Not Do
 
 The CLI does not create GitHub branches, commits, pull requests, provider comments, or GitHub tokens. It sends literal file content to Commentary through the public API and leaves local Git operations to you.
 
-See [Draft reviews](./draft-reviews.md), [Brainstorming Reviews](./brainstorming-reviews.md), and [Developer access](./developer-access.md).
+See [Draft reviews](./draft-reviews.md), [Polls and Consensus](./review-collaboration.md), and [Developer access](./developer-access.md).
+
+## Projects and engineering commands (0.2.0 candidate)
+
+Singular project, tracker, package, review-session, source-snapshot and evidence families extend existing commands. Choose --workspace and explicit --project/--tracker context, use strict JSON/core-YAML files or stdin, and pass exact ETags/retry keys where declared. Package directory collection/watch is separate from Draft collection. Read [runnable quickstarts](projects-quickstarts.md), [Git recovery](tracker-portability.md) and the [exact command/action matrix](api/agent-capability-matrix.md). Scope does not authorize human governance or Decisions. These are tested build versions; inspect deployed capability and reviewed release assets before installation.

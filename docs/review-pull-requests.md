@@ -73,3 +73,9 @@ The submit dialog shows how many pending threads still need to sync before the p
 - Is the rendered change clearer than the raw Markdown?
 
 For normal reading, `Preview` plus `Document` is usually faster.
+
+Polls and Consensus are optional and independently configured for each review. Both start off for new reviews, including PR reviews. Use Review settings when structured collaboration is needed; ordinary comments remain available without either feature. Provider comments and reactions are not authoritative votes or decisions. See [Review collaboration](./review-collaboration.md).
+
+## After a pull request is merged
+
+When merged-PR redirection is enabled, opening a merged PR can show a countdown to its base-branch review, filtered to the PR files. Choose **Open branch review** to continue immediately, **Copy link** to save the destination, or **Cancel** to keep the historical PR review. Dismissing the dialog also cancels the redirect and retains the historical URL.

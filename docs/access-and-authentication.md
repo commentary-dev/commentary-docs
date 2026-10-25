@@ -58,3 +58,11 @@ For GitHub token setup, see [Generate a GitHub PAT](./generate-a-github-pat.md).
 ## API And MCP Access
 
 API tokens, OAuth grants, device authorization, and MCP access require an authenticated Commentary session. Manage credentials in [Developer access](./developer-access.md), then use the endpoints and tools documented in [API and MCP](./api-and-mcp.md).
+
+## Project and source access
+
+Project workspace/participants visibility is independent of Resource rights and current provider authorization. Linking grants no source access. New registered Agents use explicit workspace-bound consent; existing tokens gain no new scopes. Only eligible signed-in humans decide exact acceptance. See [Projects access](projects.md) and [capabilities](projects-compatibility.md).
+
+## Workspace and Resource access errors
+
+Workspace membership controls which workspace pages and collections you can open. It does not grant access to a linked repository, review, Form, study, or preview. If a destination reports that access is denied, confirm the selected workspace and your membership, then separately confirm the original Resource and provider authorization. A missing or partial collection may also indicate an expired page sequence or unavailable source; use its **Refresh results** or retry action before concluding there are no matching items. Commentary does not reveal restricted workspace or Resource details to explain a denial.

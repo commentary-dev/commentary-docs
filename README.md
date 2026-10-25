@@ -2,12 +2,16 @@
 
 Commentary is the human decision layer for AI agents. Its trusted wedge remains rendered review: Markdown, MDX, static HTML, private local drafts, structured Forms, and interactive preview apps become readable review surfaces instead of raw diffs. It opens GitHub and Azure DevOps pull requests, branches, files, folders, repositories, draft review sessions, and review-hosted form sources in a document-first workspace, keeps rendered content at the center, and lets reviewers comment on paragraphs and semantic blocks instead of raw line numbers.
 
-These docs are written for people using [commentary.dev](https://commentary.dev). They cover public read-only review, authenticated commenting, GitHub App access, Azure DevOps access, personal access token fallbacks, draft reviews, Brainstorming Reviews, Commentary Forms, Markdown extensions, static HTML review, Live Preview Reviews, Knowledge Brain review, workspace queues, developer access, the Commentary CLI, agent skills, API access, and MCP.
+These docs are written for people using [commentary.dev](https://commentary.dev). They cover public read-only review, authenticated commenting, GitHub App access, Azure DevOps access, personal access token fallbacks, draft reviews, review collaboration, Commentary Forms, Markdown extensions, static HTML review, Live Preview Reviews, Knowledge Brain review, workspace queues, developer access, the Commentary CLI, agent skills, API access, and MCP.
 
-## September 2026 Updates
+## October 2026 Updates
 
-Inbox is now the account-level `/inbox` feed, separate from the selected Workspace. Read about the current navigation, human response and guidance flows, Research workflows, image/diagram review, and Live Preview recovery:
+The Projects branch adds optional Projects and Trackers, exact Review guides, and shared Polls and Consensus. Workspace now opens Reviews, with grouped destinations for coordination and research; Inbox remains separate. The guides describe current branch behavior, with deployment and release boundaries stated explicitly:
 
+- [Projects and guided creation](./docs/projects.md)
+- [Trackers](./docs/trackers.md)
+- [Review guides](./docs/project-review-sessions.md)
+- [Polls and Consensus](./docs/review-collaboration.md)
 - [What changed](./docs/whats-new.md)
 - [Saved views and notifications](./docs/inbox-preferences.md)
 - [Teams, agents, and automation](./docs/teams-and-agents.md)
@@ -22,7 +26,7 @@ Inbox is now the account-level `/inbox` feed, separate from the selected Workspa
 - Reviewing a pull request: [Review pull requests](./docs/review-pull-requests.md)
 - Reviewing docs before a PR exists: [Review repository branches](./docs/review-repository-branches.md)
 - Reviewing a local or agent-generated draft: [Draft reviews](./docs/draft-reviews.md)
-- Refining a plan with consensus: [Brainstorming Reviews](./docs/brainstorming-reviews.md)
+- Configuring polls and consensus: [Polls and Consensus](./docs/review-collaboration.md)
 - Collecting structured answers: [Commentary Forms](./docs/commentary-forms.md)
 - Reviewing a running app preview: [Live Preview Reviews](./docs/web-app-reviews.md)
 - Tracking reviewed files and sections: [Review progress](./docs/review-progress.md)
@@ -60,7 +64,7 @@ Inbox is now the account-level `/inbox` feed, separate from the selected Workspa
 
 ![Homepage review intake](./docs/assets/homepage-intake.png)
 
-For a guided sample, open [/demo/select](https://commentary.dev/demo/select). For requests across workspaces, open [Inbox](https://commentary.dev/inbox). For organized work, sign in and open [/workspace](https://commentary.dev/workspace). For source-backed form results, open [/workspace/forms](https://commentary.dev/workspace/forms). For draft review before content exists in Git, open [/workspace/drafts/new](https://commentary.dev/workspace/drafts/new). For interactive preview apps, open [/workspace/web-app-reviews/new](https://commentary.dev/workspace/web-app-reviews/new).
+For a guided sample, open [/demo/select](https://commentary.dev/demo/select). For requests across workspaces, open [Inbox](https://commentary.dev/inbox). For organized work, select your workspace at `/workspaces/{workspaceId}`. Forms, Draft creation and Live Preview creation use the selected workspace navigation and header actions; retain explicit workspace context in shared links.
 
 ## Current Product Shape
 
@@ -72,7 +76,7 @@ For a guided sample, open [/demo/select](https://commentary.dev/demo/select). Fo
 - Direct document review supports branches, folders, Markdown, MDX, static HTML files, standalone Form Contract files, branch selectors, commit-specific diff context, and Commentary-only comments.
 - Latest rendered Markdown supports H2-H6 heading folding, collapse-all URL state, folded comment counts, and copyable heading deep links.
 - Draft reviews support pasted or uploaded Markdown, MDX, HTML, plain text, and Form Contract files before content exists in Git, with revisions, live updates, sharing, export, agent instructions, CLI workflows, API access, and MCP access.
-- Brainstorming Reviews extend draft reviews with plan-of-record revisions, feedback signals, consensus rules, decision polls, and agent-ready accepted-change workflows.
+- Polls and Consensus can be enabled independently in Review settings across supported reviews. Both start off for new reviews; proposal decisions and application reports remain separate from exact human sign-off.
 - Commentary Forms collect structured answers from review-hosted YAML/JSON contracts, Markdown embeds, static HTML bindings, draft uploads, response links, custom renderer bridges, and API/MCP workflows.
 - Live Preview Reviews load customer-owned deployed or localhost preview apps in your browser, use the opt-in Review SDK for element selection, support full page mode, and let deployed review owners create share links.
 - Signed-in reviewers can track personal file and section progress, resume later, and filter by progress.
@@ -85,3 +89,7 @@ For a guided sample, open [/demo/select](https://commentary.dev/demo/select). Fo
 ## In This Repo
 
 This repository is also the public branch review example for Commentary's direct document review flow. The root `README.md` introduces the repository; `docs/index.md` is the MkDocs homepage. The guides live in `docs/` with relative Markdown links between them.
+
+## Projects documentation candidates
+
+[Projects](docs/projects.md), [Trackers](docs/trackers.md), [packages](docs/review-packages.md), [exact Review guides](docs/project-review-sessions.md), [engineering source/evidence review](docs/engineering-project-reviews.md) and [human/agent quickstarts](docs/projects-quickstarts.md) document current implementation candidates. [Compatibility](docs/projects-compatibility.md) records tested versions and remaining provider/deployment/human acceptance boundaries. These guides are not a production-launch claim. The existing publishing snapshot workflow remains the delivery path.

@@ -4,7 +4,7 @@ Commentary is a document-review layer on top of Git providers, private draft rev
 
 ## Inbox, Workspace, And Resources
 
-[Inbox](agent-inbox.md) is your account-level attention feed across authorized workspaces. [Workspace](workspace.md) is the selected personal/team workbench. A Resource is the underlying review, Form, study, Brain, or preview; it can link to multiple workspaces without being copied or gaining broader access.
+[Inbox](agent-inbox.md) is your account-level attention feed across authorized workspaces. [Workspace](workspace.md) opens Reviews by default and is the selected personal/team workbench. Coordinate groups Projects and Trackers; Research & knowledge groups Research studies, Forms, and Knowledge. Inbox remains a separate peer destination. A Resource is the underlying review, Form, study, Brain, or preview; it can link to multiple workspaces without being copied or gaining broader access.
 
 Agents create durable Interactions that request human input. A Decision binds to the exact revision/action a person approved; Fulfillment is the agent's later execution report. Replies discuss the instance, while **Teach this agent** records future guidance separately.
 
@@ -34,27 +34,9 @@ Agents create durable Interactions that request human input. A Decision binds to
 - Comments stay app-native in Commentary.
 - Best for local edits, generated drafts, no-git Forms authoring, and agent workflows before a branch or PR is ready.
 
-### Brainstorming Review
+### Review collaboration
 
-- Extends draft review with a plan-of-record workflow.
-- Supports feedback signals, consensus rules, decision polls, and accepted-change states for agents.
-- Uses the same `/review/draft/{sessionId}` review links, comments, revisions, sharing, API, MCP, and CLI foundation.
-- Best when a group needs to discuss options before an agent or author applies accepted changes.
-
-### Commentary Forms
-
-- Collects structured answers from review-hosted Form Contract files, Markdown embeds, static HTML bindings, draft uploads, response links, and custom renderer bridges.
-- Keeps Forms results separate from comment threads and poll comments.
-- Supports result ownership, result-share links, exports, API/MCP handoff, and optional GitHub writeback.
-- Best when the review needs structured values instead of free-form comment discussion.
-
-### Live Preview Review
-
-- Opens a customer-owned deployed or localhost preview app in Commentary.
-- Uses the Review SDK for selected-element comments, with screenshot feedback available for framed previews without it.
-- Stores selected-element comments with route, selector, viewport, and optional source metadata.
-- Supports embedded or new-tab delivery, full page mode, and deployed review sharing.
-- Best for reviewing interactive UI changes before or during implementation handoff.
+Use the [shared Polls and Consensus workflow](review-collaboration.md).
 
 ## `Preview` vs `Raw`
 
@@ -108,6 +90,10 @@ Knowledge Brain mode is an optional review layer for AI-maintained knowledge-bas
 - GitHub PR review can synchronize eligible comments before review submission and import provider comments through refresh or webhook processing.
 - Direct document review keeps comments in Commentary.
 - Draft review keeps comments in Commentary.
-- Brainstorming Review keeps comments, feedback, consensus, and revisions in Commentary.
+- Polls and Consensus are optional on any review. Votes, decisions, blockers, application records, and human acceptance remain authoritative in Commentary.
 - Forms keep structured submissions separate from comments and polls.
 - Azure DevOps and GitHub use provider-aware labels and links, but the review model stays document-first.
+
+## Projects and exact deliverables
+
+[Projects](projects.md) optionally organize Resources; [Trackers](trackers.md) optionally structure work. Neither is required for existing reviews, and links never grant source access. [Packages](review-packages.md) publish immutable walkthroughs. [Sessions](project-review-sessions.md) compose exact revisions. [Source exploration](engineering-project-reviews.md) and [evidence](project-evidence.md) support the argument. [Human acceptance](project-acceptance.md), reported execution, artifact existence, review and independent verification remain separate facts.

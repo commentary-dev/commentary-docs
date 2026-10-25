@@ -32,7 +32,7 @@ Sign in when you want to:
 - submit a pull request review
 - open private repositories
 - create or share draft reviews
-- create or share Brainstorming Reviews
+- enable Polls and Consensus in Review settings
 - fill review-hosted Forms or manage Forms results and response links
 - create Live Preview Reviews for deployed or localhost preview apps
 - create deployed Live Preview Review share links
@@ -49,7 +49,7 @@ GitHub App is the default GitHub path. Azure DevOps uses Microsoft Entra by defa
 - Want to review docs before a PR exists: paste a repository, branch, file, or folder URL and read [Review repository branches](./review-repository-branches.md).
 - Want to collect structured answers: read [Commentary Forms](./commentary-forms.md).
 - Want to review a local or agent-generated draft before it is in Git: open [Draft reviews](./draft-reviews.md).
-- Want a group to converge on a plan before implementation: read [Brainstorming Reviews](./brainstorming-reviews.md).
+- Want a group to converge on a plan before implementation: read [Polls and Consensus](./review-collaboration.md).
 - Want to review a running UI preview: read [Live Preview Reviews](./web-app-reviews.md).
 - Want to create or sync draft reviews from a terminal: read [Commentary CLI](./commentary-cli.md).
 - Want an agent to participate in the review loop: read [Agent skills](./agent-skills.md).
@@ -57,4 +57,4 @@ GitHub App is the default GitHub path. Azure DevOps uses Microsoft Entra by defa
 - Want to review generated docs or site content: read [Markdown extensions](./markdown-extensions.md) and [Static HTML review](./static-html-review.md).
 - Want to review AI-maintained knowledge bases or OKF bundles: read [Knowledge Brain](./knowledge-brain.md).
 
-For team queue work, open the [Workspace](./workspace.md) after signing in.
+After signing in, open [Workspace](./workspace.md) to Reviews, the default destination. Projects and Trackers are grouped under Coordinate; Research studies, Forms, and Knowledge are under Research & knowledge. Open [Inbox](./agent-inbox.md) separately for requests and updates across the workspaces you can access.

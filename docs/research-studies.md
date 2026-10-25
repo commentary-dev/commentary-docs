@@ -1,6 +1,6 @@
 # Research Studies
 
-Research Studies combine documents, interactive activities, and structured Forms into one participant workflow. Open **Workspace → Research → New research study** to define the study and its sequence.
+Research Studies combine documents, interactive activities, and structured Forms into one participant workflow. In the selected Workspace, open **Research & knowledge → Research studies**, then use the page header's **New research study** action to define the study and its sequence.
 
 ![Research workflow creation with study metadata and fixed Consent gate](assets/research-create.png)
 
@@ -24,7 +24,7 @@ Use searchable pickers for compatible workspace artifacts, or configure an autho
 
 ## Source, Launch, And Revisions
 
-The study has **Overview**, **Plan**, and **Results**, with settings for supported management actions. Overview shows launch readiness and study progress; Plan shows the participant sequence.
+The study has **Overview**, **Plan**, **Participants**, **Results**, and **Settings** sections. Overview shows launch readiness and study progress; Plan shows the participant sequence; Participants manages participant access; Results opens the step-centered results collection. The shared section navigation retains the selected study while moving between these destinations.
 
 Browser authoring creates a Draft Review containing the authoritative Research Contract v2. Saving subsequent changes versions that source. Git-backed protocols must be updated through their authorized source flow. A database-only working projection is insufficient for launch.
 

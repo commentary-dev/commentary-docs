@@ -10,7 +10,7 @@ The fastest way to understand Commentary is to open the built-in sample chooser 
 - branch Markdown review
 - static HTML review
 - split Commentary Forms samples
-- Draft Review and Brainstorming Review samples
+- Draft Review samples with optional Polls and Consensus
 - Knowledge Brain with OKF-shaped content
 - Live Preview Review samples
 - presentation-mode and Marp samples
@@ -47,7 +47,7 @@ Use them to see native form rendering, draft authoring, response links, and resu
 - validating the reading experience before onboarding a team
 - showing stakeholders what document-first review means
 - learning the review shell before opening your own repository
-- comparing Markdown, HTML, Forms, Knowledge Brain, Draft, Brainstorming, and Live Preview workflows
+- comparing Markdown, HTML, Forms, Knowledge Brain, Draft, review collaboration, and Live Preview workflows
 
 ## What The Demo Is Not
 
@@ -56,4 +56,4 @@ Use them to see native form rendering, draft authoring, response links, and resu
 - it is not a mutable writeback target for normal visitors
 - it is not the same as direct document review
 
-For repository docs outside a PR, paste a branch, folder, file, or repository URL from the homepage.
+The sample selector does not include a Review guide authoring sample. For the prepared multi-deliverable workflow, see [Review guides](project-review-sessions.md). For repository docs outside a PR, paste a branch, folder, file, or repository URL from the homepage.

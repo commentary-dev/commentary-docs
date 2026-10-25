@@ -55,7 +55,8 @@ Use `Draft actions` from the review toolbar to:
 - download the latest file
 - change the GitHub base
 - delete the draft review
-- convert the draft to a Brainstorming Review when the review should become a plan-of-record workflow
+
+Use **Review settings** to enable Polls or Consensus on the same draft. New drafts default both off. See [Review collaboration](./review-collaboration.md).
 
 Agent instructions are meant for coding agents or CLIs that are updating local files. Commentary expects the client to read local files and send literal content; it does not read local paths or fetch arbitrary URLs for the agent.
 
@@ -76,13 +77,9 @@ commentary restore <session-id>
 
 The CLI writes local review metadata to `.commentary/session.json`, but it does not store auth tokens there.
 
-## Brainstorming Reviews
+## Review collaboration
 
-Brainstorming Reviews use the same draft review routes and revision model, but add feedback signals, consensus rules, decision polls, and agent-ready accepted-change workflows.
-
-Create one from the draft review form by choosing `Brainstorming review`, or convert an existing draft from `Draft actions`.
-
-See [Brainstorming Reviews](./brainstorming-reviews.md).
+Use the [shared Polls and Consensus workflow](review-collaboration.md).
 
 ## Sharing
 
@@ -111,3 +108,7 @@ See [API and MCP](./api-and-mcp.md), [API reference](./api/reference.md), and [M
 Draft reviews do not publish content to GitHub, create branches, commit files, open pull requests, or post provider review comments. Download or apply the latest content locally, then commit and push with your own Git credentials when the draft is ready.
 
 Deleted drafts disappear from review pages, workspace lists, API responses, MCP reads, and live update streams immediately. Active Commentary storage, including uploaded or pasted raw/rendered draft artifacts, is purged within 24 hours. Provider systems, local checkouts, and platform backups have separate retention behavior.
+
+## Draft collaboration defaults
+
+New draft reviews start with Polls and Consensus independently off. Use Review settings to enable either; enabling one does not turn on the other. The setting follows the canonical draft review across its files and revisions. See [Review collaboration](./review-collaboration.md) for gates, decisions, history, and permissions.
