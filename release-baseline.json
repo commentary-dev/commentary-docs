@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+  "appImageDigest": "sha256:b9d805a7e9b0e7022a6d96277550b26701efee704f1e3ad0a6365e62493eed2e",
+  "verifiedAt": "2026-10-25T17:50:00Z",
+  "evidence": "Azure production web/worker image digest and ACR immutable manifest tag verified against the production Container Apps deployment.",
+  "packages": {
+    "@commentary-dev/cli": "0.3.0",
+    "@commentary-dev/review-sdk": "0.3.3",
+    "@commentary-dev/forms-sdk": "0.1.0",
+    "commentary-skills": "0.6.2"
+  },
+  "unpublishedPackages": [
+    "@commentary-dev/agent-sdk",
+    "@commentary-dev/tracker-sdk"
+  ],
+  "contracts": {
+    "docs/api/openapi.json": "9417432e54b3f7fc34a78e9a0ae1a9378d6c9d7e74a894783bd9d4c54c47ccd3",
+    "docs/api/mcp-tools.md": "9a08732ee510950670e1892a8ba06a03c8bb57edd66bce0c0df890562fbe3790"
+  },
+  "skillsSource": {
+    "repository": "commentary-dev/commentary-skills",
+    "ref": "v0.6.2",
+    "sourceSha": "6903701f26de9076dc47823adca92037be3edd1e",
+    "publishedAt": "2026-09-17T19:34:54Z"
+  }
+}

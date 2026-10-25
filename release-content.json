@@ -1,0 +1,1163 @@
+{
+  "baselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+  "docsRepositoryBaselineSha": "3fd982b0cb239704e4d90f3b76cef077326e4fd2",
+  "releaseDate": "2026-10-25",
+  "entries": [
+    {
+      "path": "docs/build.md",
+      "slug": "build",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Build with Commentary",
+      "description": "Developer guides for CLI, tokens, APIs, MCP, browser integrations, Forms, webhooks, and agent skills.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": []
+    },
+    {
+      "path": "docs/build/agent-skills.md",
+      "slug": "build/agent-skills",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Commentary agent skills",
+      "description": "Install portable Commentary skill folders into a compatible agent and choose a skill for a specific task.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/cli-draft-reviews.md",
+      "slug": "build/cli-draft-reviews",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Commentary CLI for Draft Reviews",
+      "description": "Install the published CLI, authenticate, create a hosted draft from local files, and revise it from the terminal.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md",
+        "docs/draft-reviews.md"
+      ]
+    },
+    {
+      "path": "docs/build/cli.md",
+      "slug": "build/cli",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Commentary CLI",
+      "description": "Install and use the published CLI for Draft Reviews, durable Interactions, workspace tasks, packages, Projects, Trackers, source snapshots, and evidence.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md",
+        "docs/projects-quickstarts.md",
+        "docs/tracker-portability.md"
+      ]
+    },
+    {
+      "path": "docs/build/developer-access.md",
+      "slug": "build/developer-access",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Developer access and API tokens",
+      "description": "Create scoped Commentary credentials for API, MCP, CLI, or agent work and revoke them when access should end.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/developer-access.md",
+        "docs/teams-and-agents.md"
+      ]
+    },
+    {
+      "path": "docs/build/forms.md",
+      "slug": "build/forms",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Build source-backed Forms",
+      "description": "Author a Form Contract, validate answers, and integrate native, HTML, or custom Live Preview renderers.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-forms.md"
+      ]
+    },
+    {
+      "path": "docs/build/live-preview-sdk.md",
+      "slug": "build/live-preview-sdk",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Live Preview Review SDK",
+      "description": "Connect a browser app you own to embedded and standalone Commentary Live Preview Reviews.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/web-app-reviews.md"
+      ]
+    },
+    {
+      "path": "docs/build/mcp.md",
+      "slug": "build/mcp",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Connect an MCP client",
+      "description": "Configure an authenticated MCP client, discover tools on the deployment, and use server-owned authorization correctly.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/api-and-mcp.md",
+        "docs/mcp-interactions.md"
+      ]
+    },
+    {
+      "path": "docs/build/projects-trackers.md",
+      "slug": "build/projects-trackers",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Automate Projects and Trackers",
+      "description": "Use scoped agent transports with typed workspace records, exact versions, and explicit recovery after conflicts.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/api/projects-agent-contracts.md",
+        "docs/projects-compatibility.md",
+        "docs/projects-quickstarts.md",
+        "docs/tracker-portability.md"
+      ]
+    },
+    {
+      "path": "docs/build/research-studies.md",
+      "slug": "build/research-studies",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Integrate with Research Studies",
+      "description": "Read or participate in Research Study workflows using authorized API and MCP capabilities.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/research-studies.md"
+      ]
+    },
+    {
+      "path": "docs/build/review-packages.md",
+      "slug": "build/review-packages",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Build and upload Review packages",
+      "description": "Integrate the immutable Review package upload flow with exact manifests, bounded chunks, retries, and authorization.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/review-packages.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-ask-human.md",
+      "slug": "build/skills/commentary-ask-human",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Ask Human",
+      "description": "Create a durable Inbox question when an answer must survive the current chat.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-async-workflow.md",
+      "slug": "build/skills/commentary-async-workflow",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Async Workflow",
+      "description": "Orchestrate a durable Interaction across polling, Decision, revision, and fulfillment.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-brainstorm-review.md",
+      "slug": "build/skills/commentary-brainstorm-review",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Brainstorm Review",
+      "description": "Create and operate a structured Brainstorming Review for a proposal.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-draft-review.md",
+      "slug": "build/skills/commentary-draft-review",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Draft Review with the CLI",
+      "description": "Use the Commentary CLI for live collaborative review of local text artifacts.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-escalate-review.md",
+      "slug": "build/skills/commentary-escalate-review",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Escalate Review",
+      "description": "Prepare and follow a human-confirmed handoff to canonical full Review.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-form-creation.md",
+      "slug": "build/skills/commentary-form-creation",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Create a Commentary Form",
+      "description": "Design and create Commentary Form Contract v1 forms.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-form-design.md",
+      "slug": "build/skills/commentary-form-design",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Route Form design work",
+      "description": "Route Form experience work to focused rendering or design skills.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-form-rendering.md",
+      "slug": "build/skills/commentary-form-rendering",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Render a Commentary Form",
+      "description": "Implement Commentary Form renderers, bindings, and SDK bridges.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-form-result-visualizations.md",
+      "slug": "build/skills/commentary-form-result-visualizations",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Visualize Form results",
+      "description": "Create accessible visualizations from permitted Form result data.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-form-results.md",
+      "slug": "build/skills/commentary-form-results",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Read Form results",
+      "description": "Fetch, poll, normalize, and export Commentary Forms results.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-inbox-triage.md",
+      "slug": "build/skills/commentary-inbox-triage",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Inbox Triage",
+      "description": "Inspect authorized Inbox attention and route work to canonical Resources.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-live-preview-review.md",
+      "slug": "build/skills/commentary-live-preview-review",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Live Preview Review",
+      "description": "Set up Commentary Live Preview Reviews and address live web app comments.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-pr-review.md",
+      "slug": "build/skills/commentary-pr-review",
+      "section": "build",
+      "contentType": "guide",
+      "title": "PR Review with an agent",
+      "description": "Operate rendered GitHub PR reviews with explicit provider and revision boundaries.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-request-approval.md",
+      "slug": "build/skills/commentary-request-approval",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Request Approval",
+      "description": "Request a human Decision bound to an exact proposal and consequence.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-research-workflow.md",
+      "slug": "build/skills/commentary-research-workflow",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Operate a Research Study",
+      "description": "Operate source-backed Commentary Research Studies through MCP and Draft Review.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-submit-revision.md",
+      "slug": "build/skills/commentary-submit-revision",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Submit Revision",
+      "description": "Address durable feedback with a new immutable Interaction revision.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/commentary-workspace.md",
+      "slug": "build/skills/commentary-workspace",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Workspace Discovery",
+      "description": "Discover granted workspace Resources and team queues; link and rename authorized reviews.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/design-effective-forms.md",
+      "slug": "build/skills/design-effective-forms",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Design an effective Form",
+      "description": "Design clear, accessible, unbiased, and adaptive forms.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/design-effective-interactions.md",
+      "slug": "build/skills/design-effective-interactions",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Design an effective human request",
+      "description": "Design clear notifications, durable questions, choices, and exact approval requests.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/design-product-research.md",
+      "slug": "build/skills/design-product-research",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Design product research",
+      "description": "Design ethical, decision-focused product research using established UX methods.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/skills/review-agentic-plans.md",
+      "slug": "build/skills/review-agentic-plans",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Review an agent-generated plan",
+      "description": "Review agent-generated plans for intent, evidence, risk, and decision completeness.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-skills.md"
+      ]
+    },
+    {
+      "path": "docs/build/tracker-renderers.md",
+      "slug": "build/tracker-renderers",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Embed and render Trackers",
+      "description": "Use declarative native embeds or understand the isolated hosted and external renderer boundaries.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/tracker-renderers.md"
+      ]
+    },
+    {
+      "path": "docs/build/webhooks.md",
+      "slug": "build/webhooks",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Receive outbound webhooks",
+      "description": "Configure signed Interaction change notifications, verify raw payloads, and recover deliveries safely.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/outbound-webhooks.md"
+      ]
+    },
+    {
+      "path": "docs/help.md",
+      "slug": "help",
+      "section": "help",
+      "contentType": "guide",
+      "title": "Help and troubleshooting",
+      "description": "Recover from common access, rendering, submission, SDK, and automation problems.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/troubleshooting-and-faq.md"
+      ]
+    },
+    {
+      "path": "docs/help/troubleshooting.md",
+      "slug": "help/troubleshooting",
+      "section": "help",
+      "contentType": "guide",
+      "title": "Troubleshooting",
+      "description": "Diagnose common review, provider, draft, Live Preview, Form, and API problems with safe recovery steps.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/troubleshooting-and-faq.md"
+      ]
+    },
+    {
+      "path": "docs/reference.md",
+      "slug": "reference",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "Reference",
+      "description": "Generated HTTP and MCP contracts, operation schemas, and product integration details.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": []
+    },
+    {
+      "path": "docs/reference/api.md",
+      "slug": "reference/api",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "HTTP API overview",
+      "description": "Choose authentication, scope requests, and find exact HTTP request and response contracts.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/api-and-mcp.md",
+        "docs/projects-compatibility.md"
+      ]
+    },
+    {
+      "path": "docs/reference/cli.md",
+      "slug": "reference/cli",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "Commentary CLI reference",
+      "description": "Complete recursive command and option reference captured from the published Commentary CLI 0.3.0 binary.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md"
+      ],
+      "updated": "2026-10-25"
+    },
+    {
+      "path": "docs/reference/cli/draft-reviews.md",
+      "slug": "reference/cli/draft-reviews",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "CLI: Draft Reviews",
+      "description": "Released command help for local Draft Review sessions, comments, collaboration, authentication, recovery, and sharing.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md"
+      ],
+      "updated": "2026-10-25"
+    },
+    {
+      "path": "docs/reference/cli/interactions.md",
+      "slug": "reference/cli/interactions",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "CLI: Interactions and Decisions",
+      "description": "Released command help for durable Interactions, immutable Decisions, and agent-reported Fulfillment.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md"
+      ],
+      "updated": "2026-10-25"
+    },
+    {
+      "path": "docs/reference/cli/packages.md",
+      "slug": "reference/cli/packages",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "CLI: Review packages",
+      "description": "Released command help for validating and publishing static walkthrough packages.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md"
+      ],
+      "updated": "2026-10-25"
+    },
+    {
+      "path": "docs/reference/cli/projects-trackers.md",
+      "slug": "reference/cli/projects-trackers",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "CLI: Projects and Trackers",
+      "description": "Released command help for Project resources, typed Trackers, records, views, imports, and proposals.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md"
+      ],
+      "updated": "2026-10-25"
+    },
+    {
+      "path": "docs/reference/cli/review-sessions-evidence.md",
+      "slug": "reference/cli/review-sessions-evidence",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "CLI: Review sessions, snapshots, and evidence",
+      "description": "Released command help for immutable review sessions, source snapshots, and evidence records.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md"
+      ],
+      "updated": "2026-10-25"
+    },
+    {
+      "path": "docs/reference/cli/webhooks.md",
+      "slug": "reference/cli/webhooks",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "CLI: Webhooks",
+      "description": "Released command help for scoped webhook subscriptions and delivery receipts.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md"
+      ],
+      "updated": "2026-10-25"
+    },
+    {
+      "path": "docs/reference/cli/workspace-inbox.md",
+      "slug": "reference/cli/workspace-inbox",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "CLI: Workspace and Inbox",
+      "description": "Released command help for delegated workspace resources, queues, and Inbox operations.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md"
+      ],
+      "updated": "2026-10-25"
+    },
+    {
+      "path": "docs/reference/interactions.md",
+      "slug": "reference/interactions",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "Interactions, Decisions, and Fulfillment",
+      "description": "Understand durable owner-directed requests and the boundaries among human Decisions, agent reports, and external execution.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/interaction-api.md",
+        "docs/mcp-interactions.md"
+      ]
+    },
+    {
+      "path": "docs/reference/mcp.md",
+      "slug": "reference/mcp",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "MCP reference overview",
+      "description": "Understand MCP version negotiation, deployed tool discovery, authentication, and the exact generated tool schemas.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/api-and-mcp.md",
+        "docs/mcp-interactions.md"
+      ]
+    },
+    {
+      "path": "docs/reference/project-agent-contracts.md",
+      "slug": "reference/project-agent-contracts",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "Project and agent contracts",
+      "description": "Choose a supported agent transport for Project resources and understand its authorization and version boundaries.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/api/projects-agent-contracts.md"
+      ]
+    },
+    {
+      "path": "docs/reference/project-evidence.md",
+      "slug": "reference/project-evidence",
+      "section": "reference",
+      "contentType": "reference",
+      "title": "Project evidence and provenance",
+      "description": "Distinguish requirements, claims, supplied reports, independent observations, fulfillment, and human Decisions.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/project-acceptance.md",
+        "docs/project-evidence.md"
+      ]
+    },
+    {
+      "path": "docs/start.md",
+      "slug": "start",
+      "section": "start",
+      "contentType": "guide",
+      "title": "Start with Commentary",
+      "description": "Choose a first review, understand what works without sign-in, and get to a useful result.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/core-concepts.md",
+        "docs/demo-walkthrough.md",
+        "docs/getting-started.md"
+      ]
+    },
+    {
+      "path": "docs/start/account-and-access.md",
+      "slug": "start/account-and-access",
+      "section": "start",
+      "contentType": "guide",
+      "title": "Sign in and manage access",
+      "description": "Choose OAuth or an advanced token path, then understand which actions require an authenticated account.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/access-and-authentication.md",
+        "docs/azure-devops.md"
+      ]
+    },
+    {
+      "path": "docs/start/azure-devops.md",
+      "slug": "start/azure-devops",
+      "section": "start",
+      "contentType": "guide",
+      "title": "Connect Azure DevOps",
+      "description": "Sign in with Microsoft Entra, open an Azure DevOps PR or document, and diagnose organization/project access.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/azure-devops.md"
+      ]
+    },
+    {
+      "path": "docs/start/github-pat.md",
+      "slug": "start/github-pat",
+      "section": "start",
+      "contentType": "guide",
+      "title": "Create a GitHub personal access token",
+      "description": "Use a narrowly scoped GitHub token only when the default GitHub App sign-in route cannot work.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/generate-a-github-pat.md"
+      ]
+    },
+    {
+      "path": "docs/use.md",
+      "slug": "use",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Use Commentary",
+      "description": "Task guides for review, collaboration, workspace objects, and content workflows.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/core-concepts.md"
+      ]
+    },
+    {
+      "path": "docs/use/branch-reviews.md",
+      "slug": "use/branch-reviews",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Branch and repository document reviews",
+      "description": "Review repository files before a pull request and understand what app-native branch comments do.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/review-repository-branches.md"
+      ]
+    },
+    {
+      "path": "docs/use/draft-reviews.md",
+      "slug": "use/draft-reviews",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Draft reviews",
+      "description": "Create a private review for content that is not in Git and understand revision, sharing, and publication boundaries.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/draft-reviews.md"
+      ]
+    },
+    {
+      "path": "docs/use/forms-and-knowledge.md",
+      "slug": "use/forms-and-knowledge",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Forms and Knowledge",
+      "description": "Find source-backed Forms and Knowledge Brain reviews in the Research and knowledge workspace area.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-forms.md",
+        "docs/knowledge-brain.md"
+      ]
+    },
+    {
+      "path": "docs/use/inbox-preferences.md",
+      "slug": "use/inbox-preferences",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Inbox notifications and preferences",
+      "description": "Tune Inbox notifications while keeping read state and task actions explicit.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-inbox.md",
+        "docs/inbox-preferences.md"
+      ]
+    },
+    {
+      "path": "docs/use/inbox.md",
+      "slug": "use/inbox",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Use Inbox",
+      "description": "Work requests and updates across authorized workspaces from one account-level attention feed.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-inbox.md",
+        "docs/workspace.md"
+      ]
+    },
+    {
+      "path": "docs/use/knowledge-brain.md",
+      "slug": "use/knowledge-brain",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Knowledge Brain reviews",
+      "description": "Review AI-maintained knowledge bases with source-to-output navigation, provenance, and health findings.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/knowledge-brain.md"
+      ]
+    },
+    {
+      "path": "docs/use/projects.md",
+      "slug": "use/projects",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Projects",
+      "description": "Organize an initiative around a goal, linked source resources, review guides, evidence, and lifecycle.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/project-workflows.md",
+        "docs/projects.md"
+      ]
+    },
+    {
+      "path": "docs/use/pull-requests.md",
+      "slug": "use/pull-requests",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Pull request reviews",
+      "description": "Open, read, comment on, and submit review work for GitHub and Azure DevOps pull requests.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/review-pull-requests.md",
+        "docs/workspace.md"
+      ]
+    },
+    {
+      "path": "docs/use/rendered-content.md",
+      "slug": "use/rendered-content",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Markdown, HTML, and visual reviews",
+      "description": "Understand supported document rendering, static HTML safety, visual review targets, and common rendering recovery.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/knowledge-brain.md",
+        "docs/markdown-extensions.md",
+        "docs/markdown-rendering.md",
+        "docs/static-html-review.md",
+        "docs/visual-reviews.md"
+      ]
+    },
+    {
+      "path": "docs/use/research-studies.md",
+      "slug": "use/research-studies",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Research Studies",
+      "description": "Plan a consent-first linear study and use step-centered results while keeping source and evidence permissions explicit.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/research-studies.md"
+      ]
+    },
+    {
+      "path": "docs/use/review-collaboration.md",
+      "slug": "use/review-collaboration",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Polls and Consensus",
+      "description": "Configure optional review polls and record human proposal decisions without conflating votes, application, or approval.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/review-collaboration.md"
+      ]
+    },
+    {
+      "path": "docs/use/review-guides.md",
+      "slug": "use/review-guides",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Review guides",
+      "description": "Compose a versioned walkthrough from exact deliverables and keep guide discussion scoped to the source it reviewed.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/engineering-project-reviews.md",
+        "docs/project-review-sessions.md",
+        "docs/review-packages.md"
+      ]
+    },
+    {
+      "path": "docs/use/review-modes.md",
+      "slug": "use/review-modes",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Choose a review mode",
+      "description": "Understand Preview, Raw, Document, Changes, docs preview, and Present as independent reading choices.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/markdown-extensions.md",
+        "docs/markdown-rendering.md",
+        "docs/review-modes.md"
+      ]
+    },
+    {
+      "path": "docs/use/review-packages.md",
+      "slug": "use/review-packages",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Review packages",
+      "description": "Share a rendered, versioned document walkthrough with private assets and native review comments.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/review-packages.md"
+      ]
+    },
+    {
+      "path": "docs/use/review-progress.md",
+      "slug": "use/review-progress",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Resume review progress",
+      "description": "Mark files and sections reviewed and return to changed content using your own saved review state.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/review-progress.md"
+      ]
+    },
+    {
+      "path": "docs/use/team-workspace-governance.md",
+      "slug": "use/team-workspace-governance",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Manage members, agents, and governance",
+      "description": "Set workspace roles, control agent participation, route requests, and review policy changes without granting source access.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/enterprise-governance.md",
+        "docs/teams-and-agents.md"
+      ]
+    },
+    {
+      "path": "docs/use/trackers.md",
+      "slug": "use/trackers",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Trackers",
+      "description": "Define typed records and choose checklist, list, board, table, calendar, timeline, Gantt, or summary views.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/tracker-portability.md",
+        "docs/tracker-renderers.md",
+        "docs/trackers.md"
+      ]
+    },
+    {
+      "path": "docs/use/workspace.md",
+      "slug": "use/workspace",
+      "section": "use",
+      "contentType": "guide",
+      "title": "Workspaces and navigation",
+      "description": "Understand the personal or team workspace, global Inbox, and where Reviews, Projects, Research, and settings live.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/teams-and-agents.md",
+        "docs/workspace.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/collect-form-responses.md",
+      "slug": "workflows/collect-form-responses",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Collect and use Form responses",
+      "description": "Author a versioned Form Contract, collect validated answers, and share results with the right audience.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-forms.md",
+        "docs/static-html-review.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/index.md",
+      "slug": "workflows",
+      "section": "workflows",
+      "contentType": "guide",
+      "title": "End-to-end workflows",
+      "description": "Follow complete task flows from opening a source to sharing a clear review outcome.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/core-concepts.md",
+        "docs/demo-walkthrough.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/project-tracker-acceptance.md",
+      "slug": "workflows/project-tracker-acceptance",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Coordinate project work and preserve human acceptance",
+      "description": "Organize resources and execution in a Project and Tracker while keeping evidence, verification, and human acceptance distinct.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/engineering-project-reviews.md",
+        "docs/project-workflows.md",
+        "docs/projects-quickstarts.md",
+        "docs/projects.md",
+        "docs/trackers.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/publish-review-package.md",
+      "slug": "workflows/publish-review-package",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Publish a versioned Review package",
+      "description": "Prepare a document walkthrough, validate its assets, publish an immutable revision, and recover safely from an interrupted upload.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/projects-quickstarts.md",
+        "docs/review-packages.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/reach-a-human-decision.md",
+      "slug": "workflows/reach-a-human-decision",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Reach and record a human decision",
+      "description": "Separate discussion, proposal decisions, poll results, applied changes, conversation resolution, and human sign-off.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/agent-inbox.md",
+        "docs/review-collaboration.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/request-exact-acceptance.md",
+      "slug": "workflows/request-exact-acceptance",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Request exact human acceptance",
+      "description": "Prepare the complete authorized target set, bind a human Decision to exact material and action, and recover when revisions stale it.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/engineering-project-reviews.md",
+        "docs/project-acceptance.md",
+        "docs/project-evidence.md",
+        "docs/project-workflows.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/review-a-branch-document.md",
+      "slug": "workflows/review-a-branch-document",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Review a branch document before a PR",
+      "description": "Open and discuss repository documents on a branch without waiting for a pull request.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/azure-devops.md",
+        "docs/review-repository-branches.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/review-a-knowledge-update.md",
+      "slug": "workflows/review-a-knowledge-update",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Review a knowledge-base update",
+      "description": "Inspect source notes, generated knowledge pages, provenance, and health findings together before merging a knowledge update.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/knowledge-brain.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/review-a-live-preview.md",
+      "slug": "workflows/review-a-live-preview",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Review a running web preview",
+      "description": "Create a deployed or localhost review, connect the optional SDK, and leave precise visual feedback.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/visual-reviews.md",
+        "docs/web-app-reviews.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/review-a-local-draft.md",
+      "slug": "workflows/review-a-local-draft",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Review and revise local draft content",
+      "description": "Create a hosted review from local files, work through comments, and sync a new immutable revision.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/commentary-cli.md",
+        "docs/draft-reviews.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/review-a-pull-request.md",
+      "slug": "workflows/review-a-pull-request",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Review a pull request",
+      "description": "Read a PR as a document, discuss precise content, and submit a provider review when the team is ready.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/azure-devops.md",
+        "docs/review-pull-requests.md"
+      ]
+    },
+    {
+      "path": "docs/workflows/run-a-research-study.md",
+      "slug": "workflows/run-a-research-study",
+      "section": "workflows",
+      "contentType": "workflow",
+      "title": "Run a participant Research Study",
+      "description": "Build, launch, and review a linear study that combines consent, documents, interactive activities, and Forms.",
+      "published": true,
+      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "sourceDocs": [
+        "docs/research-studies.md"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import '@pagefind/default-ui/css/ui.css';
+---
+<docs-search>
+  <button class="search-trigger" type="button" aria-label="Search documentation" aria-keyshortcuts="Control+K Meta+K" disabled><Icon name="magnifier" /><span>Search docs</span><kbd>Ctrl K</kbd></button>
+  <dialog aria-label="Search documentation"><div class="search-frame"><button class="search-close" type="button" aria-label="Close search">Close <kbd>Esc</kbd></button><div id="docs-search-results"></div><p class="search-note">Search stays in your browser.</p></div></dialog>
+</docs-search>
+<script>
+  class DocsSearch extends HTMLElement {
+    connectedCallback(){
+      const trigger=this.querySelector<HTMLButtonElement>('.search-trigger')!;
+      const dialog=this.querySelector<HTMLDialogElement>('dialog')!;
+      const close=this.querySelector<HTMLButtonElement>('.search-close')!;
+      if(/Mac|iPhone|iPad/.test(navigator.platform))trigger.querySelector('kbd')!.textContent='⌘ K';
+      let initialized=false;
+      const open=async()=>{
+        dialog.showModal();
+        if(!initialized){
+          initialized=true;
+          // @ts-expect-error Pagefind UI publishes JavaScript without declarations.
+          try {
+            const {PagefindUI}=await import('@pagefind/default-ui');
+            this.querySelector('#docs-search-results')!.textContent='';
+            new PagefindUI({element:'#docs-search-results',baseUrl:'/docs/',bundlePath:new URL(/* @vite-ignore */ '../pagefind/',import.meta.url).pathname,showImages:false,showSubResults:true,showFilters:['section','type'],processResult:(result:{url:string;sub_results?:Array<{url:string}>})=>{const normalize=(url:string)=>url.replace(/\.html(?=#|$)/,'').replace(/\/$/,'').replace(/#_top$/,'');result.url=normalize(result.url);for(const child of result.sub_results||[])child.url=normalize(child.url);result.sub_results=result.sub_results?.filter(child=>child.url!==result.url);return result;}});
+          } catch {
+            initialized=false;
+            this.querySelector('#docs-search-results')!.textContent='Search could not load. Close and try again, or use the documentation navigation.';
+          }
+        }
+        requestAnimationFrame(()=>this.querySelector<HTMLInputElement>('input')?.focus());
+      };
+      trigger.disabled=false;
+      trigger.addEventListener('click',open);
+      close.addEventListener('click',()=>dialog.close());
+      dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+      dialog.addEventListener('close',()=>trigger.focus());
+      window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();if(dialog.open)dialog.close();else void open();}});
+    }
+  }
+  customElements.define('docs-search',DocsSearch);
+</script>
+<style is:global>
+docs-search{display:block;min-width:0}.search-trigger{display:flex;align-items:center;gap:.6rem;padding:.55rem .75rem;border:1px solid var(--sl-color-gray-5);border-radius:6px;background:var(--sl-color-bg-nav);color:var(--sl-color-gray-2);min-width:14rem;text-align:start;font:inherit;font-size:.875rem}.search-trigger svg{width:1rem;height:1rem}.search-trigger kbd{margin-left:auto;font-size:.7rem}.search-trigger:disabled{opacity:.6}.search-close kbd{font-size:.7rem;margin-left:.4rem}docs-search dialog{width:min(45rem,calc(100vw - 2rem));height:min(40rem,calc(100dvh - 3rem));padding:0;border:1px solid var(--sl-color-gray-4);border-radius:10px;background:var(--sl-color-bg);color:var(--sl-color-text);margin:1.5rem auto}docs-search dialog::backdrop{background:#0c172b99}.search-frame{height:100%;overflow:auto;padding:1rem}.search-close{display:block;margin:0 0 .75rem auto;padding:.35rem .5rem;background:none;border:1px solid var(--sl-color-gray-5);border-radius:4px;color:var(--sl-color-text)}.search-note{font-size:.75rem;color:var(--sl-color-gray-3);margin-top:1rem}.pagefind-ui{--pagefind-ui-primary:var(--sl-color-text-accent);--pagefind-ui-text:var(--sl-color-text);--pagefind-ui-background:var(--sl-color-bg);--pagefind-ui-border:var(--sl-color-gray-5);--pagefind-ui-tag:var(--sl-color-gray-6);--pagefind-ui-border-radius:6px;--pagefind-ui-font:var(--sl-font)}@media(max-width:49.99rem){.search-trigger{min-width:0}.search-trigger span,.search-trigger kbd{display:none}.search-trigger{padding:.65rem}}
+</style>

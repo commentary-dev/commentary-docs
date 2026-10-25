@@ -1,2 +1,10 @@
 
 site/
+node_modules/
+dist/
+.astro/
+.generated/
+src/content/docs/
+public/
+test-results/
+playwright-report/

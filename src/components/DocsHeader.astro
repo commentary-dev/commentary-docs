@@ -1,0 +1,12 @@
+---
+import Default from '@astrojs/starlight/components/Header.astro';
+---
+<div class="docs-header-frame">
+  <div class="docs-header-main"><Default {...Astro.props} /></div>
+  <a class="docs-open-app" href="/">Open app <span aria-hidden="true">↗</span></a>
+</div>
+<style>
+  .docs-header-frame{display:flex;gap:1rem;align-items:center;height:100%;width:100%}
+  .docs-header-main{min-width:0;flex:1}.docs-open-app{display:none;white-space:nowrap;color:var(--sl-color-text-accent);font-size:.875rem;font-weight:600;text-decoration:none;border:1px solid var(--sl-color-gray-5);border-radius:6px;padding:.4rem .7rem;align-self:center}
+  @media(min-width:72rem){.docs-open-app{display:block}}
+</style>

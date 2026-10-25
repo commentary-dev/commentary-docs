@@ -1,0 +1,31 @@
+{
+  "name": "commentary-docs",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "npm run prepare:content && astro dev --host 127.0.0.1",
+    "prepare:content": "node scripts/prepare-content.mjs",
+    "build": "node scripts/build-site.mjs",
+    "check": "node scripts/check-site.mjs",
+    "test": "node --test scripts/test/*.test.mjs",
+    "test:ui": "playwright test",
+    "preview": "node scripts/preview-site.mjs",
+    "publish:site": "node scripts/publish-site.mjs"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "7.3.0",
+    "@astrojs/starlight": "0.42.7",
+    "astro": "7.4.2",
+    "sharp": "0.35.5",
+    "yaml": "2.9.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@playwright/test": "1.56.1",
+    "cheerio": "1.1.2"
+  }
+}

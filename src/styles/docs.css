@@ -1,0 +1,156 @@
+:root {
+  --sl-font: Arial, Helvetica, system-ui, sans-serif;
+  --sl-font-mono: Consolas, "SFMono-Regular", monospace;
+  --sl-color-accent-low: #102c4e;
+  --sl-color-accent: #65a8ff;
+  --sl-color-accent-high: #b9d7ff;
+  --sl-color-white: #f6f8fc;
+  --sl-color-gray-1: #e8edf5;
+  --sl-color-gray-2: #c0cbdc;
+  --sl-color-gray-3: #93a1b6;
+  --sl-color-gray-4: #465468;
+  --sl-color-gray-5: #283448;
+  --sl-color-gray-6: #182232;
+  --sl-color-black: #101826;
+  --sl-content-width: 49rem;
+  --sl-text-5xl: 2.5rem;
+  --sl-text-4xl: 2rem;
+  --sl-sidebar-width: 18rem;
+}
+:root[data-theme="light"] {
+  --sl-color-accent-low: #eaf3ff;
+  --sl-color-accent: #1558c0;
+  --sl-color-accent-high: #16417a;
+  --sl-color-white: #17233a;
+  --sl-color-gray-1: #26344a;
+  --sl-color-gray-2: #3d4d65;
+  --sl-color-gray-3: #5c6d83;
+  --sl-color-gray-4: #8c9bb0;
+  --sl-color-gray-5: #d8e0ea;
+  --sl-color-gray-6: #f4f7fb;
+  --sl-color-gray-7: #fafbfd;
+  --sl-color-black: #fff;
+}
+html {
+  scroll-padding-top: 6rem;
+}
+.header {
+  gap: 1rem;
+}
+.site-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: 1.1rem;
+}
+.sl-markdown-content {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.sl-markdown-content h2 {
+  margin-top: 2.4rem;
+  letter-spacing: -0.025em;
+}
+.sl-markdown-content h3 {
+  letter-spacing: -0.015em;
+}
+.sl-markdown-content img {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 8px;
+  margin-block: 1.25rem;
+}
+.sl-markdown-content a {
+  text-underline-offset: 0.2em;
+}
+.sidebar-content a {
+  font-size: 0.875rem;
+}
+.content-panel {
+  border-top-color: var(--sl-color-gray-5);
+}
+.hero {
+  padding-block: 1.5rem !important;
+}
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+.hero .tagline {
+  font-size: 1.1rem;
+  max-width: 44rem;
+}
+.card {
+  border-radius: 8px;
+  box-shadow: none;
+}
+.card .title {
+  font-size: 1.05rem;
+}
+a,
+button,
+summary {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+:focus-visible {
+  outline: 3px solid var(--sl-color-accent);
+  outline-offset: 3px;
+}
+.pagination-links a {
+  border-radius: 6px;
+}
+.expressive-code {
+  margin-block: 1.25rem;
+}
+.sl-markdown-content table {
+  font-size: 0.9rem;
+}
+h1 {
+  letter-spacing: -0.035em;
+}
+.main-pane {
+  min-width: 0;
+}
+@media (min-width: 90rem) {
+  :root {
+    --sl-content-width: 52rem;
+  }
+}
+@media (max-width: 49.99rem) {
+  .sl-markdown-content {
+    font-size: 1rem;
+  }
+  .content-panel {
+    padding-inline: 1.2rem;
+  }
+  .hero h1 {
+    font-size: 2.1rem;
+  }
+  .hero {
+    padding-block: 1rem !important;
+  }
+}
+.docs-breadcrumb {
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--sl-color-gray-3);
+  margin-block: 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.docs-breadcrumb a {
+  color: var(--sl-color-text-accent);
+  text-decoration: none;
+}
+.docs-page-tools {
+  font-size: 0.8rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.docs-page-tools a {
+  color: var(--sl-color-gray-3);
+}

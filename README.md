@@ -1,95 +1,69 @@
-# Commentary Docs
+# Commentary documentation
 
-Commentary is the human decision layer for AI agents. Its trusted wedge remains rendered review: Markdown, MDX, static HTML, private local drafts, structured Forms, and interactive preview apps become readable review surfaces instead of raw diffs. It opens GitHub and Azure DevOps pull requests, branches, files, folders, repositories, draft review sessions, and review-hosted form sources in a document-first workspace, keeps rendered content at the center, and lets reviewers comment on paragraphs and semantic blocks instead of raw line numbers.
+The public technical documentation for [Commentary](https://commentary.dev/docs). This repository owns the content, documentation design, static build, search index, and independent publication workflow. The application repository owns product behavior and the authenticated publication service.
 
-These docs are written for people using [commentary.dev](https://commentary.dev). They cover public read-only review, authenticated commenting, GitHub App access, Azure DevOps access, personal access token fallbacks, draft reviews, review collaboration, Commentary Forms, Markdown extensions, static HTML review, Live Preview Reviews, Knowledge Brain review, workspace queues, developer access, the Commentary CLI, agent skills, API access, and MCP.
+## Read the documentation
 
-## October 2026 Updates
+- [Get started](https://commentary.dev/docs/start)
+- [Use Commentary](https://commentary.dev/docs/use)
+- [Workflows and examples](https://commentary.dev/docs/workflows)
+- [Build with Commentary](https://commentary.dev/docs/build)
+- [Reference](https://commentary.dev/docs/reference)
+- [Help](https://commentary.dev/docs/help)
 
-The Projects branch adds optional Projects and Trackers, exact Review guides, and shared Polls and Consensus. Workspace now opens Reviews, with grouped destinations for coordination and research; Inbox remains separate. The guides describe current branch behavior, with deployment and release boundaries stated explicitly:
+## Develop locally
 
-- [Projects and guided creation](./docs/projects.md)
-- [Trackers](./docs/trackers.md)
-- [Review guides](./docs/project-review-sessions.md)
-- [Polls and Consensus](./docs/review-collaboration.md)
-- [What changed](./docs/whats-new.md)
-- [Saved views and notifications](./docs/inbox-preferences.md)
-- [Teams, agents, and automation](./docs/teams-and-agents.md)
-- [Research Studies](./docs/research-studies.md)
-- [Images and diagram reviews](./docs/visual-reviews.md)
-- [Outbound webhooks](./docs/outbound-webhooks.md)
+Use Node 24. Install dependencies with `npm ci`, then run `npm run build` and `npm test`. Run `npm run preview` and open `http://127.0.0.1:4321/docs` to inspect the exact packaged site. The preview serves the same manifest routes and immutable asset paths as production. Stop it when finished.
 
-## Start Here
+The build derives the source commit and its timestamp from this repository. When validating a staged copy outside its Git checkout, set `DOCS_SOURCE_SHA` explicitly to the reviewed source checkout's commit and `DOCS_PUBLISHED_AT` to an ISO timestamp. A staged candidate is not a published release receipt. Referenced PNG/JPEG screenshots are converted to bounded WebP assets during the build; original source images remain unchanged.
 
-- New to Commentary: [Getting started](./docs/getting-started.md)
-- Need the product model first: [Core concepts](./docs/core-concepts.md)
-- Reviewing a pull request: [Review pull requests](./docs/review-pull-requests.md)
-- Reviewing docs before a PR exists: [Review repository branches](./docs/review-repository-branches.md)
-- Reviewing a local or agent-generated draft: [Draft reviews](./docs/draft-reviews.md)
-- Configuring polls and consensus: [Polls and Consensus](./docs/review-collaboration.md)
-- Collecting structured answers: [Commentary Forms](./docs/commentary-forms.md)
-- Reviewing a running app preview: [Live Preview Reviews](./docs/web-app-reviews.md)
-- Tracking reviewed files and sections: [Review progress](./docs/review-progress.md)
-- Managing repository queues: [Workspace](./docs/workspace.md)
-- Managing agent decisions: [Agent Inbox](./docs/agent-inbox.md)
-- Managing preview workspace governance: [Enterprise governance](./docs/enterprise-governance.md)
-- Using Azure DevOps: [Azure DevOps](./docs/azure-devops.md)
-- Understanding review modes: [Review modes](./docs/review-modes.md)
-- Markdown behavior: [Markdown rendering](./docs/markdown-rendering.md)
-- Markdown extensions and docs previews: [Markdown extensions](./docs/markdown-extensions.md)
-- Reviewing static HTML: [Static HTML review](./docs/static-html-review.md)
-- Reviewing Knowledge Brain and OKF bundles: [Knowledge Brain](./docs/knowledge-brain.md)
-- Connecting accounts: [Access and authentication](./docs/access-and-authentication.md)
-- Creating API tokens and grants: [Developer access](./docs/developer-access.md)
-- Using the terminal companion: [Commentary CLI](./docs/commentary-cli.md)
-- Using agent workflows: [Agent skills](./docs/agent-skills.md)
-- Using API or MCP clients: [API and MCP](./docs/api-and-mcp.md)
-- Using stateless MCP Interactions: [MCP 2026 Interactions](./docs/mcp-interactions.md)
-- Using optional experimental MCP Tasks: [MCP Tasks compatibility](./docs/mcp-tasks.md)
-- API endpoint reference: [API reference](./docs/api/reference.md)
-- Using the TypeScript transport client: [TypeScript Agent SDK](./docs/agent-sdk.md)
-- MCP tool reference: [MCP tools](./docs/api/mcp-tools.md)
-- Creating a GitHub fallback token: [Generate a GitHub PAT](./docs/generate-a-github-pat.md)
-- Trying the sandbox: [Demo walkthrough](./docs/demo-walkthrough.md)
-- Reading field notes: [Blog](./docs/blog.md)
-- Hit a rough edge: [Troubleshooting and FAQ](./docs/troubleshooting-and-faq.md)
+`npm run dev` offers Astro editing feedback, but final acceptance uses the built preview because Pagefind and release assets are generated during the build.
 
-## Fast Paths
+## Author a shipped-feature guide
 
-1. Open [/](https://commentary.dev/).
-2. Paste a GitHub or Azure DevOps PR, branch, repository, file, or folder URL.
-3. Click `Open review`.
-4. Read in `Preview` and `Document`.
-5. Sign in when you want to comment, reply, submit a review, create or share drafts, create Live Preview Reviews, manage Forms, or use API/MCP access.
+Place Markdown under `docs/`. The build accepts only files with `published: true` and an `appBaselineSha` matching `release-baseline.json`. Future work belongs outside the public build and must not have that published flag.
 
-![Homepage review intake](./docs/assets/homepage-intake.png)
+```yaml
+---
+title: Review a pull request
+description: Open a public pull request, read its documents, and send useful feedback.
+slug: use/pull-requests
+section: use
+contentType: guide
+published: true
+appBaselineSha: <verified-production-commit>
+order: 10
+updated: 2026-10-25
+---
+```
 
-For a guided sample, open [/demo/select](https://commentary.dev/demo/select). For requests across workspaces, open [Inbox](https://commentary.dev/inbox). For organized work, select your workspace at `/workspaces/{workspaceId}`. Forms, Draft creation and Live Preview creation use the selected workspace navigation and header actions; retain explicit workspace context in shared links.
+Sections are `start`, `use`, `workflows`, `build`, `reference`, and `help`. Content types are `guide`, `workflow`, and `reference`. Use short, permanent, lowercase slugs. Add aliases only when a previous public documentation path must continue resolving. Keep one clear outcome, prerequisites, ordered steps, expected results, recovery guidance, and next steps in every task guide.
 
-## Current Product Shape
+Use relative Markdown links for repository navigation or canonical `/docs/...` links. Images in nested guides use `../assets/...`. Preserve exact code examples, provider permissions, human approval boundaries, and product licensing. Do not put real credentials, private repository names, or customer data in screenshots or samples.
 
-- Public GitHub PRs open without login for read-only review.
-- Commenting, replies, review submission, private content, workspaces, draft reviews, Forms management, API tokens, and MCP access require authentication.
-- GitHub App is the default GitHub connection for workspace discovery and private access. GitHub PAT remains the advanced fallback.
-- Azure DevOps supports Microsoft Entra sign-in and PAT fallback.
-- Pull request review supports `Preview`, `Raw`, `Document`, `Changes`, docs preview, Present mode, all-change and commit-specific change sets, comments, live GitHub comment sync, refresh, and review submission.
-- Direct document review supports branches, folders, Markdown, MDX, static HTML files, standalone Form Contract files, branch selectors, commit-specific diff context, and Commentary-only comments.
-- Latest rendered Markdown supports H2-H6 heading folding, collapse-all URL state, folded comment counts, and copyable heading deep links.
-- Draft reviews support pasted or uploaded Markdown, MDX, HTML, plain text, and Form Contract files before content exists in Git, with revisions, live updates, sharing, export, agent instructions, CLI workflows, API access, and MCP access.
-- Polls and Consensus can be enabled independently in Review settings across supported reviews. Both start off for new reviews; proposal decisions and application reports remain separate from exact human sign-off.
-- Commentary Forms collect structured answers from review-hosted YAML/JSON contracts, Markdown embeds, static HTML bindings, draft uploads, response links, custom renderer bridges, and API/MCP workflows.
-- Live Preview Reviews load customer-owned deployed or localhost preview apps in your browser, use the opt-in Review SDK for element selection, support full page mode, and let deployed review owners create share links.
-- Signed-in reviewers can track personal file and section progress, resume later, and filter by progress.
-- Review comments can render safe Markdown, support long-form reading, sync eligible GitHub PR comments, and include poll comments when structured feedback is useful.
-- Markdown rendering supports common docs-framework syntax, MDX safety fallbacks, wikilinks, embeds, Mermaid, slides, safe raw HTML, docs previews, repository-aware links, heading folding, and heading deep links.
-- Knowledge Brain mode groups source, wiki, output, and control files, supports Open Knowledge Format review profiles, adds health and review context, and supports public reader pages for published public brains.
-- The Interaction preview keeps proposals inside a human review and correction loop. A signed-in person can explicitly link an exact Interaction revision to the appropriate existing Document Review, Form workflow, Knowledge Brain review, or Live Preview Review; Commentary returns accepted content or requested corrections as a new immutable revision. Review approval accepts the reviewed artifact revision—it does not execute an external proposal.
-- The public API lets agents create durable requests, retrieve human Decision receipts, append authorized self-reported Fulfillment for an exact approval fingerprint, and poll state. Agents cannot approve, and completion is never labeled verified without proof.
+The generated output is not committed. `src/content/docs`, `.generated`, `public`, and `dist` are build artifacts. `migration-ledger.csv` records every former page's disposition; `release-content.json` records the authored publication inventory.
 
-## In This Repo
+Every published authored guide requires `updated: YYYY-MM-DD`, recording its last substantive editorial change. Update it when instructions, examples, outcomes, titles, or explanations change; retain it for baseline-only metadata changes and formatting fixes. The initial complete rewrite is dated 2026-10-25. Generated reference dates follow their authoritative contract source history.
 
-This repository is also the public branch review example for Commentary's direct document review flow. The root `README.md` introduces the repository; `docs/index.md` is the MkDocs homepage. The guides live in `docs/` with relative Markdown links between them.
+## Update released API references
 
-## Projects documentation candidates
+`docs/api/openapi.json` and `docs/api/mcp-tools.md` are canonical inputs copied from the verified application release. The build splits them into endpoint/tool pages and generates the operation indexes. Do not manually edit generated operation pages. Update source contracts only after verifying the deployed application revision and source checksums. The TypeScript Agent SDK is intentionally omitted while its public package is unavailable; npm version claims must be verified independently of the app deployment.
 
-[Projects](docs/projects.md), [Trackers](docs/trackers.md), [packages](docs/review-packages.md), [exact Review guides](docs/project-review-sessions.md), [engineering source/evidence review](docs/engineering-project-reviews.md) and [human/agent quickstarts](docs/projects-quickstarts.md) document current implementation candidates. [Compatibility](docs/projects-compatibility.md) records tested versions and remaining provider/deployment/human acceptance boundaries. These guides are not a production-launch claim. The existing publishing snapshot workflow remains the delivery path.
+## Publish independently
+
+The `Publish Commentary Docs` workflow runs on `main` in the protected `production-docs` environment. Configure that environment to allow deployments only from `main`; protect `main` with review and required verification. The job also rejects manual dispatch from other refs. Environment restrictions are required because a branch can change its own workflow file. Configure `COMMENTARY_APP_URL` (defaults to `https://commentary.dev`) and the docs-specific `COMMENTARY_DOCS_PUBLISH_TOKEN` secret. Never put a general storage credential into this repository.
+
+The workflow builds and verifies the complete candidate, checks `/api/health` reports the reviewed app baseline, registers its manifest, uploads checksum-verified files, and activates it with an expected pointer ETag. Missing credentials or mismatched baselines fail publication. A failed upload leaves the previous release active. No GitHub API, database, or user session is needed to read published docs.
+
+The initial candidate was audited against app commit `4e7ac7718cfb098807ce32a01b8223f575ab7cf7`. Deploying the new docs-serving application produces a different app commit, so this candidate deliberately cannot be activated unchanged. Verify that deployed revision and compare its shipped behavior and released contracts; then deliberately update `release-baseline.json`, the baseline and entries in `release-content.json`, and each published guide's `appBaselineSha`. Recheck contract hashes and package versions, update content where behavior changed, and run all gates before publishing. Never automatically relabel content to the health response's SHA. Baseline-only changes retain authored `updated` dates.
+
+To restore a previous release, dispatch the workflow with `rollback_release` set to its release ID. The service accepts only a release compatible with the deployed application. Coordinate application rollback with its matching docs release. An activation response lost in transit is checked against the active pointer before being treated as failure.
+
+## Verification
+
+- `npm run build`: release metadata, static build, reference generation, Pagefind indexing, manifest packaging, complete link/anchor and metadata crawl.
+- `npm test`: publication size/integrity bounds, shipped-only authored pages, machine-readable exports, and alias safety.
+- `npm audit --audit-level=moderate`: dependency security.
+- Built browser review: desktop/phone navigation, search and filters, theme switching, no-JavaScript reading, code copying, and accessibility.
+
+Documentation pages expose unique HTML metadata, a sitemap, per-article Markdown, `llms.txt`, and a version receipt. These improve crawlability and reuse; search rankings and chatbot citations are not guaranteed.
