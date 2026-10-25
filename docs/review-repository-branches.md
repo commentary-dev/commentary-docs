@@ -43,3 +43,5 @@ For GitHub, Commentary accepts repository roots, `/tree/...` URLs, and `/blob/..
 ## Important Difference From PR Review
 
 Document review does not submit a provider review event. It is designed for app-native collaboration around repository documents.
+
+Polls and Consensus are independent optional settings for the repository review and both default off for a new review. They do not change repository access or turn a document review into a provider review submission. See [Review collaboration](./review-collaboration.md).

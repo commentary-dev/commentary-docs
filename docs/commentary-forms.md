@@ -10,7 +10,7 @@ Use Forms when a review needs repeatable structured input, such as release readi
 
 ## Find Forms In A Workspace
 
-Choose **Workspace → Forms** to add a source-backed Form or continue existing work. Search and filter the collection, then open the Form's preview, response links, submissions, or settings. Form and submission links retain the selected workspace context. Workspace linking does not copy the Form or grant source access.
+In the selected Workspace, open **Research & knowledge → Forms** to continue existing work. Use the page header action to add a source-backed Form. Search and filter the collection, then open the Form's overview, preview, submissions, or settings. Form and submission links retain the selected workspace context. Workspace linking does not copy the Form or grant source access. A Form's destinations remain attached to that Form; use its **Settings** section for response links and other supported configuration.
 
 ## Review Without Filling Every Field
 
@@ -27,7 +27,7 @@ Form definitions can come from:
 - standalone `forms/*.form.yaml`, `forms/*.form.yml`, or `forms/*.form.json` review artifacts
 - Markdown or MDX files that embed a form block
 - static HTML files with sanitized form bindings
-- draft or Brainstorming Review uploads
+- draft review uploads
 - GitHub-backed repository files read through existing read-only repository access
 - dedicated response links created from an existing review-hosted form
 - custom Live Preview Review renderers that submit structured values through the Forms SDK bridge

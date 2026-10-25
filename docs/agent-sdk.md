@@ -4,6 +4,8 @@
 
 ## Install and create a client
 
+Use a published compatible release for the install command below. For an unpublished branch candidate, install its reviewed package artifact instead; a tested source version does not establish registry availability.
+
 ```bash
 npm install @commentary-dev/agent-sdk
 ```
@@ -17,10 +19,16 @@ const commentary = createCommentaryClient({
 });
 
 const created = await commentary.interactions.create(
-  { type: "review_request", title: "Review the release note", content: {} },
+  {
+    resource: { type: "draft_review", id: "draft-1" },
+    content: { title: "Review the release note" },
+    interactionType: "request",
+  },
   { idempotencyKey: crypto.randomUUID(), correlationId: crypto.randomUUID() },
 );
 ```
+
+Replace `draft-1` with an existing authorized Draft review ID. The token needs `commentary.interactions.create` and access to that Resource.
 
 The client covers Interaction list/create/get/update/cancel/revision and browser-session feedback, Decision read/wait, Fulfillment read/report, public review-participant agent registration, webhook subscriptions and authorized delivery diagnostics, health, and OpenAPI capability discovery. It adds transport mechanics only: bearer headers, base URLs, correlation and idempotency, ETags, cursor iteration, bounded polling and cancellation, stable errors, and shallow runtime response validation.
 
@@ -62,3 +70,7 @@ Stable HTTP endpoints use explicit major paths such as `/api/v1`. Within a major
 Deprecated operations receive at least 12 months' public notice and at least two minor SDK releases, whichever is longer. Notice appears in OpenAPI, release notes, docs, and deprecation/sunset response headers where practical. Breaking changes require a new major path with an overlap window. Security or legal emergencies may shorten the window with a documented reason and migration path.
 
 The package artifact is built and tested against the committed OpenAPI contract, inspected with `npm pack`, and installed by an isolated smoke consumer before the manual provenance-enabled publication step. Publication credentials remain a release responsibility.
+
+## Projects domain groups in 0.2.0
+
+The tested 0.2.0 candidate adds projects, trackers, reviewPackages, projectReviews, sourceSnapshots and evidence: 158 domain operations use canonical HTTP handlers. Each takes one typed input with path identities and transport options; writes declare exact ETag/retry requirements. Literal uploads and attachment bytes are supported; filesystem collection/watch stays CLI-only. Existing 0.1.0 methods remain additive-compatible. See [runnable example](projects-quickstarts.md), [operation matrix](api/agent-capability-matrix.md) and [capability/migration recovery](projects-compatibility.md). Registry publication remains separately owned; never embed bearer credentials in a renderer.

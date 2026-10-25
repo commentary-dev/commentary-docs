@@ -21,7 +21,7 @@ The region is stored proportionally to the image, so viewport resizing does not 
 
 ## Draft Uploads And Agents
 
-Draft and Brainstorming Reviews accept supported raster uploads and SVG/Mermaid revisions. Raster uploads reject animation and images over 10 MB or 40 megapixels.
+Draft reviews accept supported raster uploads and SVG/Mermaid revisions. Polls and Consensus can be enabled in Review settings. Raster uploads reject animation and images over 10 MB or 40 megapixels.
 
 API clients prepare an upload with path, MIME type, byte length, and SHA-256, PUT the declared bytes before expiry, and pass the single-use `assetUploadId` to draft creation or revision upload. See the [API reference](api/reference.md). SVG and Mermaid use bounded UTF-8 source revisions.
 
@@ -34,3 +34,5 @@ Raster and standalone SVG/Mermaid region comments use file-level provider fallba
 Document mode shows immutable visual revisions. Changes uses the standard rendered change projection; synchronized before/after visual comparison, pixel diffs, opacity overlays, freehand drawing, and animation timelines are not currently supported.
 
 Visual artifact review uses the Free `review.visual_artifacts` feature. For interactive websites and browser screenshot feedback, see [Live Preview Reviews](web-app-reviews.md).
+
+Visual artifact reviews use the same independent Polls and Consensus settings as the canonical review. Both are off by default for new reviews; region comments work without enabling either. See [Review collaboration](./review-collaboration.md).

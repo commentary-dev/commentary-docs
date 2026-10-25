@@ -16,7 +16,7 @@ Workspace membership never replaces permission to the repository or Resource beh
 
 ## Read And Respond
 
-Each card identifies the sender, workspace, and reason it is in your feed. Open the card's non-action area for the full request, supporting context, related artifact, images when present, and conversation. The focused view keeps its actions available while you scroll. Back or Escape returns to the feed context.
+Each card identifies the sender, workspace, and reason it is in your feed. Open the card's non-action area for the full request, supporting context, related artifact, images when present, and conversation. The focused view keeps a fixed request header and footer actions around a bounded, independently scrolling reading pane; conversation stays inside that pane. Back or Escape returns to the feed context and restores focus.
 
 Choose the action that matches your intent:
 

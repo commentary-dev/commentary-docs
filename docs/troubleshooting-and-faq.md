@@ -16,13 +16,17 @@ Static HTML URLs are supported for `.html` and `.htm` files. Standalone Forms us
 
 Sign in with an account that can access the repository. For GitHub, also confirm the GitHub App is installed for that repository or use a PAT fallback.
 
+### A workspace page or linked Resource says access is denied
+
+Check workspace membership and the Resource's own access independently. Workspace membership does not grant GitHub/Azure access, and linking a Resource to a workspace does not copy it or widen its permissions. Reconnect or authorize the original provider/source if that is what the page requests. If a collection reports incomplete or unavailable results, retry or choose **Refresh results**; an access error is different from an empty result.
+
 ### I can read a public review but cannot comment
 
 That is expected. Public reading works without login, but comments, replies, status changes, refreshes that require private access, form submission, and review submission require authentication.
 
-### Direct repository review says GitHub is rate-limiting the request
+### GitHub review or PAT validation says the request is rate-limited
 
-Anonymous GitHub API limits are lower than authenticated ones. Sign in and try again, or wait for the reset window.
+Anonymous GitHub API limits are lower than authenticated ones. Sign in for anonymous requests, or wait for the reset window. A valid PAT can also exhaust provider quota: a 429 response is different from a 401/403 credential denial. Respect Retry-After or reset information and retry after the wait; do not replace a valid token or broaden its permissions to address rate limiting. Provider outages may return 503.
 
 ### I expected `Submit review`, but it is not there
 
@@ -122,6 +126,10 @@ Open [Inbox](https://commentary.dev/inbox). It is one account-level feed across 
 
 `/workspace` restores your latest accessible selection. Use the workspace-name switcher, or [Open Personal](https://commentary.dev/workspace?personal=1). Source and Resource access are still checked separately from membership.
 
+### Where are Reviews, Projects, Forms, and Research?
+
+Workspace opens Reviews by default. Projects and Trackers are under Coordinate; Research studies, Forms, and Knowledge are under Research & knowledge. Members, Agents, Automation, Governance, and Developer are under Workspace settings. Inbox remains a separate account-level destination.
+
 ### Does Dismiss cancel a request, or Teach this agent answer it?
 
 No. Dismiss moves the current event to your History. Teach this agent sends future guidance. Reply discusses the current instance; use its requested action to answer or decide it. See [Agent Inbox](agent-inbox.md).
@@ -143,3 +151,7 @@ The preview host controls whether Commentary can embed it. A connection timeout 
 ### Can other reviewers open my localhost review?
 
 Only if they run the same app locally. Localhost previews load from each reviewer's browser; Commentary cloud services do not fetch your machine. Deployed HTTPS Live Preview Reviews can be shared by owner-created links.
+
+## Projects and exact-review recovery
+
+Use the [failure/recovery table](projects-compatibility.md) for ETags, retry receipts, schema mappings, upload expiry/checksums, Git conflicts, unsupported Azure writes, renderer disconnect and event cursor gaps. Preserve local intent on conflict. An unavailable historical target does not fall back to latest, and changed material needs [fresh human acceptance](project-acceptance.md). Check current scopes/workspace/grant/original source rights separately; a Project link never fixes source denial.

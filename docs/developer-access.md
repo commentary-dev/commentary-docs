@@ -42,7 +42,7 @@ Developer access offers common presets:
 - `Brain evaluations` for agents that submit or read Knowledge Brain evaluations.
 - `Custom scopes` for selecting individual scopes.
 
-Brainstorming Review automation uses the same review and comment scopes as draft-review automation, plus Brainstorming feature access when the operation reads or updates consensus state.
+Collaboration configuration requires explicit `commentary.review.settings.write` authority alongside source-management access. Registered agents may configure decision workflows; only human managers configure or waive human sign-off. Decision participation uses the current review/comment scopes. Polls are Free; Consensus is available as Pro preview.
 
 Forms automation uses `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, and `commentary.forms.writeback`. Live Preview Review sharing uses `commentary.review.share`.
 
@@ -95,7 +95,7 @@ Common target formats are:
 - branch: `github:owner/repo:branch:main`
 - draft review: `draft:{sessionId}`
 
-Use account-wide targets for Live Preview Review automation, owned draft-review automation, and owned Forms result management. Use draft targets when an agent should only access one draft or Brainstorming Review. Use GitHub targets when a token should stay limited to one repository, branch, or pull request. Review-scoped tokens can read or submit embedded Forms only when their `sourceContext` identifies the covered review.
+Use account-wide targets for Live Preview Review automation, owned draft-review automation, and owned Forms result management. Use draft targets when an agent should only access one draft review. Use GitHub targets when a token should stay limited to one repository, branch, or pull request. Review-scoped tokens can read or submit embedded Forms only when their `sourceContext` identifies the covered review.
 
 ## MCP And Device Flow
 
@@ -118,3 +118,7 @@ Research scopes cover authorized study reads and permitted agent participation, 
 Use `Revoke` on an active grant when a token or client should stop working. Revocation affects API, OAuth, and MCP use immediately for that grant.
 
 See [API and MCP](./api-and-mcp.md) for endpoint details.
+
+## Projects scopes and workspace context
+
+Select separate commentary.projects.read/write, commentary.trackers.read/write/writeback, commentary.review_packages.read/write, commentary.project_reviews.read/write, commentary.source_snapshots.read/write and commentary.evidence.read/write/verify scopes only for the intended workflow. Slash pairs are separate scopes. Keep the Agent grant's explicit workspace binding; participation and original source authority remain additional checks. Git writes require independent write authority; no Decision-write scope exists. See [agent quickstarts](projects-quickstarts.md) and [implemented contracts](api/projects-agent-contracts.md).

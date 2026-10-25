@@ -12,6 +12,10 @@ OpenAPI version: `3.1.0`
 | `GET` | `/.well-known/oauth-authorization-server` | Get OAuth authorization server metadata. | session/public |
 | `GET` | `/.well-known/oauth-protected-resource` | Get OAuth protected resource metadata. | session/public |
 | `GET` | `/api/health` | Get shallow, deep, storage, or PostgreSQL health. | session/public |
+| `GET` | `/api/v1/agents/me` | Read the authenticated Agent profile | session/public |
+| `PATCH` | `/api/v1/agents/me` | Update the authenticated Agent profile | commentary.agents.profile.write |
+| `DELETE` | `/api/v1/agents/me/avatar` | Remove image from the authenticated Agent profile | commentary.agents.profile.write |
+| `PUT` | `/api/v1/agents/me/avatar` | Update the authenticated Agent profile | commentary.agents.profile.write |
 | `GET` | `/api/v1/brain/review/changed-files` | List changed files for a Knowledge Brain review. | commentary.review.read |
 | `GET` | `/api/v1/brain/review/comments` | List comments for a Knowledge Brain review. | commentary.comments.read |
 | `GET` | `/api/v1/brain/review/evaluations` | List Knowledge Brain evaluation ledger entries. | commentary.brain.evals.read |
@@ -21,31 +25,26 @@ OpenAPI version: `3.1.0`
 | `POST` | `/api/v1/brain/review/ready` | Mark a Knowledge Brain requested revision ready for review. | commentary.comments.write |
 | `GET` | `/api/v1/brain/review/requested-revisions` | List requested revisions for a Knowledge Brain review. | commentary.review.read |
 | `GET` | `/api/v1/brain/reviews` | List Knowledge Brain reviews available to the token. | commentary.review.read |
-| `GET` | `/api/v1/draft-reviews` | List draft or Brainstorming Reviews owned by the account-scoped token principal. | commentary.review.read |
-| `POST` | `/api/v1/draft-reviews` | Create a draft or Brainstorming Review session, optionally with initial file content. | commentary.comments.write |
+| `GET` | `/api/v1/draft-reviews` | List draft reviews owned by the account-scoped token principal. | commentary.review.read |
+| `POST` | `/api/v1/draft-reviews` | Create a draft review session, optionally with initial file content. | commentary.comments.write |
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}` | Permanently delete a draft review from active Commentary storage. | commentary.draft_reviews.delete |
 | `GET` | `/api/v1/draft-reviews/{sessionId}` | Get a draft review session. | commentary.review.read |
 | `PATCH` | `/api/v1/draft-reviews/{sessionId}` | Update draft review metadata or Git base metadata. | commentary.comments.write |
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}/access/{accessGrantId}` | Remove a draft review access grant. | commentary.draft_reviews.share |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/comments` | List comments for a draft review. | commentary.comments.read |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/comments` | Create a comment thread on a draft review. | commentary.comments.write |
-| `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/consensus-decision` | Accept, reject, mark out of scope, or clear an owner consensus decision for a Brainstorming Review thread. In multi-agent mode, aliased owner decisions require the delegated owner agent. | commentary.comments.status |
-| `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/feedback` | Set or clear a Brainstorming Review feedback stance. When countAgentSignals is enabled, registered agent aliases can provide independent signals. | commentary.comments.write |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/replies` | Reply to a draft review comment. | commentary.comments.write |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/comments/{threadId}/status` | Resolve or reopen a draft review comment. | commentary.comments.status |
-| `GET` | `/api/v1/draft-reviews/{sessionId}/consensus-rule` | Get the configured Brainstorming Review consensus rule. | commentary.review.read |
-| `PATCH` | `/api/v1/draft-reviews/{sessionId}/consensus-rule` | Update the Brainstorming Review consensus rule, including countAgentSignals and delegatedOwnerAgentParticipantId. Owner access is required. | commentary.comments.write |
-| `GET` | `/api/v1/draft-reviews/{sessionId}/consensus-state` | Get Brainstorming Review consensus counts and file readiness. | commentary.comments.read |
-| `GET` | `/api/v1/draft-reviews/{sessionId}/events` | Stream draft or Brainstorming Review live events using Server-Sent Events. | commentary.comments.read |
+| `GET` | `/api/v1/draft-reviews/{sessionId}/events` | Stream draft review live events using Server-Sent Events. | commentary.comments.read |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/files` | List draft review files. | commentary.review.read |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/files/{fileId}/content` | Download the latest content for a draft review file. | commentary.review.read |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/revisions` | List draft review revisions. | commentary.review.read |
-| `POST` | `/api/v1/draft-reviews/{sessionId}/revisions` | Upload a new draft or Brainstorming Review revision from literal file content. | commentary.comments.write |
+| `POST` | `/api/v1/draft-reviews/{sessionId}/revisions` | Upload a new draft review revision from literal file content. | commentary.comments.write |
 | `GET` | `/api/v1/draft-reviews/{sessionId}/shares` | List share links and access grants for a draft review. | commentary.draft_reviews.share |
 | `POST` | `/api/v1/draft-reviews/{sessionId}/shares` | Create a draft review share link. | commentary.draft_reviews.share |
 | `DELETE` | `/api/v1/draft-reviews/{sessionId}/shares/{shareLinkId}` | Revoke a draft review share link. | commentary.draft_reviews.share |
 | `PUT` | `/api/v1/draft-reviews/assets/{uploadId}` | Upload exactly the raster bytes declared by a prepared upload. | commentary.comments.write |
-| `POST` | `/api/v1/draft-reviews/assets/prepare` | Prepare an actor-bound, expiring raster upload for a Draft or Brainstorming Review. | commentary.comments.write |
+| `POST` | `/api/v1/draft-reviews/assets/prepare` | Prepare an actor-bound, expiring raster upload for a Draft review. | commentary.comments.write |
 | `GET` | `/api/v1/forms` | List owned forms and visible result collections for the account-scoped token principal. | commentary.forms.read |
 | `POST` | `/api/v1/forms` | Reject standalone Forms API creation. | commentary.forms.write |
 | `GET` | `/api/v1/forms/{formId}` | Get a form contract and metadata. | commentary.forms.read |
@@ -68,9 +67,18 @@ OpenAPI version: `3.1.0`
 | `POST` | `/api/v1/forms/fillout-links/submit` | Submit answers through a response link. | commentary.forms.submit |
 | `POST` | `/api/v1/forms/validate` | Validate a literal Form Contract v1 payload without persisting it. | commentary.forms.read |
 | `GET` | `/api/v1/github/app-access/diagnostics` | Diagnose GitHub App installation access for an account-scoped token. | commentary.review.read |
+| `GET` | `/api/v1/inbox` | list Agent Inbox | commentary.inbox.read |
+| `GET` | `/api/v1/inbox/insights` | get Agent Inbox Insights | commentary.inbox.read |
+| `GET` | `/api/v1/inbox/items/{workspaceId}/{entryId}` | get Agent Inbox Item | commentary.inbox.read |
+| `GET` | `/api/v1/inbox/notification-deliveries` | list Agent Inbox Notification Deliveries | commentary.inbox.read |
+| `GET` | `/api/v1/inbox/policies` | list Agent Inbox Policies | commentary.inbox.read |
+| `POST` | `/api/v1/inbox/policies` | propose Agent Inbox Policy | commentary.interactions.create |
+| `GET` | `/api/v1/inbox/policies/{policyId}` | get Agent Inbox Policy | commentary.inbox.read |
+| `POST` | `/api/v1/inbox/policies/simulate` | simulate Agent Inbox Policy | commentary.inbox.read |
+| `GET` | `/api/v1/inbox/views` | list Agent Inbox Views | commentary.inbox.read |
 | `POST` | `/api/v1/inbox/views` | Propose a typed private Inbox view to the credential owner. | commentary.interactions.create |
-| `GET` | `/api/v1/interactions` | List durable requests addressed to the credential owner. | commentary.interactions.read |
-| `POST` | `/api/v1/interactions` | Create a durable request for the credential owner in their personal workspace. | commentary.interactions.create |
+| `GET` | `/api/v1/interactions` | List source-authorized Interactions in the granted workspace. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions` | Create a durable request in the credential workspace. | commentary.interactions.create |
 | `DELETE` | `/api/v1/interactions/{interactionId}` | Conditionally cancel an Interaction. | commentary.interactions.cancel |
 | `GET` | `/api/v1/interactions/{interactionId}` | Get one source-authorized Interaction. | commentary.interactions.read |
 | `PATCH` | `/api/v1/interactions/{interactionId}` | Conditionally update a non-decision Interaction lifecycle state. | commentary.interactions.update |
@@ -79,15 +87,89 @@ OpenAPI version: `3.1.0`
 | `POST` | `/api/v1/interactions/{interactionId}/feedback` | Send typed human feedback against one immutable Interaction revision. | session/public |
 | `GET` | `/api/v1/interactions/{interactionId}/fulfillment` | Read current self-reported Fulfillment and append-only history. | commentary.interactions.read |
 | `POST` | `/api/v1/interactions/{interactionId}/fulfillment` | Append an agent-reported Fulfillment status for an exact approved proposal. | commentary.interactions.fulfillment |
-| `GET` | `/api/v1/interactions/{interactionId}/guidance` | List bounded future-facing guidance for the creating agent. | commentary.interactions.read |
-| `POST` | `/api/v1/interactions/{interactionId}/guidance` | Send future-facing guidance to the agent that created an Interaction. | session/public |
-| `POST` | `/api/v1/interactions/{interactionId}/guidance/{guidanceId}/acknowledgment` | Acknowledge one exact guidance record as the creating agent. | commentary.interactions.update |
+| `GET` | `/api/v1/interactions/{interactionId}/guidance` | List bounded future-facing guidance for the creating or assigned investigation agent. | commentary.interactions.read |
+| `POST` | `/api/v1/interactions/{interactionId}/guidance` | Send separate future guidance to the creating agent or your investigation's assigned agent. | session/public |
+| `POST` | `/api/v1/interactions/{interactionId}/guidance/{guidanceId}/acknowledgment` | Acknowledge exact guidance as its authorized creating or assigned investigation agent. | commentary.interactions.update |
 | `GET` | `/api/v1/interactions/{interactionId}/messages` | List bounded messages already supported by the Interaction domain. | commentary.interactions.read |
 | `POST` | `/api/v1/interactions/{interactionId}/messages` | Conditionally append a message to the current or named revision. | commentary.interactions.update |
 | `GET` | `/api/v1/interactions/{interactionId}/messages/{messageId}/revisions` | Read retained reply history through a human browser session. | session/public |
 | `POST` | `/api/v1/interactions/{interactionId}/messages/{messageId}/revisions` | Append an author-owned conversational reply correction. | session/public |
 | `POST` | `/api/v1/interactions/{interactionId}/review-escalation` | Explicitly link an Interaction revision to one canonical human review Resource. | session/public |
 | `POST` | `/api/v1/interactions/{interactionId}/revisions` | Create an immutable Interaction revision. | commentary.interactions.update |
+| `GET` | `/api/v1/project-evidence` | listProjectEvidence | commentary.evidence.read |
+| `POST` | `/api/v1/project-evidence` | attachProjectEvidence | commentary.evidence.write |
+| `GET` | `/api/v1/project-evidence/{evidenceId}` | getProjectEvidence | commentary.evidence.read |
+| `PATCH` | `/api/v1/project-evidence/{evidenceId}` | updateProjectEvidence | commentary.evidence.write |
+| `POST` | `/api/v1/project-evidence/{evidenceId}/archive` | archiveProjectEvidence | commentary.evidence.write |
+| `POST` | `/api/v1/project-evidence/{evidenceId}/relations` | linkProjectEvidence | commentary.evidence.write |
+| `GET` | `/api/v1/project-evidence/{evidenceId}/report` | readProjectEvidenceReport | commentary.evidence.read |
+| `GET` | `/api/v1/project-evidence/{evidenceId}/revisions` | listProjectEvidenceHistory | commentary.evidence.read |
+| `POST` | `/api/v1/project-evidence/{evidenceId}/verification` | requestProjectVerification | commentary.evidence.verify |
+| `GET` | `/api/v1/project-evidence/{evidenceId}/verification/{verificationId}` | getProjectVerification | commentary.evidence.read |
+| `GET` | `/api/v1/project-evidence/{evidenceId}/verification/{verificationId}/artifacts/{contentId}` | downloadProjectVerificationArtifact | commentary.evidence.read |
+| `POST` | `/api/v1/project-evidence/{evidenceId}/verification/{verificationId}/cancel` | cancelProjectVerification | commentary.evidence.verify |
+| `POST` | `/api/v1/project-evidence/{evidenceId}/verification/{verificationId}/retry` | retryProjectVerification | commentary.evidence.verify |
+| `GET` | `/api/v1/project-evidence/claims` | listProjectClaims | commentary.evidence.read |
+| `POST` | `/api/v1/project-evidence/claims` | createProjectClaim | commentary.evidence.write |
+| `GET` | `/api/v1/project-evidence/claims/{claimId}` | getProjectClaim | commentary.evidence.read |
+| `PATCH` | `/api/v1/project-evidence/claims/{claimId}` | updateProjectClaim | commentary.evidence.write |
+| `POST` | `/api/v1/project-evidence/claims/{claimId}/archive` | archiveProjectClaim | commentary.evidence.write |
+| `GET` | `/api/v1/project-evidence/export` | exportProjectEvidence | commentary.evidence.read |
+| `POST` | `/api/v1/project-evidence/import` | importProjectEvidence | commentary.evidence.write |
+| `GET` | `/api/v1/project-evidence/requirements` | listProjectRequirements | commentary.evidence.read |
+| `POST` | `/api/v1/project-evidence/requirements` | createProjectRequirement | commentary.evidence.write |
+| `GET` | `/api/v1/project-evidence/requirements/{requirementId}` | getProjectRequirement | commentary.evidence.read |
+| `PATCH` | `/api/v1/project-evidence/requirements/{requirementId}` | updateProjectRequirement | commentary.evidence.write |
+| `POST` | `/api/v1/project-evidence/requirements/{requirementId}/archive` | archiveProjectRequirement | commentary.evidence.write |
+| `GET` | `/api/v1/project-review-sessions` | listProjectReviewSessions | commentary.project_reviews.read |
+| `POST` | `/api/v1/project-review-sessions` | createProjectReviewSession | commentary.project_reviews.write |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}` | getProjectReviewSession | commentary.project_reviews.read |
+| `PATCH` | `/api/v1/project-review-sessions/{sessionId}` | updateProjectReviewSession | commentary.project_reviews.write |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}/acceptance` | getProjectAcceptance | commentary.project_reviews.read, commentary.interactions.read |
+| `POST` | `/api/v1/project-review-sessions/{sessionId}/acceptance-requests` | requestProjectAcceptance | commentary.project_reviews.write, commentary.interactions.create |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}/activity` | listProjectReviewActivity | commentary.project_reviews.read |
+| `POST` | `/api/v1/project-review-sessions/{sessionId}/archive` | archiveProjectReviewSession | commentary.project_reviews.write |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}/discussion` | listProjectReviewDiscussion | commentary.project_reviews.read, commentary.comments.read |
+| `POST` | `/api/v1/project-review-sessions/{sessionId}/discussion` | createProjectReviewDiscussion | commentary.project_reviews.write, commentary.comments.write |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}/discussion/{threadId}/comments` | listProjectReviewDiscussionComments | commentary.project_reviews.read, commentary.comments.read |
+| `POST` | `/api/v1/project-review-sessions/{sessionId}/discussion/{threadId}/comments` | replyProjectReviewDiscussion | commentary.project_reviews.write, commentary.comments.write |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}/feedback` | listProjectReviewFeedback | commentary.project_reviews.read, commentary.comments.read |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}/impact` | compareProjectReviewRevisions | commentary.project_reviews.read |
+| `DELETE` | `/api/v1/project-review-sessions/{sessionId}/participants` | removeProjectReviewParticipant | commentary.project_reviews.write |
+| `POST` | `/api/v1/project-review-sessions/{sessionId}/participants` | setProjectReviewParticipant | commentary.project_reviews.write |
+| `POST` | `/api/v1/project-review-sessions/{sessionId}/restore` | restoreProjectReviewSession | commentary.project_reviews.write |
+| `POST` | `/api/v1/project-review-sessions/{sessionId}/review-requests` | requestProjectReview | commentary.project_reviews.write, commentary.interactions.create |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}/revisions` | listProjectReviewRevisions | commentary.project_reviews.read |
+| `POST` | `/api/v1/project-review-sessions/{sessionId}/revisions` | reviseProjectReviewSession | commentary.project_reviews.write |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}/revisions/{revisionId}/manifest` | getProjectReviewManifest | commentary.project_reviews.read |
+| `GET` | `/api/v1/project-review-sessions/{sessionId}/targets` | listProjectReviewTargets | commentary.project_reviews.read |
+| `GET` | `/api/v1/project-review-sessions/candidates` | listProjectReviewCandidates | commentary.project_reviews.read |
+| `GET` | `/api/v1/projects` | listProjects | commentary.projects.read |
+| `POST` | `/api/v1/projects` | createProject | commentary.projects.write |
+| `GET` | `/api/v1/projects/{projectId}` | getProject | commentary.projects.read |
+| `PATCH` | `/api/v1/projects/{projectId}` | updateProject | commentary.projects.write |
+| `GET` | `/api/v1/projects/{projectId}/activity` | listProjectActivity | commentary.projects.read |
+| `POST` | `/api/v1/projects/{projectId}/archive` | archiveProject | commentary.projects.write |
+| `POST` | `/api/v1/projects/{projectId}/complete` | completeProject | commentary.projects.write |
+| `GET` | `/api/v1/projects/{projectId}/feedback` | listProjectFeedback | commentary.projects.read, commentary.comments.read |
+| `GET` | `/api/v1/projects/{projectId}/history` | listProjectChanges | commentary.projects.read |
+| `GET` | `/api/v1/projects/{projectId}/participants` | listProjectParticipants | commentary.projects.read |
+| `POST` | `/api/v1/projects/{projectId}/participants` | setProjectParticipant | commentary.projects.write |
+| `DELETE` | `/api/v1/projects/{projectId}/participants/{participantId}` | removeProjectParticipant | commentary.projects.write |
+| `GET` | `/api/v1/projects/{projectId}/progress-policy` | getProjectProgressPolicy | commentary.projects.read |
+| `PATCH` | `/api/v1/projects/{projectId}/progress-policy` | setProjectProgressPolicy | commentary.projects.write |
+| `GET` | `/api/v1/projects/{projectId}/references` | listProjectExternalReferences | commentary.projects.read |
+| `POST` | `/api/v1/projects/{projectId}/references` | linkProjectExternalReference | commentary.projects.write |
+| `DELETE` | `/api/v1/projects/{projectId}/references/{referenceId}` | unlinkProjectExternalReference | commentary.projects.write |
+| `GET` | `/api/v1/projects/{projectId}/relationships` | listProjectRelationships | commentary.projects.read |
+| `POST` | `/api/v1/projects/{projectId}/relationships` | linkProjectRelationship | commentary.projects.write |
+| `DELETE` | `/api/v1/projects/{projectId}/relationships/{relationshipId}` | unlinkProjectRelationship | commentary.projects.write |
+| `GET` | `/api/v1/projects/{projectId}/resources` | listProjectResources | commentary.projects.read |
+| `POST` | `/api/v1/projects/{projectId}/resources` | linkProjectResource | commentary.projects.write |
+| `DELETE` | `/api/v1/projects/{projectId}/resources/{linkId}` | unlinkProjectResource | commentary.projects.write |
+| `POST` | `/api/v1/projects/{projectId}/restore` | restoreProject | commentary.projects.write |
+| `GET` | `/api/v1/projects/{projectId}/status` | getProjectStatus | commentary.projects.read |
+| `POST` | `/api/v1/projects/{projectId}/workspaces` | linkProjectWorkspace | commentary.projects.write |
 | `GET` | `/api/v1/research-capabilities` | Discover supported Research methods, Forms, Reviews, approval gates, bounds, and companion agent tools. | commentary.research.read |
 | `GET` | `/api/v1/research-studies` | List Research Studies visible to the external token. | commentary.research.read |
 | `GET` | `/api/v1/research-studies/{studyId}` | Get Research Study metadata, source/sync state, and setup context. | commentary.research.read |
@@ -107,20 +189,110 @@ OpenAPI version: `3.1.0`
 | `GET` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}/tasks/{taskId}/result` | Get one live task result projection. | commentary.research.read |
 | `GET` | `/api/v1/research-studies/{studyId}/sessions/{sessionId}/tasks/{taskId}/telemetry` | Read a bounded page of sanitized telemetry for one Research task run. | commentary.research.read |
 | `GET` | `/api/v1/research-studies/{studyId}/workflow-status` | Inspect source, participant, evidence, media, destination, and approval status for an agent workflow. | commentary.research.read |
+| `POST` | `/api/v1/review-packages` | publishReviewPackage | commentary.review_packages.write |
+| `GET` | `/api/v1/review-packages/{packageId}` | getReviewPackage | commentary.review_packages.read |
+| `GET` | `/api/v1/review-packages/{packageId}/activity` | listPackageActivity | commentary.review_packages.read |
+| `GET` | `/api/v1/review-packages/{packageId}/comments` | listPackageComments | commentary.review_packages.read, commentary.comments.read |
+| `GET` | `/api/v1/review-packages/{packageId}/feedback` | listPackageFeedback | commentary.review_packages.read, commentary.comments.read |
+| `GET` | `/api/v1/review-packages/{packageId}/impact` | comparePackageRevisions | commentary.review_packages.read |
+| `GET` | `/api/v1/review-packages/{packageId}/renderers` | listPackageRenderers | commentary.review_packages.read |
+| `POST` | `/api/v1/review-packages/{packageId}/renderers` | managePackageRendererPublication | commentary.review_packages.write |
+| `GET` | `/api/v1/review-packages/{packageId}/revisions` | listPackageRevisions | commentary.review_packages.read |
+| `POST` | `/api/v1/review-packages/{packageId}/revisions` | publishPackageRevision | commentary.review_packages.write |
+| `POST` | `/api/v1/review-packages/{packageId}/revisions/{revisionId}/comments` | mutatePackageReviewComment | commentary.review_packages.read, commentary.comments.write |
+| `GET` | `/api/v1/review-packages/{packageId}/revisions/{revisionId}/files` | downloadPackageFile | commentary.review_packages.read |
+| `GET` | `/api/v1/review-packages/{packageId}/revisions/{revisionId}/manifest` | getPackageManifest | commentary.review_packages.read |
+| `POST` | `/api/v1/review-packages/{packageId}/revisions/{revisionId}/retry` | retryPackageIndexing | commentary.review_packages.write |
+| `POST` | `/api/v1/review-packages/uploads` | preparePackageUpload | commentary.review_packages.write |
+| `DELETE` | `/api/v1/review-packages/uploads/{uploadId}` | cancelPackageUpload | commentary.review_packages.write |
+| `GET` | `/api/v1/review-packages/uploads/{uploadId}` | getPackageUpload | commentary.review_packages.read |
+| `POST` | `/api/v1/review-packages/uploads/{uploadId}/chunks` | transferPackageChunk | commentary.review_packages.write |
+| `POST` | `/api/v1/review-packages/uploads/{uploadId}/finalize` | finalizePackageUpload | commentary.review_packages.write |
 | `GET` | `/api/v1/review/comments` | List review comments for a PR or branch document file. | commentary.comments.read |
 | `POST` | `/api/v1/review/comments` | Create a review comment thread on a PR or branch document. | commentary.comments.write |
-| `GET` | `/api/v1/review/gate` | Read the approval-gate status for an exact review revision. | commentary.review.read |
+| `GET` | `/api/v1/review/gate` | Compute authoritative readiness for an exact current revision, including prepareChanges and continueDownstream. | commentary.review.read |
 | `GET` | `/api/v1/review/mention-notifications` | List mention notifications for the current token principal. | commentary.comments.read |
 | `POST` | `/api/v1/review/mention-notifications/{notificationId}/read` | Mark a mention notification read for the current token principal. | commentary.comments.write |
 | `GET` | `/api/v1/review/participants` | List users and agents taggable in a review. | commentary.comments.read |
 | `POST` | `/api/v1/review/participants` | Add a taggable user or register an agent alias for the current user. | commentary.comments.write |
+| `GET` | `/api/v1/review/polls` | Read polls, filter outcomes, or serialize a readable snapshot with a participation link. | commentary.comments.read |
+| `POST` | `/api/v1/review/polls` | Create, edit, vote, close, reopen, or archive a poll. Decision polls also require Consensus and cannot bypass blockers. | commentary.comments.write |
 | `GET` | `/api/v1/review/progress` | Read per-reviewer progress for a PR, branch document, or draft review. | commentary.review.read |
+| `GET` | `/api/v1/review/settings` | Read effective settings, permissions, version, revision, and provider-sync capabilities. | commentary.review.read |
+| `PATCH` | `/api/v1/review/settings` | Configure optional Polls and Consensus. Human sign-off configuration is human-only. | commentary.review.settings.write |
 | `POST` | `/api/v1/review/threads/{threadId}/anchor` | Re-attach a review thread to a semantic block in the current document version. | commentary.comments.status |
 | `POST` | `/api/v1/review/threads/{threadId}/comments` | Reply to an existing review thread. | commentary.comments.write |
+| `GET` | `/api/v1/review/threads/{threadId}/decision` | Read an authorized thread's decision and participant stances. | commentary.review.read |
+| `POST` | `/api/v1/review/threads/{threadId}/decision` | Request a decision, set a stance, decide, clear a blocker, or record exact application. Resolution and application never provide human approval. | commentary.comments.write |
 | `POST` | `/api/v1/review/threads/{threadId}/status` | Resolve or reopen an existing review thread. | commentary.comments.status |
+| `POST` | `/api/v1/source-snapshots` | publishSourceSnapshot | commentary.source_snapshots.write |
+| `DELETE` | `/api/v1/source-snapshots/{snapshotId}` | purgeSourceSnapshot | commentary.source_snapshots.write |
+| `GET` | `/api/v1/source-snapshots/{snapshotId}` | getSourceSnapshot | commentary.source_snapshots.read |
+| `GET` | `/api/v1/source-snapshots/{snapshotId}/capture` | getSourceCapture | commentary.source_snapshots.read |
+| `POST` | `/api/v1/source-snapshots/{snapshotId}/capture/cancel` | cancelSourceCapture | commentary.source_snapshots.write |
+| `POST` | `/api/v1/source-snapshots/{snapshotId}/capture/retry` | retrySourceCapture | commentary.source_snapshots.write |
+| `GET` | `/api/v1/source-snapshots/{snapshotId}/export` | exportSourceSnapshot | commentary.source_snapshots.read |
+| `GET` | `/api/v1/source-snapshots/{snapshotId}/file` | getSourceFile | commentary.source_snapshots.read |
+| `POST` | `/api/v1/source-snapshots/{snapshotId}/repair` | repairSourceReviewThreads | commentary.comments.write, commentary.source_snapshots.read |
+| `POST` | `/api/v1/source-snapshots/{snapshotId}/search` | searchSourceSnapshot | commentary.source_snapshots.read |
+| `GET` | `/api/v1/source-snapshots/{snapshotId}/threads` | listSourceReviewThreads | commentary.source_snapshots.read |
+| `POST` | `/api/v1/source-snapshots/{snapshotId}/threads` | mutateSourceReviewThread | commentary.comments.write, commentary.source_snapshots.read |
+| `GET` | `/api/v1/source-snapshots/{snapshotId}/tree` | getSourceTree | commentary.source_snapshots.read |
 | `GET` | `/api/v1/tokens` | List API tokens for the signed-in provider connection. | session/public |
 | `POST` | `/api/v1/tokens` | Create an API token for scripts, MCP clients, or agents. | session/public |
 | `DELETE` | `/api/v1/tokens/{tokenId}` | Revoke an API token. | session/public |
+| `GET` | `/api/v1/trackers` | listTrackers | commentary.trackers.read |
+| `POST` | `/api/v1/trackers` | createTracker | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}` | getTracker | commentary.trackers.read |
+| `PATCH` | `/api/v1/trackers/{trackerId}` | updateTracker | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/activity` | listTrackerActivity | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/archive` | archiveTracker | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/authority` | migrateTrackerAuthority | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/authority/preview` | previewTrackerAuthority | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/export` | exportTracker | commentary.trackers.read |
+| `GET` | `/api/v1/trackers/{trackerId}/feedback` | listTrackerFeedback | commentary.trackers.read, commentary.comments.read |
+| `GET` | `/api/v1/trackers/{trackerId}/import/{previewId}` | getTrackerImport | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/import/{previewId}/cancel` | cancelTrackerImport | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/import/apply` | applyTrackerImport | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/import/preview` | previewTrackerImport | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/progress-policy` | getTrackerProgressPolicy | commentary.trackers.read |
+| `PATCH` | `/api/v1/trackers/{trackerId}/progress-policy` | setTrackerProgressPolicy | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/proposals` | stageTrackerProposal | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/records` | createTrackerRecord | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/records/{recordId}` | getTrackerRecord | commentary.trackers.read |
+| `PATCH` | `/api/v1/trackers/{trackerId}/records/{recordId}` | patchTrackerRecord | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/records/{recordId}/archive` | archiveTrackerRecord | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/records/{recordId}/history` | listTrackerRecordHistory | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/records/{recordId}/review-relations` | configureTrackerReviewRelation | commentary.trackers.write, commentary.project_reviews.read |
+| `DELETE` | `/api/v1/trackers/{trackerId}/records/{recordId}/review-relations/{sessionId}` | removeTrackerReviewRelation | commentary.trackers.write, commentary.project_reviews.read |
+| `POST` | `/api/v1/trackers/{trackerId}/records/bulk` | bulkTrackerRecords | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/records/query` | queryTrackerRecords | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/records/reorder` | reorderTrackerRecords | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/renderers` | listTrackerRenderers | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/renderers` | manageTrackerRendererPublication | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/restore` | restoreTracker | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/review-progress` | getTrackerReviewProgress | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/review-progress/reconcile` | reconcileTrackerReviewProgress | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/schema` | getTrackerSchema | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/schema/apply` | applyTrackerSchema | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/schema/preview` | previewTrackerSchema | commentary.trackers.read |
+| `GET` | `/api/v1/trackers/{trackerId}/schemas` | listTrackerSchemas | commentary.trackers.read |
+| `GET` | `/api/v1/trackers/{trackerId}/sync` | getTrackerSync | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/sync/apply` | applyTrackerSync | commentary.trackers.writeback, commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/sync/cancel` | cancelTrackerSync | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/sync/preview` | previewTrackerSync | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/sync/proposals/{operationId}` | getTrackerSyncProposal | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/sync/refresh` | refreshTrackerGitSource | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/sync/resolve` | resolveTrackerSync | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/sync/retry` | retryTrackerSync | commentary.trackers.writeback, commentary.trackers.write |
+| `POST` | `/api/v1/trackers/{trackerId}/sync/source` | bindTrackerGitSource | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/views` | listTrackerViews | commentary.trackers.read |
+| `POST` | `/api/v1/trackers/{trackerId}/views` | createTrackerView | commentary.trackers.write |
+| `DELETE` | `/api/v1/trackers/{trackerId}/views/{viewId}` | deleteTrackerView | commentary.trackers.write |
+| `GET` | `/api/v1/trackers/{trackerId}/views/{viewId}` | getTrackerView | commentary.trackers.read |
+| `PATCH` | `/api/v1/trackers/{trackerId}/views/{viewId}` | updateTrackerView | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/import/preview` | previewNewTrackerImport | commentary.trackers.write |
+| `POST` | `/api/v1/trackers/validate` | validateTrackerContract | commentary.trackers.read |
 | `GET` | `/api/v1/web-app-reviews` | List Web App Reviews owned by the account-scoped token principal. | commentary.review.read |
 | `POST` | `/api/v1/web-app-reviews` | Create a Web App Review for a deployed or localhost preview URL. | commentary.comments.write |
 | `GET` | `/api/v1/web-app-reviews/{reviewId}` | Get Web App Review metadata. | commentary.review.read |
@@ -141,6 +313,13 @@ OpenAPI version: `3.1.0`
 | `POST` | `/api/v1/webhook-subscriptions/{subscriptionId}/deliveries/{deliveryId}/replay` | Confirm replay of one delivery as a new delivery id. | commentary.webhooks.write |
 | `POST` | `/api/v1/webhook-subscriptions/{subscriptionId}/disable` | Disable delivery and cancel pending attempts. | commentary.webhooks.write |
 | `POST` | `/api/v1/webhook-subscriptions/{subscriptionId}/rotate-secret` | Rotate and reveal a new signing secret once. | commentary.webhooks.write |
+| `GET` | `/api/v1/workspaces` | list Agent Workspaces | commentary.workspaces.read |
+| `GET` | `/api/v1/workspaces/{workspaceId}` | get Agent Workspace | commentary.workspaces.read |
+| `GET` | `/api/v1/workspaces/{workspaceId}/queue` | list Agent Workspace Queue | commentary.workspaces.read |
+| `GET` | `/api/v1/workspaces/{workspaceId}/resources` | list Agent Workspace Resources | commentary.workspaces.read |
+| `POST` | `/api/v1/workspaces/{workspaceId}/resources` | link Agent Workspace Resource | commentary.workspaces.resources.write |
+| `GET` | `/api/v1/workspaces/{workspaceId}/resources/{resourceType}/{resourceId}` | get Agent Workspace Resource | commentary.workspaces.read |
+| `PATCH` | `/api/v1/workspaces/{workspaceId}/resources/{resourceType}/{resourceId}` | rename Agent Workspace Resource | commentary.workspaces.resources.write |
 | `GET` | `/api/v2/research-studies` | List Research v2 linear typed workflows visible to the external token. | commentary.research.read |
 | `GET` | `/api/v2/research-studies/{studyId}` | Get one Research v2 workflow and its ordered typed steps. | commentary.research.read |
 | `GET` | `/api/v2/research-studies/{studyId}/events` | List bounded privacy-filtered workflow events, optionally filtered by stepId. | commentary.research.read |
@@ -160,5 +339,5 @@ OpenAPI version: `3.1.0`
 
 ## Scopes
 
-`commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.review.share`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, `commentary.forms.writeback`, `commentary.research.read`, `commentary.research.write`, `commentary.brain.evals.read`, `commentary.brain.evals.write`, `commentary.interactions.create`, `commentary.interactions.read`, `commentary.interactions.update`, `commentary.interactions.cancel`, `commentary.interactions.fulfillment`, `commentary.webhooks.read`, `commentary.webhooks.write`
+`commentary.review.settings.write`, `commentary.agents.profile.write`, `commentary.review.read`, `commentary.comments.read`, `commentary.comments.write`, `commentary.comments.status`, `commentary.review.share`, `commentary.draft_reviews.delete`, `commentary.draft_reviews.share`, `commentary.review.submit`, `commentary.forms.read`, `commentary.forms.write`, `commentary.forms.submit`, `commentary.forms.writeback`, `commentary.research.read`, `commentary.research.write`, `commentary.brain.evals.read`, `commentary.brain.evals.write`, `commentary.interactions.create`, `commentary.interactions.read`, `commentary.interactions.update`, `commentary.interactions.cancel`, `commentary.interactions.fulfillment`, `commentary.inbox.read`, `commentary.workspaces.read`, `commentary.workspaces.resources.write`, `commentary.webhooks.read`, `commentary.webhooks.write`, `commentary.projects.read`, `commentary.projects.write`, `commentary.trackers.read`, `commentary.trackers.write`, `commentary.trackers.writeback`, `commentary.review_packages.read`, `commentary.review_packages.write`, `commentary.project_reviews.read`, `commentary.project_reviews.write`, `commentary.source_snapshots.read`, `commentary.source_snapshots.write`, `commentary.evidence.read`, `commentary.evidence.write`, `commentary.evidence.verify`
 

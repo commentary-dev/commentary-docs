@@ -41,3 +41,5 @@ When restrictions affect a file, the review shell shows a compact status summary
 Static HTML review is for document-like artifacts, generated reports, and static pages. It is not a live deployment preview. JavaScript execution, multi-page crawling, full browser fidelity, and visual HTML diff are outside the current review surface.
 
 Provider sync for rendered HTML comments is best effort. When Commentary cannot map a rendered HTML comment to reliable provider source lines, the thread stays app-native or syncs with file-level context.
+
+HTML review uses the same review-level Polls and Consensus settings as other supported review sources. They are independent and both start off for new reviews; enabling them does not execute scripts or change the sandboxed rendering model. See [Review collaboration](./review-collaboration.md).

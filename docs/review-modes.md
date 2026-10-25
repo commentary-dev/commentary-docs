@@ -55,3 +55,7 @@ Docs preview keeps docs-framework navigation near the rendered page and adds PR 
 ## Comments Rail And Files Rail
 
 Use the `Comments` control to show or hide the thread rail. Use the file control to collapse or reopen the navigator when you need more document width.
+
+## Historical selection and recovery
+
+The clean Document snapshot selector and Changes comparison selector are independent of Preview/Raw. A selection survives switching between those surfaces, browser navigation, and reload. Historical Raw pages are labeled historical; phone View omits empty secondary-tool groups, and Escape from a nested version menu closes that menu without dismissing the parent View sheet. If an exact historical snapshot or comparison endpoint is unavailable, the reader shows an unavailable state instead of substituting a newer version or silently widening to All PR changes.

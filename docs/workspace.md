@@ -1,10 +1,10 @@
 # Workspace
 
-[Open Workspace](https://commentary.dev/workspace) to organize reviews, Forms, Research, Brain resources, and Sources in your selected personal or team workspace. Use the separate [Inbox](agent-inbox.md) destination for requests and updates across workspaces.
+Open your selected workspace at `/workspaces/{workspaceId}` to organize reviews, Forms, Research, Brain resources, and Sources in your selected personal or team workspace. Use the separate [Inbox](agent-inbox.md) destination for requests and updates across workspaces.
 
-![Workspace overview and current Work and Manage navigation](assets/workspace-overview.png)
+![Earlier workspace Overview and navigation](assets/workspace-overview.png)
 
-*Captured on commentary.dev on September 15, 2026. Account identity, review titles, and preview hostnames are replaced with neutral examples.*
+*September 15, 2026 capture of the earlier workspace navigation. The current destinations are described below; this image is not evidence of the October layout.*
 
 ## Personal And Team Workspaces
 
@@ -14,16 +14,18 @@ Use the workspace-name switcher to search the workspaces you belong to and see t
 
 Membership, agent grants, and Resource/Source permissions are separate. Joining a workspace or linking an item does not grant repository access.
 
-## Work Sections
+## Workspace Navigation
 
-| Section | Use it for |
+| Navigation group | Destinations |
 | --- | --- |
-| Overview | Resume recent work or start a review. |
-| Reviews | Find PR, repository-document, draft, Brainstorming, and Live Preview reviews. |
-| Forms | Add source-backed Forms and reach preview, response links, submissions, and results. |
-| Research | Create or continue studies; move to available results, including archived studies. |
-| Brain | Find Knowledge Brain review work. |
-| Sources | Inspect linked repositories and source material, and open related reviews. |
+| Workspace | Reviews (the default), including Recent, Pull requests, Branches, and All reviews. |
+| Coordinate | Projects and Trackers. |
+| Research & knowledge | Research studies, Forms, and Knowledge. |
+| Sources | Connected repositories and source material, with links to related reviews. |
+| Workspace settings | Members, Agents, Automation, Governance, and Developer integrations, according to role. |
+| Secondary destination | Workspace activity. Inbox is a separate account-level destination, not part of this navigation. |
+
+The workspace header provides a page-level creation action when one is available. Reviews is the everyday place to find and resume work; use its tabs to switch between recent activity, pull requests, branches, and all reviews. A review row represents a stable PR or branch, with its documents grouped beneath it.
 
 Collections provide search, applicable filters, ordering, and explicit continuation. **Clear filters** recovers from a filtered empty view. **Refresh results** restarts an expired page sequence while retaining the query and ordering. Partial or unavailable results expose recovery instead of claiming there are no matches.
 
@@ -32,7 +34,7 @@ From Sources, **View related reviews** filters Reviews to that repository. Remov
 ## Start A Review
 
 1. Select the workspace that should receive the review.
-2. Choose **New review** from the page header.
+2. Choose **New review** from the shared page header action.
 3. Paste a GitHub or Azure DevOps URL, or browse recent pull requests and repositories. Narrow discovery by provider, source, and search.
 4. For a repository, choose a PR or continue to its files and branches.
 5. Alternatively, choose **Document review** to write/upload a draft, or **Live Preview** for a running website.
@@ -45,7 +47,7 @@ The selected workspace carries through creation and opening. Every new Resource 
 
 Discovery checks current provider access. If a source cannot load, use its retry/recovery controls; incomplete discovery does not imply a missing repository. Creating a draft or Live Preview retains retry identity for an unchanged submission, allowing recovery from a lost response without creating another review.
 
-## Manage Sections
+## Workspace Settings
 
 - **Members:** membership, invitations, and roles.
 - **Agents:** workspace agent inventory and permitted participation controls.
@@ -53,7 +55,7 @@ Discovery checks current provider access. If a source cannot load, use its retry
 - **Governance:** effective policy, privacy-preserving insights, and audit.
 - **Developer:** workspace integrations, including [outbound webhooks](outbound-webhooks.md).
 
-Controls depend on your role. See [Teams, agents, and automation](teams-and-agents.md) and [Enterprise governance](enterprise-governance.md).
+Workspace settings are grouped separately from everyday review and research work. Controls depend on your role. See [Teams, agents, and automation](teams-and-agents.md) and [Enterprise governance](enterprise-governance.md).
 
 Personal saved views, notification preferences, and API/OAuth credentials live in account settings. [Developer access](developer-access.md) remains owned by the connected account; selecting a team does not transfer or broaden those credentials.
 

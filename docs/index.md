@@ -5,10 +5,14 @@ Forms, repository changes, and interactive previews into document-first review
 surfaces where people can understand context, comment precisely, and make explicit
 decisions.
 
-## September 2026 Updates
+## October 2026 Updates
 
-Inbox is now the account-level `/inbox` feed, separate from the selected Workspace. Read about the current navigation, human response and guidance flows, Research workflows, image/diagram review, and Live Preview recovery:
+The Projects branch adds optional Projects and Trackers, exact Review guides, and shared Polls and Consensus. Workspace now opens Reviews, with grouped destinations for coordination and research; Inbox remains separate. The guides describe current branch behavior, with deployment and release boundaries stated explicitly:
 
+- [Projects and guided creation](projects.md)
+- [Trackers](trackers.md)
+- [Review guides](project-review-sessions.md)
+- [Polls and Consensus](review-collaboration.md)
 - [What changed](whats-new.md)
 - [Saved views and notifications](inbox-preferences.md)
 - [Teams, agents, and automation](teams-and-agents.md)
@@ -36,3 +40,7 @@ provider connections; personal access tokens remain advanced recovery options.
 For API, MCP, CLI, and agent integrations, continue with [Developer
 access](developer-access.md), [API and MCP](api-and-mcp.md), or [Commentary
 CLI](commentary-cli.md).
+
+## Projects implementation candidates
+
+Start with [Projects](projects.md), [PM workflows](project-workflows.md), [engineering review](engineering-project-reviews.md), or [human/agent quickstarts](projects-quickstarts.md). Check [capabilities and retained release boundaries](projects-compatibility.md) before use. Existing reviews remain independent; no Project or Tracker is required.

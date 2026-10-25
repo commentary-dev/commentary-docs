@@ -60,7 +60,7 @@ Targets can be account-wide, repository-scoped, review-scoped, or draft-scoped. 
 
 ## Scopes
 
-Supported external scopes are:
+Common review scopes include the following. The [generated scope reference](api/reference.md#scopes) lists the complete current set, including Research, Interactions, Inbox, workspace, webhook, agent-profile, review-settings and Projects scopes. Existing grants do not acquire new scopes automatically:
 
 - `commentary.review.read`
 - `commentary.comments.read`
@@ -106,7 +106,7 @@ The comment creation endpoint requires provider, owner, repository, file path, b
 
 ## Draft Review API
 
-Draft review endpoints support agent and CLI workflows before a file is in Git. The same session APIs also support Brainstorming Reviews:
+Draft review endpoints support agent and CLI workflows before a file is in Git. Creation accepts optional per-review Polls and Consensus settings:
 
 - `GET /api/v1/draft-reviews`
 - `POST /api/v1/draft-reviews`
@@ -121,11 +121,6 @@ Draft review endpoints support agent and CLI workflows before a file is in Git. 
 - `POST /api/v1/draft-reviews/{sessionId}/comments`
 - `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/replies`
 - `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/status`
-- `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/feedback`
-- `POST /api/v1/draft-reviews/{sessionId}/comments/{threadId}/consensus-decision`
-- `GET /api/v1/draft-reviews/{sessionId}/consensus-rule`
-- `PATCH /api/v1/draft-reviews/{sessionId}/consensus-rule`
-- `GET /api/v1/draft-reviews/{sessionId}/consensus-state`
 - `GET /api/v1/draft-reviews/{sessionId}/events`
 - `GET /api/v1/draft-reviews/{sessionId}/shares`
 - `POST /api/v1/draft-reviews/{sessionId}/shares`
@@ -190,9 +185,9 @@ Agent context marks comment bodies and reviewed app content as untrusted user/ap
 
 Use `GET /api/v1/review/progress` to read per-reviewer progress for PR, branch document, and draft review surfaces. Progress reads require review read scope. API and MCP clients can inspect progress for reporting and context, but agents do not mutate human progress through this read path.
 
-## Poll And Brainstorming API
+## Polls and Consensus API
 
-Brainstorming Review automation can read comments by consensus state, set feedback signals, store owner consensus decisions, read or update consensus rules, and inspect consensus state. Poll comments are exposed through review poll routes and MCP so agents can read poll results and Markdown summaries without UI scraping.
+Use `GET` and conditional `PATCH /api/v1/review/settings` for effective settings and configuration. Shared `/api/v1/review/threads/{threadId}/decision` operations request decisions, record stances, decide proposals, clear blockers with attribution, and record application to an exact revision. `/api/v1/review/polls` manages polls; `/api/v1/review/gate` returns server-authoritative readiness. Supply the shared `ReviewRef` separately from revision identity. Configuration, decisions, and application records require conditional versions and idempotency keys. See [Review collaboration](./review-collaboration.md) for defaults, permissions, and provider synchronization.
 
 ## Knowledge Brain API
 
@@ -214,16 +209,29 @@ Read operations require review read scope and a token target that covers the rep
 
 The MCP endpoint is `/mcp`. MCP `2026-07-28` uses stateless, self-contained requests and optional `server/discover`; retained 2025 clients keep JSON-RPC initialization. Tool listing and calls require bearer auth in every version.
 
-Current tools are:
+The current branch registers the following tools; authenticated discovery on your deployment remains authoritative:
 
+- `commentary_agent_profile`
+- `inbox_saved_view`
 - `interaction`
 - `commentary_forms`
+- `commentary_research`
+- `github_app_access`
 - `draft_review`
 - `review_comments`
+- `web_app_review`
+- `review_participants`
+- `review_settings`
 - `review_polls`
+- `review_gate_status`
 - `review_document`
 - `brain_review`
-- `web_app_review`
+- `commentary_projects`
+- `commentary_trackers`
+- `review_package`
+- `project_review_session`
+- `codebase_review`
+- `project_evidence`
 
 See [MCP tools](./api/mcp-tools.md) for generated input schemas. Older one-off draft or comment tools are replaced by consolidated tools.
 
@@ -231,11 +239,11 @@ See [MCP 2026 Interactions](./mcp-interactions.md) for version negotiation, requ
 
 Optional [experimental MCP Tasks compatibility](./mcp-tasks.md) is capability-negotiated for eligible Interaction creation. Ordinary Interaction polling remains universal, and no enumerable Tasks list is exposed.
 
-`commentary_forms` validates, submits, lists, exports, and syncs source-backed Forms. `draft_review` manages draft and Brainstorming Review sessions, revisions, sharing, live events, and consensus metadata. `review_comments` handles comments, replies, status, feedback signals, summaries, and owner decisions. `review_polls` reads poll comments and actionable poll outcomes. `review_document` reads anchors, files, and review progress. `web_app_review` manages Live Preview Reviews, sharing, and selected-element comment handoff for agents.
+`commentary_forms` validates, submits, lists, exports, and syncs source-backed Forms. `draft_review` manages ordinary drafts, revisions, sharing, and live events. `review_settings` configures per-review Polls and Consensus. `review_comments` handles comments, replies, resolution, explicit decision threads, stances, blocker clearance, application records, and summaries. `review_polls` creates, edits, votes, closes, and reads polls and outcomes. `review_gate_status` evaluates exact-revision readiness from authorized server state. `review_document` reads anchors, files, and review progress. `web_app_review` manages Live Preview Reviews, sharing, and selected-element comment handoff for agents.
 
 ## CLI And Skills
 
-The [Commentary CLI](./commentary-cli.md) uses the public API for local file-backed draft and Brainstorming Review workflows.
+The [Commentary CLI](./commentary-cli.md) uses the public API for local file-backed draft workflows and shared review collaboration.
 
 The [Agent skills](./agent-skills.md) repository documents how compatible agents should use the CLI or MCP safely.
 
@@ -244,3 +252,7 @@ The [Agent skills](./agent-skills.md) repository documents how compatible agents
 Device clients call `/oauth/device/code`, show the user code, and ask the reviewer to open `/device`. After approval, the client exchanges the device code at `/oauth/token`.
 
 ![Device and provider access use the same Commentary account model](./assets/auth-provider-dialog.png)
+
+## Projects transport parity
+
+Six implemented grouped tools and 158 Project-domain HTTP/Agent SDK operations extend v1 additively. MCP uses action/input with transport etag/idempotencyKey. Check deployed tools/list and OpenAPI paths; the legacy reserved-extension name is compatibility metadata. Read [contracts](api/projects-agent-contracts.md), [action matrix](api/agent-capability-matrix.md), [quickstarts](projects-quickstarts.md) and [cursor recovery](projects-compatibility.md). Human Decisions, personal visits and renderer mounts retain browser authority.

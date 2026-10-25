@@ -32,3 +32,5 @@ When a file or section changes after you marked it reviewed, Commentary can show
 API and MCP clients can read review progress for reporting and agent context. Agents cannot mutate human progress through the read-only progress tools.
 
 See [API and MCP](./api-and-mcp.md) and [MCP tools](./api/mcp-tools.md).
+
+Review progress is reviewer-specific state, separate from shared review collaboration. Polls and Consensus are independently configurable per review and both default off; progress state does not enable them. See [Review collaboration](./review-collaboration.md).
