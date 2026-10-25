@@ -123,14 +123,14 @@ test('system light and dark themes keep the docs pages accessible', async ({ pag
   expect(mobileAccessibility.violations, 'mobile navigation open').toEqual([]);
 }, { timeout: 120_000 });
 
-test('mobile readers retain working content and navigation without JavaScript', async ({ browser }) => {
+test('mobile readers retain working content and navigation without JavaScript', async ({ browser, baseURL }) => {
   const context = await browser.newContext({
     javaScriptEnabled: false,
     viewport: { width: 375, height: 812 },
   });
   try {
     const page = await context.newPage();
-    await page.goto('http://127.0.0.1:4321/docs/start');
+    await page.goto(new URL('/docs/start', baseURL).toString());
     await expect(page.locator('main h1')).toHaveText('Start with Commentary');
     const navigation = page.getByRole('navigation', { name: 'Main' });
     const draftWorkflow = navigation.getByRole('link', { name: 'Review and revise local draft content' });
