@@ -39,6 +39,15 @@ jobs:
       - name: Verify the built documentation in a browser
         if: ${{ !inputs.rollback_release }}
         run: npm run test:ui
+      - name: Retain the exact verified publication artifact
+        if: ${{ !inputs.rollback_release }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: documentation-candidate
+          include-hidden-files: true
+          path: |
+            dist/
+            .generated/manifest.json
       - name: Publish immutable files and activate
         if: ${{ !inputs.rollback_release }}
         run: npm run publish:site
