@@ -67,3 +67,9 @@ To restore a previous release, dispatch the workflow with `rollback_release` set
 - Built browser review: desktop/phone navigation, search and filters, theme switching, no-JavaScript reading, code copying, and accessibility.
 
 Documentation pages expose unique HTML metadata, a sitemap, per-article Markdown, `llms.txt`, and a version receipt. These improve crawlability and reuse; search rankings and chatbot citations are not guaranteed.
+
+## Maintain plugins and skills
+
+Keep the plugin hub at docs/build/plugins.md, outcome guides under docs/build/plugins/, and individual skill pages under docs/build/skills/. Preserve individual skill URLs. The sidebar groups plugin workflows separately from skill reference. For a skills release, verify release-baseline.json and the released catalog/plugins.yaml before changing bundle membership; do not copy unreleased default-branch capabilities into public docs.
+
+Each plugin guide explains when to use it, a complete workflow, included skills, recovery, installation and next steps. Every skill links back to its bundle and ends with installation options. Keep the distinction between a native plugin with MCP configuration and standalone skill folders explicit. Recheck external installer syntax against the skills repository and official host/installer docs, preserve version-pinned choices, and update substantive-edit dates and release-content.json. Scenario DOCS-001's plugin discovery journey is covered in ui-qa/docs.spec.ts; see [browser verification](ui-qa/README.md).

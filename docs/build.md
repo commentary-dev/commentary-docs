@@ -5,7 +5,7 @@ slug: build
 section: build
 contentType: guide
 published: true
-updated: 2026-10-25
+updated: 2026-10-26
 appBaselineSha: b2486cd5911817911a0b153ac444c8d695e91bf1
 order: 1
 ---
@@ -24,7 +24,8 @@ Use the transport that matches your environment. The CLI sends local file conten
 - [Embed and render Trackers](build/tracker-renderers.md)
 - [Publish Review packages](build/review-packages.md)
 - [Research Studies integration](build/research-studies.md)
-- [Agent skills](build/agent-skills.md)
+- [Plugins by workflow and installation](build/plugins.md)
+- [Individual agent skills](build/agent-skills.md)
 - [Outbound webhooks](build/webhooks.md)
 
 ## Before automating

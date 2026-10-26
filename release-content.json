@@ -20,7 +20,7 @@
       "section": "build",
       "contentType": "guide",
       "title": "Commentary agent skills",
-      "description": "Install portable Commentary skill folders into a compatible agent and choose a skill for a specific task.",
+      "description": "Choose a skill for a specific task, explore its plugin bundle, and install it with a marketplace or a skill installer.",
       "published": true,
       "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
@@ -109,6 +109,61 @@
         "docs/api-and-mcp.md",
         "docs/mcp-interactions.md"
       ]
+    },
+    {
+      "path": "docs/build/plugins.md",
+      "slug": "build/plugins",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Commentary plugins",
+      "description": "Choose an Inbox, Review, Forms, or Research plugin and install its skills with Claude Code, GitHub Copilot, npx, or Cowork.",
+      "published": true,
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
+      "sourceDocs": []
+    },
+    {
+      "path": "docs/build/plugins/commentary-forms.md",
+      "slug": "build/plugins/commentary-forms",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Commentary Forms plugin",
+      "description": "Build useful Forms from question design through source-backed creation, rendering, response analysis, and accessible charts.",
+      "published": true,
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
+      "sourceDocs": []
+    },
+    {
+      "path": "docs/build/plugins/commentary-inbox.md",
+      "slug": "build/plugins/commentary-inbox",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Commentary Inbox plugin",
+      "description": "Keep agent work moving with durable human questions, exact approvals, revisions, and an actionable Inbox.",
+      "published": true,
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
+      "sourceDocs": []
+    },
+    {
+      "path": "docs/build/plugins/commentary-research.md",
+      "slug": "build/plugins/commentary-research",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Commentary Research plugin",
+      "description": "Connect decision-focused research planning with authorized, source-backed Research Study participation.",
+      "published": true,
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
+      "sourceDocs": []
+    },
+    {
+      "path": "docs/build/plugins/commentary-review.md",
+      "slug": "build/plugins/commentary-review",
+      "section": "build",
+      "contentType": "guide",
+      "title": "Commentary Review plugin",
+      "description": "Turn agent plans, drafts, pull requests, and live previews into focused human review and revision workflows.",
+      "published": true,
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
+      "sourceDocs": []
     },
     {
       "path": "docs/build/projects-trackers.md",

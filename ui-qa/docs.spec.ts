@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const routes = [
+  { path: '/docs/build/plugins', name: 'plugins' },
+  { path: '/docs/build/plugins/commentary-forms', name: 'forms-plugin' },
   { path: '/docs', name: 'home' },
   { path: '/docs/start', name: 'start' },
   { path: '/docs/workflows/review-a-local-draft', name: 'local-draft' },
@@ -142,4 +144,24 @@ test('mobile readers retain working content and navigation without JavaScript', 
   } finally {
     await context.close();
   }
+});
+
+// DOCS-001: discover a workflow bundle, then install a focused skill.
+test('plugin discovery connects outcomes, included skills, and installation choices', async ({ page }) => {
+  await page.goto('/docs/build');
+  await page.locator('main').getByRole('link', { name: 'Plugins by workflow and installation' }).click();
+  await expect(page).toHaveURL(/\/docs\/build\/plugins$/);
+  await page.locator('main').getByRole('link', { name: 'Forms', exact: true }).click();
+  await expect(page.locator('h1')).toHaveText('Commentary Forms plugin');
+  await expect(page.locator('main')).toContainText('commentary-forms@commentary-skills');
+  await page.locator('main').getByRole('link', { name: 'Create a Commentary Form', exact: true }).click();
+  await expect(page).toHaveURL(/\/docs\/build\/skills\/commentary-form-creation$/);
+  await page.locator('main').getByRole('link', { name: 'Copy the installation commands' }).click();
+  await expect(page).toHaveURL(/#installation-options$/);
+  await expect(page.locator('#installation-options')).toBeInViewport();
+  await expect(page.locator('main')).toContainText('npx skills add https://github.com/commentary-dev/commentary-skills/tree/v0.6.2/skills/commentary-form-creation');
+  await expect(page.locator('main')).toContainText('gh skill install commentary-dev/commentary-skills commentary-form-creation@v0.6.2 --agent github-copilot');
+  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+k' : 'Control+k');
+  await page.locator('.pagefind-ui__search-input').fill('Commentary Forms plugin');
+  await expect(page.locator('.pagefind-ui__result-link[href="/docs/build/plugins/commentary-forms"]').first()).toBeVisible();
 });

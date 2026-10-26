@@ -427,8 +427,15 @@ const navigation = Object.entries(labels).map(([section, label]) => {
           : a.title.localeCompare(b.title),
     );
   const items = entries
-    .filter((p) => !p.slug.startsWith("build/skills/") && !p.slug.startsWith("reference/cli/"))
+    .filter((p) => !p.slug.startsWith("build/skills/") && !p.slug.startsWith("build/plugins/") && !p.slug.startsWith("reference/cli/"))
     .map((p) => ({ label: p.title, link: `/${p.slug}` }));
+  const plugins = entries.filter((p) => p.slug.startsWith("build/plugins/"));
+  if (plugins.length)
+    items.push({
+      label: "Plugins by workflow",
+      collapsed: true,
+      items: plugins.map((p) => ({ label: p.title, link: `/${p.slug}` })),
+    });
   const skills = entries.filter((p) => p.slug.startsWith("build/skills/"));
   if (skills.length)
     items.push({
