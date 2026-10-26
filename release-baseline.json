@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
-  "appImageDigest": "sha256:b9d805a7e9b0e7022a6d96277550b26701efee704f1e3ad0a6365e62493eed2e",
-  "verifiedAt": "2026-10-25T17:50:00Z",
-  "evidence": "Azure production web/worker image digest and ACR immutable manifest tag verified against the production Container Apps deployment.",
+  "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
+  "appImageDigest": "sha256:6abfb8b4bfca6b11573037a1700a59c83dfb1ad9592e8f9f4f378dc0acf64063",
+  "verifiedAt": "2026-10-26T00:35:06Z",
+  "evidence": "Successful production deployment: https://github.com/srulyt/commentary/actions/runs/40242509661; /api/health build.gitSha and Azure production web/worker immutable image digest matched the release target. Source audit from 4e7ac7718cfb098807ce32a01b8223f575ab7cf7 found no documented product behavior or API/MCP contract changes. Published npm versions and released skills tag verified independently.",
   "packages": {
     "@commentary-dev/cli": "0.3.0",
     "@commentary-dev/review-sdk": "0.3.3",

@@ -5,7 +5,7 @@ slug: reference/cli/interactions
 section: reference
 contentType: reference
 published: true
-appBaselineSha: 4e7ac7718cfb098807ce32a01b8223f575ab7cf7
+appBaselineSha: b2486cd5911817911a0b153ac444c8d695e91bf1
 updated: 2026-10-25
 ---
 

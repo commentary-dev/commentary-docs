@@ -6,7 +6,7 @@ section: build
 contentType: guide
 published: true
 updated: 2026-10-25
-appBaselineSha: 4e7ac7718cfb098807ce32a01b8223f575ab7cf7
+appBaselineSha: b2486cd5911817911a0b153ac444c8d695e91bf1
 ---
 
 **Purpose:** Fetch, poll, normalize, and export Commentary Forms results.

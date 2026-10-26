@@ -12,7 +12,7 @@ package identity and executable hash.
 The checked-in snapshot is pinned to:
 
 - Package: `@commentary-dev/cli@0.3.0`
-- App baseline: `4e7ac7718cfb098807ce32a01b8223f575ab7cf7`
+- App baseline: `b2486cd5911817911a0b153ac444c8d695e91bf1`
 - npm tarball SHA-256: `8213004c10627d7fa2e57e60465133906664fa5b32171eb70d879fcf025f1d20`
 - Packaged `dist/index.js` SHA-256: `a379829d988fed621dc17431a1f42bbc7391a216d5f644eb85008181095ceb48`
 - Capture date: `2026-10-25`
@@ -30,7 +30,7 @@ Run the generator from the docs site root. Its default output root is the site
 root that contains `release-content.json` and `migration-ledger.csv`:
 
 ```powershell
-Push-Location .data\docs-site
+Push-Location C:\code\commentary-docs
 node docs\scripts\capture-cli-help.mjs `
   --package-dir C:\code\commentary\.data\cli-release-audit\package `
   --tarball C:\code\commentary\.data\cli-release-audit\commentary-dev-cli-0.3.0.tgz

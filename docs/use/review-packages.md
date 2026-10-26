@@ -6,7 +6,7 @@ section: use
 contentType: guide
 published: true
 updated: 2026-10-25
-appBaselineSha: 4e7ac7718cfb098807ce32a01b8223f575ab7cf7
+appBaselineSha: b2486cd5911817911a0b153ac444c8d695e91bf1
 ---
 
 A Review package is an immutable, rendered walkthrough built from text pages and private binary assets. It can be reviewed on its own or included as an exact target in a Review guide. Packages reuse document rendering, semantic anchors, and app-native threads; no Project or Tracker is required.

@@ -6,7 +6,7 @@ section: reference
 contentType: reference
 published: true
 updated: 2026-10-25
-appBaselineSha: 4e7ac7718cfb098807ce32a01b8223f575ab7cf7
+appBaselineSha: b2486cd5911817911a0b153ac444c8d695e91bf1
 ---
 
 Project-domain integrations expose authenticated HTTP operations and grouped MCP actions for Projects, Trackers, Review packages, Project Review Sessions, source snapshots, and evidence. Exact deployed operations and request shapes are in the generated [HTTP operation reference](https://commentary.dev/docs/reference/api-operations) and [MCP tool reference](https://commentary.dev/docs/reference/mcp-operations).

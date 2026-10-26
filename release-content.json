@@ -1,5 +1,5 @@
 {
-  "baselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+  "baselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
   "docsRepositoryBaselineSha": "3fd982b0cb239704e4d90f3b76cef077326e4fd2",
   "releaseDate": "2026-10-25",
   "entries": [
@@ -11,7 +11,7 @@
       "title": "Build with Commentary",
       "description": "Developer guides for CLI, tokens, APIs, MCP, browser integrations, Forms, webhooks, and agent skills.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": []
     },
     {
@@ -22,7 +22,7 @@
       "title": "Commentary agent skills",
       "description": "Install portable Commentary skill folders into a compatible agent and choose a skill for a specific task.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -35,7 +35,7 @@
       "title": "Commentary CLI for Draft Reviews",
       "description": "Install the published CLI, authenticate, create a hosted draft from local files, and revise it from the terminal.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md",
         "docs/draft-reviews.md"
@@ -49,7 +49,7 @@
       "title": "Commentary CLI",
       "description": "Install and use the published CLI for Draft Reviews, durable Interactions, workspace tasks, packages, Projects, Trackers, source snapshots, and evidence.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md",
         "docs/projects-quickstarts.md",
@@ -64,7 +64,7 @@
       "title": "Developer access and API tokens",
       "description": "Create scoped Commentary credentials for API, MCP, CLI, or agent work and revoke them when access should end.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/developer-access.md",
         "docs/teams-and-agents.md"
@@ -78,7 +78,7 @@
       "title": "Build source-backed Forms",
       "description": "Author a Form Contract, validate answers, and integrate native, HTML, or custom Live Preview renderers.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-forms.md"
       ]
@@ -91,7 +91,7 @@
       "title": "Live Preview Review SDK",
       "description": "Connect a browser app you own to embedded and standalone Commentary Live Preview Reviews.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/web-app-reviews.md"
       ]
@@ -104,7 +104,7 @@
       "title": "Connect an MCP client",
       "description": "Configure an authenticated MCP client, discover tools on the deployment, and use server-owned authorization correctly.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/api-and-mcp.md",
         "docs/mcp-interactions.md"
@@ -118,7 +118,7 @@
       "title": "Automate Projects and Trackers",
       "description": "Use scoped agent transports with typed workspace records, exact versions, and explicit recovery after conflicts.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/api/projects-agent-contracts.md",
         "docs/projects-compatibility.md",
@@ -134,7 +134,7 @@
       "title": "Integrate with Research Studies",
       "description": "Read or participate in Research Study workflows using authorized API and MCP capabilities.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/research-studies.md"
       ]
@@ -147,7 +147,7 @@
       "title": "Build and upload Review packages",
       "description": "Integrate the immutable Review package upload flow with exact manifests, bounded chunks, retries, and authorization.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/review-packages.md"
       ]
@@ -160,7 +160,7 @@
       "title": "Ask Human",
       "description": "Create a durable Inbox question when an answer must survive the current chat.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -173,7 +173,7 @@
       "title": "Async Workflow",
       "description": "Orchestrate a durable Interaction across polling, Decision, revision, and fulfillment.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -186,7 +186,7 @@
       "title": "Brainstorm Review",
       "description": "Create and operate a structured Brainstorming Review for a proposal.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -199,7 +199,7 @@
       "title": "Draft Review with the CLI",
       "description": "Use the Commentary CLI for live collaborative review of local text artifacts.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -212,7 +212,7 @@
       "title": "Escalate Review",
       "description": "Prepare and follow a human-confirmed handoff to canonical full Review.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -225,7 +225,7 @@
       "title": "Create a Commentary Form",
       "description": "Design and create Commentary Form Contract v1 forms.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -238,7 +238,7 @@
       "title": "Route Form design work",
       "description": "Route Form experience work to focused rendering or design skills.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -251,7 +251,7 @@
       "title": "Render a Commentary Form",
       "description": "Implement Commentary Form renderers, bindings, and SDK bridges.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -264,7 +264,7 @@
       "title": "Visualize Form results",
       "description": "Create accessible visualizations from permitted Form result data.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -277,7 +277,7 @@
       "title": "Read Form results",
       "description": "Fetch, poll, normalize, and export Commentary Forms results.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -290,7 +290,7 @@
       "title": "Inbox Triage",
       "description": "Inspect authorized Inbox attention and route work to canonical Resources.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -303,7 +303,7 @@
       "title": "Live Preview Review",
       "description": "Set up Commentary Live Preview Reviews and address live web app comments.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -316,7 +316,7 @@
       "title": "PR Review with an agent",
       "description": "Operate rendered GitHub PR reviews with explicit provider and revision boundaries.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -329,7 +329,7 @@
       "title": "Request Approval",
       "description": "Request a human Decision bound to an exact proposal and consequence.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -342,7 +342,7 @@
       "title": "Operate a Research Study",
       "description": "Operate source-backed Commentary Research Studies through MCP and Draft Review.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -355,7 +355,7 @@
       "title": "Submit Revision",
       "description": "Address durable feedback with a new immutable Interaction revision.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -368,7 +368,7 @@
       "title": "Workspace Discovery",
       "description": "Discover granted workspace Resources and team queues; link and rename authorized reviews.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -381,7 +381,7 @@
       "title": "Design an effective Form",
       "description": "Design clear, accessible, unbiased, and adaptive forms.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -394,7 +394,7 @@
       "title": "Design an effective human request",
       "description": "Design clear notifications, durable questions, choices, and exact approval requests.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -407,7 +407,7 @@
       "title": "Design product research",
       "description": "Design ethical, decision-focused product research using established UX methods.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -420,7 +420,7 @@
       "title": "Review an agent-generated plan",
       "description": "Review agent-generated plans for intent, evidence, risk, and decision completeness.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-skills.md"
       ]
@@ -433,7 +433,7 @@
       "title": "Embed and render Trackers",
       "description": "Use declarative native embeds or understand the isolated hosted and external renderer boundaries.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/tracker-renderers.md"
       ]
@@ -446,7 +446,7 @@
       "title": "Receive outbound webhooks",
       "description": "Configure signed Interaction change notifications, verify raw payloads, and recover deliveries safely.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/outbound-webhooks.md"
       ]
@@ -459,7 +459,7 @@
       "title": "Help and troubleshooting",
       "description": "Recover from common access, rendering, submission, SDK, and automation problems.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/troubleshooting-and-faq.md"
       ]
@@ -472,7 +472,7 @@
       "title": "Troubleshooting",
       "description": "Diagnose common review, provider, draft, Live Preview, Form, and API problems with safe recovery steps.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/troubleshooting-and-faq.md"
       ]
@@ -485,7 +485,7 @@
       "title": "Reference",
       "description": "Generated HTTP and MCP contracts, operation schemas, and product integration details.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": []
     },
     {
@@ -496,7 +496,7 @@
       "title": "HTTP API overview",
       "description": "Choose authentication, scope requests, and find exact HTTP request and response contracts.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/api-and-mcp.md",
         "docs/projects-compatibility.md"
@@ -510,7 +510,7 @@
       "title": "Commentary CLI reference",
       "description": "Complete recursive command and option reference captured from the published Commentary CLI 0.3.0 binary.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md"
       ],
@@ -524,7 +524,7 @@
       "title": "CLI: Draft Reviews",
       "description": "Released command help for local Draft Review sessions, comments, collaboration, authentication, recovery, and sharing.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md"
       ],
@@ -538,7 +538,7 @@
       "title": "CLI: Interactions and Decisions",
       "description": "Released command help for durable Interactions, immutable Decisions, and agent-reported Fulfillment.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md"
       ],
@@ -552,7 +552,7 @@
       "title": "CLI: Review packages",
       "description": "Released command help for validating and publishing static walkthrough packages.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md"
       ],
@@ -566,7 +566,7 @@
       "title": "CLI: Projects and Trackers",
       "description": "Released command help for Project resources, typed Trackers, records, views, imports, and proposals.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md"
       ],
@@ -580,7 +580,7 @@
       "title": "CLI: Review sessions, snapshots, and evidence",
       "description": "Released command help for immutable review sessions, source snapshots, and evidence records.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md"
       ],
@@ -594,7 +594,7 @@
       "title": "CLI: Webhooks",
       "description": "Released command help for scoped webhook subscriptions and delivery receipts.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md"
       ],
@@ -608,7 +608,7 @@
       "title": "CLI: Workspace and Inbox",
       "description": "Released command help for delegated workspace resources, queues, and Inbox operations.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md"
       ],
@@ -622,7 +622,7 @@
       "title": "Interactions, Decisions, and Fulfillment",
       "description": "Understand durable owner-directed requests and the boundaries among human Decisions, agent reports, and external execution.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/interaction-api.md",
         "docs/mcp-interactions.md"
@@ -636,7 +636,7 @@
       "title": "MCP reference overview",
       "description": "Understand MCP version negotiation, deployed tool discovery, authentication, and the exact generated tool schemas.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/api-and-mcp.md",
         "docs/mcp-interactions.md"
@@ -650,7 +650,7 @@
       "title": "Project and agent contracts",
       "description": "Choose a supported agent transport for Project resources and understand its authorization and version boundaries.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/api/projects-agent-contracts.md"
       ]
@@ -663,7 +663,7 @@
       "title": "Project evidence and provenance",
       "description": "Distinguish requirements, claims, supplied reports, independent observations, fulfillment, and human Decisions.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/project-acceptance.md",
         "docs/project-evidence.md"
@@ -677,7 +677,7 @@
       "title": "Start with Commentary",
       "description": "Choose a first review, understand what works without sign-in, and get to a useful result.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/core-concepts.md",
         "docs/demo-walkthrough.md",
@@ -692,7 +692,7 @@
       "title": "Sign in and manage access",
       "description": "Choose OAuth or an advanced token path, then understand which actions require an authenticated account.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/access-and-authentication.md",
         "docs/azure-devops.md"
@@ -706,7 +706,7 @@
       "title": "Connect Azure DevOps",
       "description": "Sign in with Microsoft Entra, open an Azure DevOps PR or document, and diagnose organization/project access.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/azure-devops.md"
       ]
@@ -719,7 +719,7 @@
       "title": "Create a GitHub personal access token",
       "description": "Use a narrowly scoped GitHub token only when the default GitHub App sign-in route cannot work.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/generate-a-github-pat.md"
       ]
@@ -732,7 +732,7 @@
       "title": "Use Commentary",
       "description": "Task guides for review, collaboration, workspace objects, and content workflows.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/core-concepts.md"
       ]
@@ -745,7 +745,7 @@
       "title": "Branch and repository document reviews",
       "description": "Review repository files before a pull request and understand what app-native branch comments do.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/review-repository-branches.md"
       ]
@@ -758,7 +758,7 @@
       "title": "Draft reviews",
       "description": "Create a private review for content that is not in Git and understand revision, sharing, and publication boundaries.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/draft-reviews.md"
       ]
@@ -771,7 +771,7 @@
       "title": "Forms and Knowledge",
       "description": "Find source-backed Forms and Knowledge Brain reviews in the Research and knowledge workspace area.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-forms.md",
         "docs/knowledge-brain.md"
@@ -785,7 +785,7 @@
       "title": "Inbox notifications and preferences",
       "description": "Tune Inbox notifications while keeping read state and task actions explicit.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-inbox.md",
         "docs/inbox-preferences.md"
@@ -799,7 +799,7 @@
       "title": "Use Inbox",
       "description": "Work requests and updates across authorized workspaces from one account-level attention feed.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-inbox.md",
         "docs/workspace.md"
@@ -813,7 +813,7 @@
       "title": "Knowledge Brain reviews",
       "description": "Review AI-maintained knowledge bases with source-to-output navigation, provenance, and health findings.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/knowledge-brain.md"
       ]
@@ -826,7 +826,7 @@
       "title": "Projects",
       "description": "Organize an initiative around a goal, linked source resources, review guides, evidence, and lifecycle.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/project-workflows.md",
         "docs/projects.md"
@@ -840,7 +840,7 @@
       "title": "Pull request reviews",
       "description": "Open, read, comment on, and submit review work for GitHub and Azure DevOps pull requests.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/review-pull-requests.md",
         "docs/workspace.md"
@@ -854,7 +854,7 @@
       "title": "Markdown, HTML, and visual reviews",
       "description": "Understand supported document rendering, static HTML safety, visual review targets, and common rendering recovery.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/knowledge-brain.md",
         "docs/markdown-extensions.md",
@@ -871,7 +871,7 @@
       "title": "Research Studies",
       "description": "Plan a consent-first linear study and use step-centered results while keeping source and evidence permissions explicit.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/research-studies.md"
       ]
@@ -884,7 +884,7 @@
       "title": "Polls and Consensus",
       "description": "Configure optional review polls and record human proposal decisions without conflating votes, application, or approval.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/review-collaboration.md"
       ]
@@ -897,7 +897,7 @@
       "title": "Review guides",
       "description": "Compose a versioned walkthrough from exact deliverables and keep guide discussion scoped to the source it reviewed.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/engineering-project-reviews.md",
         "docs/project-review-sessions.md",
@@ -912,7 +912,7 @@
       "title": "Choose a review mode",
       "description": "Understand Preview, Raw, Document, Changes, docs preview, and Present as independent reading choices.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/markdown-extensions.md",
         "docs/markdown-rendering.md",
@@ -927,7 +927,7 @@
       "title": "Review packages",
       "description": "Share a rendered, versioned document walkthrough with private assets and native review comments.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/review-packages.md"
       ]
@@ -940,7 +940,7 @@
       "title": "Resume review progress",
       "description": "Mark files and sections reviewed and return to changed content using your own saved review state.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/review-progress.md"
       ]
@@ -953,7 +953,7 @@
       "title": "Manage members, agents, and governance",
       "description": "Set workspace roles, control agent participation, route requests, and review policy changes without granting source access.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/enterprise-governance.md",
         "docs/teams-and-agents.md"
@@ -967,7 +967,7 @@
       "title": "Trackers",
       "description": "Define typed records and choose checklist, list, board, table, calendar, timeline, Gantt, or summary views.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/tracker-portability.md",
         "docs/tracker-renderers.md",
@@ -982,7 +982,7 @@
       "title": "Workspaces and navigation",
       "description": "Understand the personal or team workspace, global Inbox, and where Reviews, Projects, Research, and settings live.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/teams-and-agents.md",
         "docs/workspace.md"
@@ -996,7 +996,7 @@
       "title": "Collect and use Form responses",
       "description": "Author a versioned Form Contract, collect validated answers, and share results with the right audience.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-forms.md",
         "docs/static-html-review.md"
@@ -1010,7 +1010,7 @@
       "title": "End-to-end workflows",
       "description": "Follow complete task flows from opening a source to sharing a clear review outcome.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/core-concepts.md",
         "docs/demo-walkthrough.md"
@@ -1024,7 +1024,7 @@
       "title": "Coordinate project work and preserve human acceptance",
       "description": "Organize resources and execution in a Project and Tracker while keeping evidence, verification, and human acceptance distinct.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/engineering-project-reviews.md",
         "docs/project-workflows.md",
@@ -1041,7 +1041,7 @@
       "title": "Publish a versioned Review package",
       "description": "Prepare a document walkthrough, validate its assets, publish an immutable revision, and recover safely from an interrupted upload.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/projects-quickstarts.md",
         "docs/review-packages.md"
@@ -1055,7 +1055,7 @@
       "title": "Reach and record a human decision",
       "description": "Separate discussion, proposal decisions, poll results, applied changes, conversation resolution, and human sign-off.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/agent-inbox.md",
         "docs/review-collaboration.md"
@@ -1069,7 +1069,7 @@
       "title": "Request exact human acceptance",
       "description": "Prepare the complete authorized target set, bind a human Decision to exact material and action, and recover when revisions stale it.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/engineering-project-reviews.md",
         "docs/project-acceptance.md",
@@ -1085,7 +1085,7 @@
       "title": "Review a branch document before a PR",
       "description": "Open and discuss repository documents on a branch without waiting for a pull request.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/azure-devops.md",
         "docs/review-repository-branches.md"
@@ -1099,7 +1099,7 @@
       "title": "Review a knowledge-base update",
       "description": "Inspect source notes, generated knowledge pages, provenance, and health findings together before merging a knowledge update.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/knowledge-brain.md"
       ]
@@ -1112,7 +1112,7 @@
       "title": "Review a running web preview",
       "description": "Create a deployed or localhost review, connect the optional SDK, and leave precise visual feedback.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/visual-reviews.md",
         "docs/web-app-reviews.md"
@@ -1126,7 +1126,7 @@
       "title": "Review and revise local draft content",
       "description": "Create a hosted review from local files, work through comments, and sync a new immutable revision.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/commentary-cli.md",
         "docs/draft-reviews.md"
@@ -1140,7 +1140,7 @@
       "title": "Review a pull request",
       "description": "Read a PR as a document, discuss precise content, and submit a provider review when the team is ready.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/azure-devops.md",
         "docs/review-pull-requests.md"
@@ -1154,7 +1154,7 @@
       "title": "Run a participant Research Study",
       "description": "Build, launch, and review a linear study that combines consent, documents, interactive activities, and Forms.",
       "published": true,
-      "appBaselineSha": "4e7ac7718cfb098807ce32a01b8223f575ab7cf7",
+      "appBaselineSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
       "sourceDocs": [
         "docs/research-studies.md"
       ]
