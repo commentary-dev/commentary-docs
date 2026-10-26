@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-26T00:41:43Z",
+  "scope": "Verified first production publication. This receipt-only release preserves authored content and provides a second complete compatible release for rollback and open-page search verification. Final post-cutover checks are separate from this initial receipt.",
+  "app": {
+    "sourceSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
+    "imageDigest": "sha256:6abfb8b4bfca6b11573037a1700a59c83dfb1ad9592e8f9f4f378dc0acf64063",
+    "releaseRun": "https://github.com/srulyt/commentary/actions/runs/40242509661",
+    "healthOk": true,
+    "healthSourceSha": "b2486cd5911817911a0b153ac444c8d695e91bf1",
+    "webAndWorkerImageMatch": true
+  },
+  "documentation": {
+    "sourceSha": "2d1c988194ba676d16ce058cc54c201d4241d521",
+    "releaseId": "183b6195b86ff087ee3121303bb181a6",
+    "publishRun": "https://github.com/commentary-dev/commentary-docs/actions/runs/40250161588",
+    "verificationRun": "https://github.com/commentary-dev/commentary-docs/actions/runs/40250161604",
+    "pages": 914,
+    "files": 3314,
+    "legacyAliases": 51,
+    "homepageHttpStatus": 200,
+    "homepageMatchesPublishedChecksum": true,
+    "versionReceiptMatchesManifest": true
+  },
+  "publicationProtectionChecks": [
+    {
+      "name": "Stale activation cannot change the pointer",
+      "status": 409
+    },
+    {
+      "name": "Unverified app baseline rejected",
+      "status": 409
+    },
+    {
+      "name": "Manifest traversal rejected",
+      "status": 400
+    },
+    {
+      "name": "Unexpected MIME rejected",
+      "status": 400
+    },
+    {
+      "name": "Corrupt bytes rejected without modifying immutable content",
+      "status": 400
+    }
+  ],
+  "activePointerUnchangedAfterRejections": true,
+  "indexingStatus": "Crawlability and indexing are separate; no search ranking or chatbot citation claim."
+}
